@@ -8,6 +8,7 @@ const nextConfig = {
       "raw.githubusercontent.com",
       "camo.githubusercontent.com",
       "github-readme-stats.vercel.app",
+      "res.cloudinary.com",
     ],
     remotePatterns: [
       {
@@ -37,6 +38,12 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'github-profile-trophy.vercel.app',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
         port: '',
         pathname: '/**',
       },
