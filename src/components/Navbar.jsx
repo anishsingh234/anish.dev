@@ -17,7 +17,27 @@ export default function Navbar() {
   const navItems = ["Projects", "Skills", "Experience", "About", "Contact"];
 
   // Helper to construct link depending on if we are home or on a subpage
-  const getHref = (item) => `/${isHome ? "" : ""}#${item.toLowerCase()}`;
+  const getHref = (item) => {
+    const id = item.toLowerCase();
+    return isHome ? `#${id}` : `/#${id}`;
+  };
+
+  const handleNavClick = (e, item) => {
+    const id = item.toLowerCase();
+    if (isHome) {
+      e.preventDefault();
+      // Close menu first, then scroll after animation settles
+      setMobileOpen(false);
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 50);
+    } else {
+      setMobileOpen(false);
+    }
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -25,12 +45,25 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close mobile menu on resize to desktop
+  // Close menu on desktop resize
   useEffect(() => {
-    const onResize = () => { if (window.innerWidth >= 768) setMobileOpen(false); };
+    const onResize = () => {
+      if (window.innerWidth >= 768) setMobileOpen(false);
+    };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
+
+  // Close menu on route change
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  // Lock body scroll when menu is open
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
 
   return (
     <motion.header
@@ -69,6 +102,7 @@ export default function Navbar() {
             <motion.a
               key={item}
               href={getHref(item)}
+              onClick={(e) => handleNavClick(e, item)}
               whileHover={{ y: -1 }}
               transition={{ duration: 0.15, ease: EASE }}
               className="px-3 py-2 text-sm text-foreground/50 hover:text-foreground/90 rounded-md transition-colors duration-150"
@@ -88,6 +122,7 @@ export default function Navbar() {
             />
             <span className="text-[10px] font-medium text-emerald-400 whitespace-nowrap">Open to work</span>
           </div>
+
           <motion.a
             href="/resume.pdf"
             download
@@ -126,7 +161,7 @@ export default function Navbar() {
                 <motion.a
                   key={item}
                   href={getHref(item)}
-                  onClick={() => setMobileOpen(false)}
+                  onClick={(e) => handleNavClick(e, item)}
                   initial={{ opacity: 0, x: -12 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.05, duration: 0.3 }}
