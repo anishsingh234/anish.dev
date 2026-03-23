@@ -8,7 +8,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily:{
-        inter: ['var(--font-inter)']
+        fredoka: ['var(--font-fredoka)'],
+        inter: ['var(--font-inter)'],
+        space: ['var(--font-space-grotesk)'],
       },
       colors:{
         background: 'rgb(var(--background))',

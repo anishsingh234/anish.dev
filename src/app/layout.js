@@ -1,11 +1,22 @@
-import { Inter } from "next/font/google";
+import { Fredoka, Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import clsx from "clsx";
 import Footer from "@/components/footer";
 
+const fredoka = Fredoka({
+  subsets: ["latin"],
+  variable: "--font-fredoka",
+  weight: ["300", "400", "500", "600", "700"],
+});
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
 });
 
 export const metadata = {
@@ -23,8 +34,10 @@ export default function RootLayout({ children }) {
       <body
         suppressHydrationWarning
         className={clsx(
+          fredoka.variable,
           inter.variable,
-          "bg-background text-foreground font-inter",
+          spaceGrotesk.variable,
+          "bg-background text-foreground font-fredoka",
         )}
       >
         {children}

@@ -1,187 +1,243 @@
 "use client";
-import { 
-  Brain, 
-  Sparkles, 
-  Terminal, 
-  Network, 
-  Bot, 
-  Server, 
-  Database, 
-  Cpu, 
-  Code2, 
-  Layout, 
-  Globe, 
-  Github, 
-  Wrench, 
-  CheckCircle2 
+import { useState } from "react";
+import {
+  Brain, Layout, Server, Database, Code2, Wrench,
 } from "lucide-react";
 import { FadeUp, SectionLabel } from "./SharedComponents";
 
-export const categories = [
+const categories = [
   {
+    id: "ai",
     title: "AI / ML",
+    fullTitle: "AI & Machine Learning",
     icon: Brain,
-    description: "Building AI agents, RAG pipelines, and intelligent applications.",
-    span: "md:col-span-2 lg:col-span-2",
-    highlight: true,
+    description: "The core of what I build — agents, pipelines, and intelligent systems at production scale.",
+    count: "12",
+    featured: true,
     skills: [
-      { name: "LLMs", icon: Sparkles },
-      { name: "Prompt Engineering", icon: Terminal },
-      { name: "LangChain", icon: Network },
-      { name: "CrewAI", icon: Bot },
-      { name: "Hugging Face", icon: Brain },
-      { name: "Ollama", icon: Server },
-      { name: "RAG", icon: Database },
-      { name: "Vector Databases", icon: Database },
-      { name: "Pinecone", icon: Cpu },
-      { name: "Tool Calling", icon: Code2 },
-      { name: "Multi-Agent Systems", icon: Network },
-      { name: "Vercel AI SDK", icon: Cpu },
-    ]
-  },
-  {
-    title: "Backend",
-    icon: Server,
-    description: "Designing scalable APIs and integrating AI systems.",
-    span: "col-span-1",
-    skills: [
-      { name: "Node.js", icon: Terminal },
-      { name: "Express.js", icon: Server },
-      { name: "FastAPI", icon: Cpu },
-      { name: "GraphQL", icon: Network },
-      { name: "REST APIs", icon: Globe },
+      { name: "LLMs",                tag: "Core",      level: 95 },
+      { name: "RAG Pipelines",       tag: "Core",      level: 90 },
+      { name: "Prompt Engineering",  tag: "Core",      level: 92 },
+      { name: "LangChain",           tag: "Framework", level: 88 },
+      { name: "Tool Calling",        tag: "Core",      level: 88 },
+      { name: "Vercel AI SDK",       tag: "SDK",       level: 85 },
+      { name: "Vector Databases",    tag: "Infra",     level: 82 },
+      { name: "Pinecone",            tag: "Infra",     level: 80 },
+      { name: "CrewAI",              tag: "Framework", level: 78 },
+      { name: "Multi-Agent Systems", tag: "Emerging",  level: 75 },
+      { name: "Hugging Face",        tag: "Platform",  level: 72 },
+      { name: "Ollama",              tag: "Local",     level: 70 },
     ],
   },
   {
+    id: "frontend",
     title: "Frontend",
+    fullTitle: "Frontend",
     icon: Layout,
-    description: "Building responsive and performant user interfaces.",
-    span: "col-span-1",
+    description: "Building responsive, high-performance interfaces that feel great to use.",
+    count: "06",
     skills: [
-      { name: "React.js", icon: Code2 },
-      { name: "Next.js", icon: Globe },
-      { name: "React Native", icon: Layout },
-      { name: "Expo", icon: Layout },
-      { name: "Tailwind CSS", icon: Layout },
-      { name: "Three.js", icon: Cpu },
+      { name: "React.js",     tag: "Core",      level: 95 },
+      { name: "Next.js",      tag: "Framework", level: 93 },
+      { name: "Tailwind CSS", tag: "Styling",   level: 90 },
+      { name: "React Native", tag: "Mobile",    level: 72 },
+      { name: "Expo",         tag: "Mobile",    level: 68 },
+      { name: "Three.js",     tag: "3D",        level: 55 },
     ],
   },
   {
+    id: "backend",
+    title: "Backend",
+    fullTitle: "Backend",
+    icon: Server,
+    description: "Designing scalable APIs and server-side systems that integrate seamlessly with AI.",
+    count: "05",
+    skills: [
+      { name: "Node.js",    tag: "Runtime",      level: 92 },
+      { name: "Express.js", tag: "Framework",    level: 88 },
+      { name: "REST APIs",  tag: "Architecture", level: 95 },
+      { name: "FastAPI",    tag: "Framework",    level: 78 },
+      { name: "GraphQL",    tag: "Query",        level: 65 },
+    ],
+  },
+  {
+    id: "database",
     title: "Database",
+    fullTitle: "Database",
     icon: Database,
-    description: "Efficient data modeling and scalable storage systems.",
-    span: "col-span-1",
+    description: "Efficient data modelling, query optimization, and scalable storage design.",
+    count: "03",
     skills: [
-      { name: "MongoDB", icon: Database },
-      { name: "MySQL", icon: Database },
-      { name: "Prisma ORM", icon: Database },
+      { name: "MongoDB",    tag: "NoSQL", level: 90 },
+      { name: "Prisma ORM", tag: "ORM",   level: 82 },
+      { name: "MySQL",      tag: "SQL",   level: 75 },
     ],
   },
   {
-    title: "Programming Languages",
+    id: "languages",
+    title: "Languages",
+    fullTitle: "Languages",
     icon: Code2,
-    description: "Strong problem-solving and system design foundation.",
-    span: "col-span-1 md:col-span-2 lg:col-span-1",
+    description: "Strong fundamentals in algorithms, data structures, and system design.",
+    count: "08",
     skills: [
-      { name: "JavaScript", icon: Code2 },
-      { name: "TypeScript", icon: Code2 },
-      { name: "Python", icon: Terminal },
-      { name: "C++", icon: Cpu },
-      { name: "C", icon: Cpu },
-      { name: "SQL", icon: Database },
-      { name: "HTML", icon: Layout },
-      { name: "CSS", icon: Layout },
+      { name: "JavaScript", tag: "Primary", level: 95 },
+      { name: "TypeScript", tag: "Primary", level: 93 },
+      { name: "Python",     tag: "Primary", level: 88 },
+      { name: "HTML",       tag: "Markup",  level: 95 },
+      { name: "CSS",        tag: "Styling", level: 90 },
+      { name: "C++",        tag: "DSA",     level: 80 },
+      { name: "SQL",        tag: "Query",   level: 78 },
+      { name: "C",          tag: "Systems", level: 72 },
     ],
   },
   {
-    title: "Tools & Platforms",
+    id: "tools",
+    title: "Tools",
+    fullTitle: "Tools & Platforms",
     icon: Wrench,
-    description: "Development, deployment, and workflow management.",
-    span: "md:col-span-2 lg:col-span-3",
+    description: "Day-to-day development, deployment, and workflow tooling.",
+    count: "06",
     skills: [
-      { name: "Git", icon: Network },
-      { name: "GitHub", icon: Github },
-      { name: "Vercel", icon: Globe },
-      { name: "Clerk Auth", icon: CheckCircle2 },
-      { name: "VS Code", icon: Code2 },
-      { name: "Postman", icon: Layout },
+      { name: "Git",        tag: "VCS",      level: 95 },
+      { name: "GitHub",     tag: "Platform", level: 92 },
+      { name: "Vercel",     tag: "Deploy",   level: 88 },
+      { name: "VS Code",    tag: "Editor",   level: 95 },
+      { name: "Postman",    tag: "API",      level: 85 },
+      { name: "Clerk Auth", tag: "Auth",     level: 82 },
     ],
   },
 ];
 
 export default function Skills() {
-  return (
-    <section id="skills" className="relative py-24 sm:py-32 scroll-mt-20 border-t border-white/[0.06] overflow-hidden">
-      
-      {/* Background ambient light */}
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-purple-500/10 to-transparent" />
-      <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-purple-600/[0.03] blur-[120px] rounded-full pointer-events-none" />
+  const [active, setActive] = useState("ai");
+  const current = categories.find((c) => c.id === active);
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
-        <FadeUp className="mb-14 sm:mb-16 text-center sm:text-left">
+  return (
+    <section
+      id="skills"
+      className="relative py-24 sm:py-32 scroll-mt-20 border-t border-white/[0.06] overflow-hidden"
+    >
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-purple-500/15 to-transparent" />
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+
+        <FadeUp className="mb-14">
           <SectionLabel>My Tech Stack</SectionLabel>
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 leading-tight">
+          <h2 className="text-3xl sm:text-4xl font-space font-bold text-white mb-4 leading-tight tracking-tight">
             Tools I architect with
           </h2>
-          <p className="text-foreground/50 max-w-xl leading-relaxed text-[15px] sm:mx-0 mx-auto">
-            I use these specific technologies to build production-grade AI systems, scale full-stack architectures, and ship exceptional user experiences.
+          <p className="text-white/40 max-w-md leading-relaxed text-[14px] font-inter">
+            Technologies I rely on to ship production AI systems, full-stack
+            products, and everything in between.
           </p>
         </FadeUp>
 
-        {/* Bento Grid layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-          {categories.map((cat, i) => {
-            const Icon = cat.icon;
-            const isAI = cat.highlight;
-            
-            return (
-              <FadeUp key={cat.title} delay={i * 0.1} className={cat.span}>
-                <div className={`group relative p-6 sm:p-8 rounded-[2rem] bg-white/[0.02] border transition-all duration-500 flex flex-col h-full overflow-hidden ${
-                  isAI 
-                    ? "border-purple-500/20 hover:border-purple-500/40 hover:bg-purple-500/[0.02] shadow-[0_0_30px_rgba(139,92,246,0.03)] hover:shadow-[0_0_40px_rgba(139,92,246,0.1)] hover:-translate-y-1" 
-                    : "border-white/[0.08] hover:border-white/[0.15] hover:bg-white/[0.03] hover:-translate-y-1"
-                }`}>
-                  
-                  <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none ${
-                    isAI ? "bg-purple-500/20" : "bg-white/5"
-                  }`} />
-                  
-                  <div className="flex items-center gap-4 mb-5 relative z-10">
-                    <div className={`p-3 rounded-2xl border transition-all duration-300 group-hover:scale-[1.05] shadow-inner ${
-                      isAI 
-                        ? "bg-purple-500/10 border-purple-500/20 text-purple-400 group-hover:bg-purple-500/20" 
-                        : "bg-white/[0.04] border-white/[0.08] text-white/70 group-hover:text-white group-hover:bg-white/[0.08]"
-                    }`}>
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-white/90 tracking-wide">{cat.title}</h3>
-                    </div>
-                  </div>
-                  
-                  <p className="text-[14px] text-white/50 mb-6 max-w-sm leading-relaxed relative z-10">
-                    {cat.description}
-                  </p>
+        <div className="grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-0">
 
-                  <div className="flex flex-wrap gap-1.5 mt-auto relative z-10">
-                    {cat.skills.map((skill) => {
-                      const SkillIcon = skill.icon;
-                      return (
-                        <div 
-                          key={skill.name}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.08] hover:border-white/[0.15] transition-all duration-300 cursor-default"
-                        >
-                          <SkillIcon className="w-3 h-3 text-white/40" />
-                          <span className="text-[11px] font-medium text-white/70">{skill.name}</span>
-                        </div>
-                      );
-                    })}
+          {/* Left nav */}
+          <nav className="relative flex flex-row flex-wrap lg:flex-col gap-1.5 lg:gap-0.5 mb-8 lg:mb-0">
+            <div className="hidden lg:block absolute right-0 top-0 bottom-0 w-px bg-white/[0.07]" />
+
+            {categories.map((cat) => {
+              const Icon = cat.icon;
+              const isActive = active === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setActive(cat.id)}
+                  className={`group relative flex items-center gap-2.5 px-3 py-2.5 lg:pr-5 rounded-xl lg:rounded-none text-left transition-colors duration-200 cursor-pointer w-full
+                    ${isActive
+                      ? "bg-white/[0.05] lg:bg-transparent text-white"
+                      : "text-white/35 hover:text-white/60"
+                    }`}
+                >
+                  {isActive && (
+                    <span className="hidden lg:block absolute right-[-1px] top-1 bottom-1 w-[2px] rounded-full bg-purple-500/90" />
+                  )}
+
+                  <span className={`flex items-center justify-center w-[30px] h-[30px] rounded-lg border transition-colors duration-200 shrink-0
+                    ${isActive
+                      ? "bg-purple-500/12 border-purple-500/25"
+                      : "bg-white/[0.04] border-white/[0.07]"
+                    }`}>
+                    <Icon className={`w-3.5 h-3.5 ${isActive ? "text-purple-300/90" : "text-white/45 group-hover:text-white/65"}`} />
+                  </span>
+
+                  <span className="text-[13px] font-medium font-inter">{cat.title}</span>
+
+                  <span className={`ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded hidden lg:inline
+                    ${isActive
+                      ? "text-purple-400/60 bg-purple-500/10"
+                      : "text-white/20 bg-white/[0.04]"
+                    }`}>
+                    {cat.count}
+                  </span>
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* Right panel */}
+          <div className="lg:pl-10">
+            <div className="mb-6">
+              <h3 className="text-[22px] font-space font-bold text-white tracking-tight mb-1.5">
+                {current.fullTitle}
+              </h3>
+              <p className="text-[13px] text-white/35 leading-relaxed max-w-sm font-inter">
+                {current.description}
+              </p>
+            </div>
+
+            {current.featured && (
+              <p className="flex items-center gap-2 text-[11px] text-purple-400/55 font-mono mb-5 uppercase tracking-wider">
+                <span className="w-4 h-px bg-purple-500/40 inline-block" />
+                Primary specialization
+              </p>
+            )}
+
+            <div className="flex flex-col">
+              {current.skills.map((skill) => (
+                <div
+                  key={skill.name}
+                  className="group flex items-center justify-between py-[13px] border-b border-white/[0.055] first:border-t first:border-white/[0.055]"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white/[0.12] group-hover:bg-purple-500/70 transition-colors duration-200 shrink-0" />
+                    <span className="text-[15px] font-medium text-white/60 group-hover:text-white transition-colors duration-200 tracking-[-0.01em] font-inter">
+                      {skill.name}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-3.5">
+                    <span className="text-[10px] font-mono text-white/20 uppercase tracking-[.06em] hidden sm:inline">
+                      {skill.tag}
+                    </span>
+                    <div className="w-20 h-[2px] rounded-full bg-white/[0.06] overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-purple-500/50 group-hover:bg-purple-500/75 transition-colors duration-200"
+                        style={{ width: `${skill.level}%` }}
+                      />
+                    </div>
                   </div>
                 </div>
-              </FadeUp>
-            );
-          })}
+              ))}
+            </div>
+
+            <div className="flex gap-8 mt-9 pt-6 border-t border-white/[0.06]">
+              {[
+                { n: "40+", l: "Technologies" },
+                { n: "12+", l: "Projects shipped" },
+                { n: "4+",  l: "AI systems built" },
+              ].map((s) => (
+                <div key={s.l} className="flex flex-col gap-1">
+                  <span className="text-[22px] font-bold text-white font-mono tracking-[-0.03em]">{s.n}</span>
+                  <span className="text-[11px] text-white/30 tracking-[.04em] uppercase">{s.l}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
