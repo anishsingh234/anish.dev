@@ -7,7 +7,7 @@ import Skills from "@/components/home/Skills";
 import Experience from "@/components/home/Experience";
 import AboutSection from "@/components/home/AboutSection";
 import Contact from "@/components/home/Contact";
-
+import BlogSection from "@/components/BlogSection";
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between bg-[#05050A] text-foreground selection:bg-purple-500/30">
@@ -20,6 +20,7 @@ export default function Home() {
         {/* --- Projects Section --- */}
         <Projects />
 
+        <BlogSection />
         {/* --- Skills Section --- */}
         <Skills />
 

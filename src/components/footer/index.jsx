@@ -1,16 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Github, Linkedin, Mail, Heart, ArrowRight } from "lucide-react";
+import { Github, Linkedin, Mail } from "lucide-react";
 import Link from "next/link";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
-  const footerLinks = [
+  const navLinks = [
     { label: "Home", href: "/" },
-    { label: "About", href: "/#about" },
     { label: "Projects", href: "/projects" },
+    { label: "Experience", href: "/#experience" },
+    { label: "About", href: "/#about" },
     { label: "Contact", href: "/#contact" },
   ];
 
@@ -18,30 +19,32 @@ const Footer = () => {
     {
       icon: Github,
       href: "https://github.com/anishsingh234",
-      label: "GitHub",
+      label: "github",
     },
     {
       icon: Linkedin,
       href: "https://linkedin.com/in/anish-ai",
-      label: "LinkedIn",
+      label: "linkedin",
     },
     {
       icon: Mail,
       href: "mailto:anishsingh210204@gmail.com",
-      label: "Email",
+      label: "email",
     },
   ];
+
+  const techStack = ["next.js", "tailwind", "framer", "vercel"];
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.3 },
+      transition: { staggerChildren: 0.08, delayChildren: 0.2 },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 16 },
     visible: {
       opacity: 1,
       y: 0,
@@ -50,44 +53,66 @@ const Footer = () => {
   };
 
   return (
-    <footer className="relative border-t border-white/[0.06] bg-background">
+    <footer className="relative border-t border-white/[0.04] bg-background overflow-hidden">
+      {/* Top accent line */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/40 to-transparent" />
+
       <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
         variants={containerVariants}
-        className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16"
+        className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-8"
       >
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-          {/* Branding */}
-          <motion.div variants={itemVariants} className="col-span-1">
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-                <span className="text-background font-bold text-sm">AK</span>
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-10 md:gap-14 mb-12">
+
+          {/* Branding Column */}
+          <motion.div variants={itemVariants} className="flex flex-col gap-5">
+            {/* Logo + Name */}
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-[10px] bg-gradient-to-br from-blue-500 to-sky-400 flex items-center justify-center flex-shrink-0">
+                <span className="font-mono text-[11px] font-medium text-white tracking-wider">
+                  AK
+                </span>
               </div>
-              <span className="text-lg font-bold text-foreground">
-                Anish Singh
+              <span className="text-[15px] font-semibold text-foreground tracking-[-0.3px]">
+                Anish Kumar Singh
               </span>
             </div>
-            <p className="text-sm text-foreground/50 leading-relaxed">
-              Full-Stack Developer & AI Engineer crafting production-grade systems.
+
+            {/* Tagline */}
+            <p className="text-[13px] text-foreground/35 leading-[1.75] max-w-[280px] font-light">
+              Full-Stack Developer &amp; AI Engineer. Building production-grade
+              systems at the intersection of LLMs, RAG, and scalable
+              architecture.
             </p>
+
+            {/* Open to Work Status */}
+            <div className="inline-flex items-center gap-2 bg-emerald-500/[0.07] border border-emerald-500/20 rounded-full px-3 py-[5px] w-fit">
+              <span className="relative flex h-[6px] w-[6px] flex-shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
+                <span className="relative inline-flex rounded-full h-[6px] w-[6px] bg-emerald-400" />
+              </span>
+              <span className="font-mono text-[11px] text-emerald-400 tracking-[0.3px]">
+                open_to_work · full-time roles
+              </span>
+            </div>
           </motion.div>
 
-          {/* Navigation Links */}
-          <motion.div variants={itemVariants} className="col-span-1">
-            <h3 className="font-semibold text-foreground/80 mb-4 text-sm uppercase tracking-wider">
-              Navigation
-            </h3>
-            <ul className="space-y-2.5">
-              {footerLinks.map((link) => (
+          {/* Navigate Column */}
+          <motion.div variants={itemVariants} className="md:col-start-2">
+            <p className="font-mono text-[10px] tracking-[1.5px] uppercase text-foreground/20 mb-5 font-medium">
+              Navigate
+            </p>
+            <ul className="flex flex-col gap-3">
+              {navLinks.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-foreground/50 hover:text-foreground transition-colors duration-200 flex items-center gap-1.5 w-fit group"
+                    className="group flex items-center gap-2 text-[13.5px] text-foreground/30 hover:text-foreground/80 transition-colors duration-200"
                   >
-                    <ArrowRight className="w-3 h-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+                    <span className="w-0 h-px bg-blue-500 transition-all duration-200 group-hover:w-3 opacity-0 group-hover:opacity-100" />
                     {link.label}
                   </Link>
                 </li>
@@ -95,30 +120,12 @@ const Footer = () => {
             </ul>
           </motion.div>
 
-          {/* Services */}
-          <motion.div variants={itemVariants} className="col-span-1">
-            <h3 className="font-semibold text-foreground/80 mb-4 text-sm uppercase tracking-wider">
-              Services
-            </h3>
-            <ul className="space-y-2.5">
-              {["Web Development", "Full-Stack Solutions", "AI/ML Integration", "SaaS Architecture"].map(
-                (service) => (
-                  <li key={service}>
-                    <span className="text-sm text-foreground/50 cursor-default">
-                      {service}
-                    </span>
-                  </li>
-                )
-              )}
-            </ul>
-          </motion.div>
-
-          {/* Social Links */}
-          <motion.div variants={itemVariants} className="col-span-1">
-            <h3 className="font-semibold text-foreground/80 mb-4 text-sm uppercase tracking-wider">
+          {/* Connect Column */}
+          <motion.div variants={itemVariants}>
+            <p className="font-mono text-[10px] tracking-[1.5px] uppercase text-foreground/20 mb-5 font-medium">
               Connect
-            </h3>
-            <div className="flex gap-3">
+            </p>
+            <div className="flex flex-col gap-[10px]">
               {socialLinks.map((social) => {
                 const Icon = social.icon;
                 return (
@@ -127,12 +134,14 @@ const Footer = () => {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.1, y: -3 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-foreground/50 hover:text-foreground hover:bg-white/[0.08] hover:border-white/[0.15] transition-all duration-200"
-                    title={social.label}
+                    whileHover={{ x: 3 }}
+                    transition={{ duration: 0.15 }}
+                    className="group inline-flex items-center gap-[10px] px-3 py-2 rounded-lg border border-white/[0.05] bg-transparent hover:border-blue-500/20 hover:bg-blue-500/[0.04] transition-all duration-200 w-fit"
                   >
-                    <Icon className="w-4.5 h-4.5" />
+                    <Icon className="w-[14px] h-[14px] text-foreground/25 group-hover:text-foreground/60 transition-colors duration-200" />
+                    <span className="font-mono text-[12.5px] text-foreground/25 group-hover:text-foreground/60 transition-colors duration-200 tracking-[0.2px]">
+                      {social.label}
+                    </span>
                   </motion.a>
                 );
               })}
@@ -141,66 +150,62 @@ const Footer = () => {
         </div>
 
         {/* Divider */}
-        <motion.div
-          variants={itemVariants}
-          className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent mb-8"
-        />
-
-        {/* Bottom Footer */}
-        <motion.div
-          variants={itemVariants}
-          className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-foreground/40"
-        >
-          <div className="flex items-center gap-1.5">
-            <span>© {currentYear} Anish Singh. Made with</span>
-            <Heart className="w-3.5 h-3.5 text-purple-400 fill-purple-400" />
-            <span>and lots of code.</span>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <a
-              href="https://github.com/anishsingh234"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-foreground/70 transition-colors"
-            >
-              GitHub
-            </a>
-            <span className="text-foreground/20">•</span>
-            <a
-              href="https://linkedin.com/in/anish-ai"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-foreground/70 transition-colors"
-            >
-              LinkedIn
-            </a>
-          </div>
+        <motion.div variants={itemVariants} className="relative mb-7">
+          <div className="h-px bg-white/[0.05]" />
+          <div className="absolute left-0 top-0 w-20 h-px bg-gradient-to-r from-blue-500/60 to-transparent" />
         </motion.div>
 
-        {/* Scroll to Top Button */}
-        <motion.button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          suppressHydrationWarning
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="fixed bottom-8 right-8 w-11 h-11 rounded-xl bg-white/[0.04] border border-white/[0.08] hidden md:flex items-center justify-center text-foreground/50 hover:text-foreground hover:bg-white/[0.08] hover:border-white/[0.15] transition-all duration-200 backdrop-blur-sm"
+        {/* Bottom Bar */}
+        <motion.div
+          variants={itemVariants}
+          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
         >
-          <svg
-            className="w-4.5 h-4.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 10l7-7m0 0l7 7m-7-7v18"
-            />
-          </svg>
-        </motion.button>
+          {/* Copyright */}
+          <p className="font-mono text-[11.5px] text-foreground/20 tracking-[0.2px]">
+            © {currentYear}{" "}
+            <span className="text-foreground/30">Anish Kumar Singh.</span>{" "}
+            All rights reserved.
+          </p>
+
+          {/* Built With Tags */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-mono text-[11px] text-foreground/15 tracking-[0.3px]">
+              built with
+            </span>
+            {techStack.map((tech) => (
+              <span
+                key={tech}
+                className="font-mono text-[10px] px-[7px] py-[2px] rounded border border-white/[0.06] bg-white/[0.02] text-foreground/20 tracking-[0.3px]"
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+        </motion.div>
       </motion.div>
+
+      {/* Scroll to Top */}
+      <motion.button
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        suppressHydrationWarning
+        whileHover={{ scale: 1.05, borderColor: "rgba(59,130,246,0.25)" }}
+        whileTap={{ scale: 0.95 }}
+        className="fixed bottom-8 right-8 w-9 h-9 rounded-lg bg-background/80 border border-white/[0.07] hidden md:flex items-center justify-center text-foreground/25 hover:text-foreground/60 transition-colors duration-200 backdrop-blur-sm"
+      >
+        <svg
+          className="w-[14px] h-[14px]"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M5 10l7-7m0 0l7 7m-7-7v18"
+          />
+        </svg>
+      </motion.button>
     </footer>
   );
 };
