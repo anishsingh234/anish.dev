@@ -2,13 +2,11 @@
 import { motion } from "framer-motion";
 import { Calendar, MapPin } from "lucide-react";
 import { FadeUp, SectionLabel } from "./SharedComponents";
-
 export const experiences = [
   {
-    role: "Software Developer Intern",
     company: "Exponent Solutions",
     location: "Remote",
-    period: "Nov 2025 — Present",
+    period: "Nov 2025 – Present",
     bullets: [
       "Developed and deployed 3+ full-stack applications serving 3,000+ users",
       "Built a RAG-based AI chatbot using LLMs and vector embeddings",
@@ -20,8 +18,16 @@ export const experiences = [
   {
     role: "B.Tech Computer Science (AI & ML)",
     company: "Uttarakhand Technical University",
-    location: "",
-    period: "Aug 2022 — Jun 2026",
+    location: "Dehradun, India",
+    period: "Aug 2022 – Jun 2026",
+    bullets: [],
+    tech: "",
+  },
+  {
+    role: "Class 12 (Science - PCM)",
+    company: "Kendriya Vidyalaya",
+    location: "Patna, India",
+    period: "2021 – 2022",
     bullets: [],
     tech: "",
   }
