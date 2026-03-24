@@ -2,7 +2,7 @@ import { Fredoka, Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import clsx from "clsx";
 import Footer from "@/components/footer";
-
+import CustomCursor from "@/components/home/CustomCursor";
 const fredoka = Fredoka({
   subsets: ["latin"],
   variable: "--font-fredoka",
@@ -40,8 +40,10 @@ export default function RootLayout({ children }) {
           "bg-background text-foreground font-fredoka",
         )}
       >
+       
         {children}
         <Footer />
+         <CustomCursor />
       </body>
     </html>
   );

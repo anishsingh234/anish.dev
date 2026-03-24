@@ -14,7 +14,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const isHome = pathname === "/";
 
-  const navItems = ["Projects", "Skills", "Experience", "About", "Contact"];
+  const navItems = ["Projects","Blog", "Skills", "Experience", "About", "Contact"];
 
   // Helper to construct link depending on if we are home or on a subpage
   const getHref = (item) => {

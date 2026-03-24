@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useState, useRef } from "react";
+import { AnimatePresence, motion, useInView } from "framer-motion";
 import {
   Brain, Layout, Server, Database, Code2, Wrench,
 } from "lucide-react";
@@ -116,6 +116,118 @@ const panelVariants = {
   exit:    { opacity: 0, y: -4, transition: { duration: 0.12 } },
 };
 
+// Individual animated skill row
+function SkillRow({ skill, index, isVisible }) {
+  return (
+    <div className="group flex items-center justify-between py-[11px] lg:py-[13px] border-b border-white/[0.055] first:border-t first:border-white/[0.055]">
+      {/* Left: dot + name */}
+      <div className="flex items-center gap-2.5 flex-1 min-w-0">
+        <span className="w-1.5 h-1.5 rounded-full bg-white/[0.12] group-hover:bg-purple-500/70 transition-colors duration-200 shrink-0" />
+        <span className="text-[13px] lg:text-[15px] font-medium text-white/60 group-hover:text-white transition-colors duration-200 tracking-[-0.01em] font-inter truncate">
+          {skill.name}
+        </span>
+      </div>
+
+      {/* Right: tag + animated bar + percentage */}
+      <div className="flex items-center gap-2.5 lg:gap-3.5 flex-shrink-0">
+        <span className="text-[10px] font-mono text-white/20 uppercase tracking-[.06em] hidden sm:inline">
+          {skill.tag}
+        </span>
+
+        {/* Animated benchmark bar */}
+        <div className="relative w-14 lg:w-28 h-[3px] rounded-full bg-white/[0.06] overflow-hidden">
+          <motion.div
+            className="absolute left-0 top-0 h-full rounded-full"
+            style={{
+              background: "linear-gradient(90deg, rgba(168,85,247,0.4), rgba(139,92,246,0.8))",
+            }}
+            initial={{ width: 0 }}
+            animate={{ width: isVisible ? `${skill.level}%` : 0 }}
+            transition={{
+              duration: 0.9,
+              delay: index * 0.05,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+          />
+          {/* Shimmer on the bar tip */}
+          {isVisible && (
+            <motion.div
+              className="absolute top-0 h-full w-4 rounded-full"
+              style={{
+                background: "linear-gradient(90deg, transparent, rgba(216,180,254,0.6), transparent)",
+              }}
+              initial={{ left: "-10%" }}
+              animate={{ left: `${skill.level - 8}%` }}
+              transition={{
+                duration: 0.9,
+                delay: index * 0.05,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+            />
+          )}
+        </div>
+
+        {/* Animated percentage counter */}
+        <motion.span
+          className="text-[10px] font-mono text-white/30 w-[28px] text-right tabular-nums"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isVisible ? 1 : 0 }}
+          transition={{ delay: index * 0.05 + 0.3, duration: 0.3 }}
+        >
+          {isVisible ? `${skill.level}%` : "0%"}
+        </motion.span>
+      </div>
+    </div>
+  );
+}
+
+// Skills panel — triggers animation when scrolled into view
+function SkillsPanel({ current }) {
+  const ref = useRef(null);
+  // once: true so it only animates once per tab switch
+  const isInView = useInView(ref, { once: false, amount: 0.2 });
+
+  return (
+    <motion.div
+      key={current.id}
+      variants={panelVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      ref={ref}
+    >
+      {/* Panel header */}
+      <div className="mb-5 lg:mb-6">
+        <h3 className="text-[20px] lg:text-[22px] font-space font-bold text-white tracking-tight mb-1.5">
+          {current.fullTitle}
+        </h3>
+        <p className="text-[13px] text-white/35 leading-relaxed max-w-sm font-inter">
+          {current.description}
+        </p>
+      </div>
+
+      {current.featured && (
+        <p className="flex items-center gap-2 text-[11px] text-purple-400/55 font-mono mb-5 uppercase tracking-wider">
+          <span className="w-4 h-px bg-purple-500/40 inline-block" />
+          Primary specialization
+        </p>
+      )}
+
+      {/* Skills list */}
+      <div className="flex flex-col">
+        {current.skills.map((skill, i) => (
+          <SkillRow
+            key={skill.name}
+            skill={skill}
+            index={i}
+            isVisible={isInView}
+          />
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
 export default function Skills() {
   const [active, setActive] = useState("ai");
   const current = categories.find((c) => c.id === active);
@@ -157,13 +269,11 @@ export default function Skills() {
               >
                 <Icon className="w-3.5 h-3.5 flex-shrink-0" />
                 {cat.title}
-                <span
-                  className={`text-[10px] font-mono px-1.5 py-0.5 rounded
-                    ${isActive
-                      ? "bg-purple-500/20 text-purple-400/70"
-                      : "bg-white/[0.05] text-white/20"
-                    }`}
-                >
+                <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded
+                  ${isActive
+                    ? "bg-purple-500/20 text-purple-400/70"
+                    : "bg-white/[0.05] text-white/20"
+                  }`}>
                   {cat.count}
                 </span>
               </button>
@@ -174,7 +284,7 @@ export default function Skills() {
         {/* ── DESKTOP: sidebar + panel grid ── */}
         <div className="grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-0">
 
-          {/* Desktop left nav — hidden on mobile */}
+          {/* Desktop left nav */}
           <nav className="relative hidden lg:flex flex-col gap-0.5">
             <div className="absolute right-0 top-0 bottom-0 w-px bg-white/[0.07]" />
             {categories.map((cat) => {
@@ -188,7 +298,10 @@ export default function Skills() {
                     ${isActive ? "text-white" : "text-white/35 hover:text-white/60"}`}
                 >
                   {isActive && (
-                    <span className="absolute right-[-1px] top-1 bottom-1 w-[2px] rounded-full bg-purple-500/90" />
+                    <motion.span
+                      layoutId="activeIndicator"
+                      className="absolute right-[-1px] top-1 bottom-1 w-[2px] rounded-full bg-purple-500/90"
+                    />
                   )}
                   <span className={`flex items-center justify-center w-[30px] h-[30px] rounded-lg border transition-colors duration-200 shrink-0
                     ${isActive
@@ -210,69 +323,10 @@ export default function Skills() {
             })}
           </nav>
 
-          {/* Right panel — shared between mobile and desktop */}
+          {/* Right panel */}
           <div className="lg:pl-10">
             <AnimatePresence mode="wait">
-              <motion.div
-                key={active}
-                variants={panelVariants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-              >
-                {/* Panel header */}
-                <div className="mb-5 lg:mb-6">
-                  <h3 className="text-[20px] lg:text-[22px] font-space font-bold text-white tracking-tight mb-1.5">
-                    {current.fullTitle}
-                  </h3>
-                  <p className="text-[13px] text-white/35 leading-relaxed max-w-sm font-inter">
-                    {current.description}
-                  </p>
-                </div>
-
-                {current.featured && (
-                  <p className="flex items-center gap-2 text-[11px] text-purple-400/55 font-mono mb-5 uppercase tracking-wider">
-                    <span className="w-4 h-px bg-purple-500/40 inline-block" />
-                    Primary specialization
-                  </p>
-                )}
-
-                {/* Skills list */}
-                <div className="flex flex-col">
-                  {current.skills.map((skill) => (
-                    <div
-                      key={skill.name}
-                      className="group flex items-center justify-between py-[11px] lg:py-[13px] border-b border-white/[0.055] first:border-t first:border-white/[0.055]"
-                    >
-                      {/* Left: dot + name */}
-                      <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                        <span className="w-1.5 h-1.5 rounded-full bg-white/[0.12] group-hover:bg-purple-500/70 transition-colors duration-200 shrink-0" />
-                        <span className="text-[13px] lg:text-[15px] font-medium text-white/60 group-hover:text-white transition-colors duration-200 tracking-[-0.01em] font-inter truncate">
-                          {skill.name}
-                        </span>
-                      </div>
-
-                      {/* Right: tag + bar + percentage (mobile shows percentage, desktop hides it) */}
-                      <div className="flex items-center gap-2.5 lg:gap-3.5 flex-shrink-0">
-                        <span className="text-[10px] font-mono text-white/20 uppercase tracking-[.06em] hidden sm:inline">
-                          {skill.tag}
-                        </span>
-                        <div className="w-14 lg:w-20 h-[2px] rounded-full bg-white/[0.06] overflow-hidden">
-                          <div
-                            className="h-full rounded-full bg-purple-500/50 group-hover:bg-purple-500/75 transition-colors duration-200"
-                            style={{ width: `${skill.level}%` }}
-                          />
-                        </div>
-                        {/* Percentage — visible on mobile only */}
-                        <span className="text-[10px] font-mono text-white/20 w-[26px] text-right lg:hidden">
-                          {skill.level}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-              </motion.div>
+              <SkillsPanel key={active} current={current} />
             </AnimatePresence>
 
             {/* Stats */}
