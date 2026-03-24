@@ -40,10 +40,7 @@ export default function RootLayout({ children }) {
           "bg-background text-foreground font-fredoka",
         )}
       >
-        <script 
-  src="https://chat-sathi.vercel.app/chatBot.js" 
-  data-owner-id="usr_115500314898989325">
-</script>
+   
        
         {children}
         <Footer />
