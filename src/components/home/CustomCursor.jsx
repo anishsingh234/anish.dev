@@ -3,22 +3,51 @@
 import { useEffect, useRef, useState } from "react";
 
 const TOKENS = [
-  "<rag>", "llm", "→", "embed()", "vec", "∇", "token",
-  "ctx", "∑", "agent", "fn()", "RAG", "pipe",
-  "attn", "∞", "logit", "kv", "λ", "softmax",
-  "⊕", "norm", "0.97", "stream", "sys",
+  "RAG", "LLM", "AGENT", "NEXT", "NODE", "VEC", "EMBED", "CHAIN",
+  "ATTN", "SOFTMAX", "LOGIT", "CTX", "TOKEN", "PIPE", "SaaS",
+  "∇", "∞", "λ", "∑", "→", "fn()", "API", "DB", "AI", "<>",
+  "0.97", "stream", "kv-cache", "multi-agent"
 ];
 
-function lerp(a, b, t) {
-  return a + (b - a) * t;
+const COLORS = ["#a855f7", "#8b5cf6", "#3b82f6", "#22d3ee"]; // purple → blue → cyan
+
+class Particle {
+  constructor(x, y, isBurst = false) {
+    this.x = x;
+    this.y = y;
+    this.symbol = TOKENS[Math.floor(Math.random() * TOKENS.length)];
+    this.size = isBurst ? Math.random() * 13 + 9 : Math.random() * 9 + 6;
+    this.alpha = isBurst ? 0.95 : 0.75;
+    this.life = isBurst ? 1100 : 650;
+    this.vx = (Math.random() - 0.5) * (isBurst ? 6.5 : 2.2);
+    this.vy = (Math.random() - 0.5) * (isBurst ? 6.5 : 2.2) - (isBurst ? 1.5 : 0);
+    this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+    this.rotation = Math.random() * 360;
+    this.rotSpeed = (Math.random() - 0.5) * 4;
+  }
+
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.vy += 0.018; // gentle gravity
+    this.vx *= 0.985;
+    this.vy *= 0.985;
+    this.alpha -= 0.012;
+    this.life -= 16;
+    this.rotation += this.rotSpeed;
+  }
 }
 
 export default function CustomCursor() {
-  const dotRef  = useRef(null);
+  const dotRef = useRef(null);
   const ringRef = useRef(null);
-  const state   = useRef({ mx: -200, my: -200, rx: -200, ry: -200 });
-  const lastEmit = useRef(0);
-  const rafRef   = useRef(null);
+  const canvasRef = useRef(null);
+  const particlesRef = useRef([]);
+  const mouseRef = useRef({ x: -200, y: -200 });
+  const targetRef = useRef({ x: -200, y: -200 });
+  const rafRef = useRef(null);
+  const lastEmitRef = useRef(0);
+  const isHoverRef = useRef(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -32,165 +61,201 @@ export default function CustomCursor() {
 
     document.documentElement.style.cursor = "none";
 
-    const dot  = dotRef.current;
+    const dot = dotRef.current;
     const ring = ringRef.current;
     if (!dot || !ring) return;
 
-    const s = state.current;
+    // === CANVAS SETUP ===
+    const canvas = document.createElement("canvas");
+    canvas.style.position = "fixed";
+    canvas.style.top = "0";
+    canvas.style.left = "0";
+    canvas.style.width = "100vw";
+    canvas.style.height = "100vh";
+    canvas.style.pointerEvents = "none";
+    canvas.style.zIndex = "9997";
+    canvas.style.mixBlendMode = "screen";
+    document.body.appendChild(canvas);
+    canvasRef.current = canvas;
 
-    // RAF loop — smooth ring lag
+    const ctx = canvas.getContext("2d", { alpha: true });
+    let width = 0;
+    let height = 0;
+
+    const resize = () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    // === PARTICLE SYSTEM ===
+    const particles = particlesRef.current;
+
+    function createParticle(x, y, isBurst = false) {
+      particles.push(new Particle(x, y, isBurst));
+      if (particles.length > 110) particles.shift(); // max 110 for performance
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+
+      // Draw neural connections first
+      ctx.lineWidth = 0.8;
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const p1 = particles[i];
+          const p2 = particles[j];
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 135 && p1.alpha > 0.15 && p2.alpha > 0.15) {
+            ctx.strokeStyle = `rgba(139,92,246,${Math.max(0, (135 - dist) / 135 * 0.22)})`;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.update();
+
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+
+        // Glow
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = 18;
+
+        ctx.font = `${p.size}px monospace`;
+        ctx.fillStyle = p.color;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(p.symbol, 0, 0);
+
+        ctx.restore();
+
+        if (p.life <= 0 || p.alpha <= 0.05) {
+          particles.splice(i, 1);
+        }
+      }
+    }
+
+    // === MAIN RAF LOOP ===
     function tick() {
-      s.rx = lerp(s.rx, s.mx, 0.13);
-      s.ry = lerp(s.ry, s.my, 0.13);
-      ring.style.transform = `translate(${s.rx}px, ${s.ry}px) translate(-50%, -50%)`;
+      // Smooth ring lag
+      targetRef.current.x = lerp(targetRef.current.x, mouseRef.current.x, 0.14);
+      targetRef.current.y = lerp(targetRef.current.y, mouseRef.current.y, 0.14);
+
+      ring.style.transform = `translate(${targetRef.current.x}px, ${targetRef.current.y}px) translate(-50%, -50%)`;
+
+      // Particle animation + neural net
+      draw();
+
       rafRef.current = requestAnimationFrame(tick);
     }
+
+    function lerp(a, b, t) {
+      return a + (b - a) * t;
+    }
+
     rafRef.current = requestAnimationFrame(tick);
 
-    // Spawn floating token
-    function spawnToken(x, y) {
-      const el = document.createElement("span");
-      el.textContent = TOKENS[Math.floor(Math.random() * TOKENS.length)];
-      const ox = (Math.random() - 0.5) * 22;
-      const oy = (Math.random() - 0.5) * 10;
-      Object.assign(el.style, {
-        position:      "fixed",
-        left:          x + ox + "px",
-        top:           y + oy + "px",
-        transform:     "translate(-50%, -50%)",
-        fontFamily:    "monospace",
-        fontSize:      "10px",
-        color:         "rgba(168,85,247,0.8)",
-        textShadow:    "0 0 8px rgba(168,85,247,0.6)",
-        pointerEvents: "none",
-        zIndex:        "9997",
-        whiteSpace:    "nowrap",
-        userSelect:    "none",
-        opacity:       "0.8",
-      });
-      document.body.appendChild(el);
-
-      let start = null;
-      const dur = 650 + Math.random() * 250;
-      function anim(ts) {
-        if (!start) start = ts;
-        const p = Math.min((ts - start) / dur, 1);
-        const ease = 1 - Math.pow(1 - p, 2);
-        el.style.opacity   = String((1 - p) * 0.8);
-        el.style.transform = `translate(-50%, calc(-50% - ${ease * 26}px)) scale(${0.95 - p * 0.35})`;
-        if (p < 1) requestAnimationFrame(anim);
-        else el.remove();
-      }
-      requestAnimationFrame(anim);
-    }
-
-    // Tiny trail dot
-    function spawnTrailDot(x, y) {
-      const el = document.createElement("div");
-      Object.assign(el.style, {
-        position:      "fixed",
-        left:          x + "px",
-        top:           y + "px",
-        width:         "3px",
-        height:        "3px",
-        borderRadius:  "50%",
-        background:    "rgba(139,92,246,0.5)",
-        transform:     "translate(-50%,-50%)",
-        pointerEvents: "none",
-        zIndex:        "9996",
-        opacity:       "0.5",
-      });
-      document.body.appendChild(el);
-      let op = 0.5;
-      function fade() {
-        op -= 0.06;
-        el.style.opacity = String(Math.max(op, 0));
-        if (op > 0) requestAnimationFrame(fade);
-        else el.remove();
-      }
-      setTimeout(() => requestAnimationFrame(fade), 40);
-    }
-
-    // Click burst
-    function burst(x, y) {
-      for (let i = 0; i < 7; i++) {
-        setTimeout(() => spawnToken(
-          x + (Math.random() - 0.5) * 44,
-          y + (Math.random() - 0.5) * 30,
-        ), i * 28);
-      }
-    }
-
-    // Handlers
+    // === MOUSE HANDLERS ===
     const onMove = (e) => {
-      s.mx = e.clientX;
-      s.my = e.clientY;
+      mouseRef.current.x = e.clientX;
+      mouseRef.current.y = e.clientY;
+
       dot.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
-      dot.style.opacity   = "1";
-      ring.style.opacity  = "1";
+      dot.style.opacity = "1";
+      ring.style.opacity = "1";
+
       const now = Date.now();
-      if (now - lastEmit.current > 95) {
-        lastEmit.current = now;
-        spawnToken(e.clientX, e.clientY);
-        spawnTrailDot(e.clientX, e.clientY);
+      if (now - lastEmitRef.current > (isHoverRef.current ? 55 : 85)) {
+        lastEmitRef.current = now;
+        createParticle(e.clientX, e.clientY);
+        // occasional extra trail
+        if (Math.random() > 0.6) createParticle(e.clientX + (Math.random() - 0.5) * 18, e.clientY + (Math.random() - 0.5) * 18);
       }
     };
 
-    const onLeave  = () => { dot.style.opacity = "0"; ring.style.opacity = "0"; };
-    const onEnter  = () => { dot.style.opacity = "1"; ring.style.opacity = "1"; };
-
     const onDown = (e) => {
-      ring.style.width      = "18px";
-      ring.style.height     = "18px";
-      dot.style.boxShadow   = "0 0 16px rgba(168,85,247,1), 0 0 32px rgba(139,92,246,0.5)";
-      burst(e.clientX, e.clientY);
+      ring.style.width = "22px";
+      ring.style.height = "22px";
+      dot.style.boxShadow = "0 0 28px #a855f7, 0 0 48px #3b82f6";
+
+      // Big neural explosion
+      for (let i = 0; i < 18; i++) {
+        setTimeout(() => {
+          createParticle(e.clientX, e.clientY, true);
+        }, i * 14);
+      }
     };
 
     const onUp = () => {
-      ring.style.width    = "32px";
-      ring.style.height   = "32px";
-      dot.style.boxShadow = "0 0 8px rgba(168,85,247,0.8)";
+      ring.style.width = "34px";
+      ring.style.height = "34px";
+      dot.style.boxShadow = "0 0 12px rgba(168,85,247,0.9)";
     };
 
-    const isInteractive = (t) =>
-      t.closest("a, button, [role='button'], input, textarea, label, select");
+    const isInteractive = (el) =>
+      el.closest("a, button, [role='button'], input, textarea, label, select, .cursor-interactive");
 
     const onOver = (e) => {
       if (isInteractive(e.target)) {
-        ring.style.width       = "50px";
-        ring.style.height      = "50px";
-        ring.style.borderColor = "rgba(168,85,247,0.65)";
-        ring.style.background  = "rgba(139,92,246,0.07)";
+        isHoverRef.current = true;
+        ring.style.width = "56px";
+        ring.style.height = "56px";
+        ring.style.borderColor = "rgba(59,130,246,0.85)";
+        ring.style.background = "rgba(139,92,246,0.08)";
+        ring.style.boxShadow = "0 0 30px rgba(59,130,246,0.6)";
       }
     };
 
     const onOut = (e) => {
       if (isInteractive(e.target)) {
-        ring.style.width       = "32px";
-        ring.style.height      = "32px";
-        ring.style.borderColor = "rgba(139,92,246,0.35)";
-        ring.style.background  = "transparent";
+        isHoverRef.current = false;
+        ring.style.width = "34px";
+        ring.style.height = "34px";
+        ring.style.borderColor = "rgba(139,92,246,0.45)";
+        ring.style.background = "transparent";
+        ring.style.boxShadow = "none";
       }
     };
 
-    document.addEventListener("mousemove",  onMove,  { passive: true });
+    const onLeave = () => {
+      dot.style.opacity = "0";
+      ring.style.opacity = "0";
+    };
+
+    document.addEventListener("mousemove", onMove, { passive: true });
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("mouseup", onUp);
+    document.addEventListener("mouseover", onOver, { passive: true });
+    document.addEventListener("mouseout", onOut, { passive: true });
     document.addEventListener("mouseleave", onLeave);
-    document.addEventListener("mouseenter", onEnter);
-    document.addEventListener("mousedown",  onDown);
-    document.addEventListener("mouseup",    onUp);
-    document.addEventListener("mouseover",  onOver,  { passive: true });
-    document.addEventListener("mouseout",   onOut,   { passive: true });
 
     return () => {
       document.documentElement.style.cursor = "";
       cancelAnimationFrame(rafRef.current);
-      document.removeEventListener("mousemove",  onMove);
+      if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
+      window.removeEventListener("resize", resize);
+
+      document.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("mouseup", onUp);
+      document.removeEventListener("mouseover", onOver);
+      document.removeEventListener("mouseout", onOut);
       document.removeEventListener("mouseleave", onLeave);
-      document.removeEventListener("mouseenter", onEnter);
-      document.removeEventListener("mousedown",  onDown);
-      document.removeEventListener("mouseup",    onUp);
-      document.removeEventListener("mouseover",  onOver);
-      document.removeEventListener("mouseout",   onOut);
     };
   }, [mounted]);
 
@@ -198,43 +263,40 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Dot — zero-lag */}
+      {/* Core Dot – instant follow, AI core glow */}
       <div
         ref={dotRef}
         style={{
-          position:      "fixed",
-          top:           0,
-          left:          0,
-          width:         "7px",
-          height:        "7px",
-          borderRadius:  "50%",
-          background:    "#a855f7",
-          boxShadow:     "0 0 8px rgba(168,85,247,0.8)",
+          position: "fixed",
+          width: "8px",
+          height: "8px",
+          borderRadius: "50%",
+          background: "#a855f7",
+          boxShadow: "0 0 12px rgba(168,85,247,0.95), 0 0 28px rgba(59,130,246,0.6)",
           pointerEvents: "none",
-          zIndex:        9999,
-          opacity:       0,
-          willChange:    "transform, opacity",
-          transition:    "opacity 0.15s, box-shadow 0.15s",
+          zIndex: 9999,
+          opacity: 0,
+          willChange: "transform, opacity, box-shadow",
+          transition: "opacity 0.1s ease, box-shadow 0.2s ease",
         }}
       />
 
-      {/* Ring — smooth lag via RAF */}
+      {/* Magnetic Ring – bigger, gradient border, hover magic */}
       <div
         ref={ringRef}
         style={{
-          position:      "fixed",
-          top:           0,
-          left:          0,
-          width:         "32px",
-          height:        "32px",
-          borderRadius:  "50%",
-          border:        "1px solid rgba(139,92,246,0.35)",
-          background:    "transparent",
+          position: "fixed",
+          width: "34px",
+          height: "34px",
+          borderRadius: "50%",
+          border: "1.5px solid rgba(139,92,246,0.45)",
+          background: "transparent",
           pointerEvents: "none",
-          zIndex:        9998,
-          opacity:       0,
-          willChange:    "transform",
-          transition:    "width 0.18s ease, height 0.18s ease, border-color 0.18s, background 0.18s, opacity 0.15s",
+          zIndex: 9998,
+          opacity: 0,
+          willChange: "transform, width, height, border-color, background, box-shadow",
+          transition: "all 0.22s cubic-bezier(0.23, 1, 0.32, 1)",
+          boxShadow: "0 0 0 3px rgba(168,85,247,0.08)",
         }}
       />
     </>
