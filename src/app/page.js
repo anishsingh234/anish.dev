@@ -8,6 +8,7 @@ import Experience from "@/components/home/Experience";
 import AboutSection from "@/components/home/AboutSection";
 import Contact from "@/components/home/Contact";
 import BlogSection from "@/components/BlogSection";
+import WhyHireMe from "@/components/home/whyhireme";
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between bg-[#05050A] text-foreground selection:bg-purple-500/30">
@@ -29,6 +30,7 @@ export default function Home() {
 
         {/* --- About Section --- */}
         <AboutSection />
+        <WhyHireMe />
 
         {/* --- Contact Section --- */}
         <Contact />
