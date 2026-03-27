@@ -1,22 +1,14 @@
-import { Fredoka, Inter, Space_Grotesk } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import clsx from "clsx";
 import Footer from "@/components/footer";
 import CustomCursor from "@/components/home/CustomCursor";
-const fredoka = Fredoka({
-  subsets: ["latin"],
-  variable: "--font-fredoka",
-  weight: ["300", "400", "500", "600", "700"],
-});
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
-
+// Configure Space Grotesk font
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-space-grotesk",
+  weight: ["400", "500", "700"],
+  variable: "--font-sans",
 });
 
 export const metadata = {
@@ -34,17 +26,13 @@ export default function RootLayout({ children }) {
       <body
         suppressHydrationWarning
         className={clsx(
-          fredoka.variable,
-          inter.variable,
           spaceGrotesk.variable,
-          "bg-background text-foreground font-fredoka",
+          "bg-background text-foreground font-sans"
         )}
       >
-   
-       
         {children}
         <Footer />
-         <CustomCursor />
+        <CustomCursor />
       </body>
     </html>
   );
