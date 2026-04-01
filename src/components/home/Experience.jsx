@@ -1,116 +1,212 @@
 "use client";
 import { motion } from "framer-motion";
-import { Calendar, MapPin } from "lucide-react";
-import { FadeUp, SectionLabel } from "./SharedComponents";
+import { ArrowUpRight } from "lucide-react";
+import { EASE } from "./SharedComponents";
+
 export const experiences = [
   {
+    type: "work",
+    role: "Full Stack Developer Intern",
     company: "Exponent Solutions",
     location: "Remote",
     period: "Nov 2025 – Present",
+    index: "01",
     bullets: [
       "Developed and deployed 3+ full-stack applications serving 3,000+ users",
       "Built a RAG-based AI chatbot using LLMs and vector embeddings",
       "Designed scalable REST APIs and optimized MongoDB queries",
-      "Improved frontend performance with reusable components"
+      "Improved frontend performance with reusable component architecture",
     ],
-    tech: "Next.js, React, Node.js, MongoDB, LLMs, RAG",
+    tech: ["Next.js", "React", "Node.js", "MongoDB", "LLMs", "RAG"],
+    link: null,
   },
   {
-    role: "B.Tech Computer Science (AI & ML)",
+    type: "education",
+    role: "B.Tech — Computer Science (AI & ML)",
     company: "Uttarakhand Technical University",
     location: "Dehradun, India",
     period: "Aug 2022 – Jun 2026",
-    bullets: [],
-    tech: "",
+    index: "02",
+    bullets: [
+      "Specialization in Artificial Intelligence & Machine Learning",
+      "350+ DSA problems solved on LeetCode",
+      "Built production AI SaaS projects alongside coursework",
+    ],
+    tech: [],
+    link: null,
   },
   {
-    role: "Class 12 (Science - PCM)",
+    type: "education",
+    role: "Class 12 — Science (PCM)",
     company: "Kendriya Vidyalaya",
     location: "Patna, India",
     period: "2021 – 2022",
+    index: "03",
     bullets: [],
-    tech: "",
-  }
+    tech: [],
+    link: null,
+  },
 ];
+
+function ExperienceRow({ exp, index }) {
+  const isWork = exp.type === "work";
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.7, ease: EASE, delay: index * 0.08 }}
+      className="group"
+    >
+      {/* Top border */}
+      <div className="h-px bg-white/[0.07] group-hover:bg-white/[0.13] transition-colors duration-500" />
+
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 py-10 lg:py-12">
+
+        {/* ── Left: all content ── */}
+        <div className="flex flex-col gap-6">
+
+          {/* Top row: index + period + type badge */}
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center gap-5">
+              <span
+                className="font-black text-white/[0.06] leading-none select-none"
+                style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)", letterSpacing: "-0.04em" }}
+              >
+                _{exp.index}.
+              </span>
+              <span
+                className={`text-[9px] font-mono tracking-widest uppercase px-3 py-1.5 rounded-full border ${
+                  isWork
+                    ? "text-purple-300/70 border-purple-400/20 bg-purple-500/[0.08]"
+                    : "text-white/30 border-white/[0.09] bg-white/[0.03]"
+                }`}
+              >
+                {isWork ? "Work" : "Education"}
+              </span>
+            </div>
+            <span className="font-mono text-[11px] text-white/25 tracking-widest">
+              {exp.period}
+            </span>
+          </div>
+
+          {/* Role + company */}
+          <div>
+            <h3
+              className="font-black text-white leading-none tracking-tight mb-3 group-hover:text-white/90 transition-colors"
+              style={{ fontSize: "clamp(1.5rem, 3.5vw, 2.6rem)", letterSpacing: "-0.03em" }}
+            >
+              {exp.role}
+            </h3>
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className={`text-[13px] font-semibold ${isWork ? "text-purple-300/75" : "text-white/50"}`}>
+                {exp.company}
+              </span>
+              {exp.location && (
+                <>
+                  <span className="text-white/15 text-xs">·</span>
+                  <span className="text-[12px] font-mono text-white/25 tracking-wide">
+                    {exp.location}
+                  </span>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Bullets */}
+          {exp.bullets.length > 0 && (
+            <ul className="space-y-2.5">
+              {exp.bullets.map((b, i) => (
+                <li key={i} className="flex items-start gap-3 text-[13px] text-white/40 leading-relaxed font-light group-hover:text-white/50 transition-colors">
+                  <span className="text-white/15 mt-[5px] shrink-0 text-[7px] font-black">◆</span>
+                  {b}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {/* Tech tags */}
+          {exp.tech.length > 0 && (
+            <div className="flex flex-wrap gap-2 pt-1">
+              {exp.tech.map((t) => (
+                <span
+                  key={t}
+                  className="text-[9px] font-mono text-white/25 tracking-widest uppercase border border-white/[0.07] rounded-full px-3 py-1 hover:border-white/15 hover:text-white/40 transition-colors"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* ── Right: arrow (only for work) ── */}
+        {isWork && (
+          <div className="hidden lg:flex items-start pt-12">
+            <div className="w-10 h-10 rounded-full border border-white/[0.08] flex items-center justify-center group-hover:border-white/25 group-hover:bg-white/[0.04] transition-all duration-300">
+              <ArrowUpRight className="w-4 h-4 text-white/20 group-hover:text-white/60 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
+            </div>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
 
 export default function Experience() {
   return (
-    <section id="experience" className="py-24 sm:py-32 scroll-mt-20 border-t border-white/[0.06] relative overflow-hidden">
-      
-      {/* Background radial gradient */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-600/[0.02] blur-[120px] rounded-full pointer-events-none" />
+    <section id="experience" className="py-24 sm:py-32 scroll-mt-20 border-t border-white/[0.06]">
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
 
-      <div className="max-w-4xl mx-auto px-6 sm:px-8 relative z-10">
-        
-        <FadeUp className="mb-14 sm:mb-16">
-          <SectionLabel>Experience</SectionLabel>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 leading-tight">
-            Where I've worked
-          </h2>
-          <p className="text-white/50 max-w-xl leading-relaxed text-[15px]">
-            Real-world production experience building and shipping software.
-          </p>
-        </FadeUp>
-
-        <div className="relative">
-          {/* Vertical Timeline Line */}
-          <div className="absolute left-[13px] sm:left-[17px] top-3 bottom-0 w-[2px] bg-gradient-to-b from-purple-500/60 via-white/10 to-transparent" />
-
-          <div className="space-y-12 sm:space-y-16">
-            {experiences.map((exp, i) => (
-              <FadeUp key={i} delay={i * 0.1}>
-                <div className="relative pl-12 sm:pl-16 group">
-                  
-                  {/* Timeline Node */}
-                  <div className="absolute left-[9px] sm:left-[13px] top-2.5 w-2.5 h-2.5 rounded-full bg-[#0a0a0f] border-[2px] border-white/20 ring-4 ring-[#0a0a0f] group-hover:border-purple-400 group-hover:bg-purple-400 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.6)] transition-all duration-300 z-10" />
-
-                  {/* Content Container */}
-                  <div className="sm:group-hover:translate-x-1.5 transition-transform duration-300 ease-out">
-                    <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 sm:gap-4 mb-2">
-                      <h3 className="text-xl sm:text-[22px] font-semibold text-white tracking-wide">
-                        {exp.role}
-                      </h3>
-                      <span className="text-sm font-medium text-gray-500 shrink-0">
-                        {exp.period}
-                      </span>
-                    </div>
-                    
-                    <div className="text-[15px] font-medium text-purple-400/90 mb-5 tracking-wide flex items-center gap-2">
-                      {exp.company}
-                      {exp.location && (
-                        <>
-                          <span className="text-white/20">•</span>
-                          <span className="text-gray-500">{exp.location}</span>
-                        </>
-                      )}
-                    </div>
-
-                    {exp.bullets.length > 0 && (
-                      <ul className="space-y-3 mb-5">
-                        {exp.bullets.map((b, j) => (
-                          <li key={j} className="flex items-start gap-3.5 text-[15px] text-gray-300/90 leading-relaxed">
-                            <span className="text-purple-400/50 mt-[7px] shrink-0 text-[8px]">■</span>
-                            {b}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-
-                    {exp.tech && (
-                      <div className="mt-3 pt-3 border-t border-white/[0.04]">
-                        <span className="text-[14px] text-gray-500">
-                          Tech: <span className="text-gray-400">{exp.tech}</span>
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                </div>
-              </FadeUp>
-            ))}
+        {/* ── Section header ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: EASE }}
+          className="flex items-end justify-between mb-16 flex-wrap gap-6"
+        >
+          <div>
+            <p className="text-[10px] font-mono text-white/20 tracking-[0.3em] uppercase mb-4">
+              ◆ &nbsp; Background
+            </p>
+            <h2
+              className="font-black text-white leading-none tracking-tight"
+              style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", letterSpacing: "-0.03em" }}
+            >
+              Where I've
+              <br />
+              <span
+                className="text-transparent"
+                style={{ WebkitTextStroke: "1.5px rgba(255,255,255,0.2)" }}
+              >
+                Worked & Studied
+              </span>
+            </h2>
           </div>
 
+          {/* Availability badge */}
+          <div className="flex items-center gap-3 px-4 py-2.5 border border-white/[0.09] rounded-full bg-white/[0.02]">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+            </span>
+            <span className="text-[11px] font-mono text-emerald-400/75 tracking-widest uppercase">
+              Open to full-time roles
+            </span>
+          </div>
+        </motion.div>
+
+        {/* ── Experience rows ── */}
+        <div>
+          {experiences.map((exp, i) => (
+            <ExperienceRow key={i} exp={exp} index={i} />
+          ))}
+          {/* Bottom border */}
+          <div className="h-px bg-white/[0.07]" />
         </div>
+
       </div>
     </section>
   );
