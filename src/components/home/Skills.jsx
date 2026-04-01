@@ -1,353 +1,305 @@
 "use client";
-import { useState, useRef } from "react";
-import { AnimatePresence, motion, useInView } from "framer-motion";
-import {
-  Brain, Layout, Server, Database, Code2, Wrench,
-} from "lucide-react";
-import { FadeUp, SectionLabel } from "./SharedComponents";
+import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import { EASE } from "./SharedComponents";
 
-const categories = [
+const GROUPS = [
   {
-    id: "ai",
-    title: "AI / ML",
-    fullTitle: "AI & Machine Learning",
-    icon: Brain,
-    description: "The core of what I build — agents, pipelines, and intelligent systems at production scale.",
-    count: "12",
-    featured: true,
-    skills: [
-      { name: "LLMs",                tag: "Core",      level: 95 },
-      { name: "Prompt Engineering",  tag: "Core",      level: 92 },
-      { name: "RAG Pipelines",       tag: "Core",      level: 90 },
-      { name: "LangChain",           tag: "Framework", level: 88 },
-      { name: "Tool Calling",        tag: "Core",      level: 88 },
-      { name: "Vercel AI SDK",       tag: "SDK",       level: 85 },
-      { name: "Vector Databases",    tag: "Infra",     level: 82 },
-      { name: "Pinecone",            tag: "Infra",     level: 80 },
-      { name: "CrewAI",              tag: "Framework", level: 78 },
-      { name: "Multi-Agent Systems", tag: "Emerging",  level: 75 },
-      { name: "Hugging Face",        tag: "Platform",  level: 72 },
-      { name: "Ollama",              tag: "Local",     level: 70 },
+    cmd: "skills --category ai",
+    label: "AI / ML",
+    comment: "## Primary Specialization ──────────────────────────",
+    rows: [
+      { skills: ["LLMs", "RAG Pipelines", "Prompt Engineering", "Tool Calling"], hi: true },
+      { skills: ["LangChain", "CrewAI", "Multi-Agent Systems", "Vercel AI SDK"], hi: true },
+      { skills: ["Vector Databases", "Pinecone", "Hugging Face", "Ollama"], hi: false },
     ],
+    accent: "purple",
   },
   {
-    id: "frontend",
-    title: "Frontend",
-    fullTitle: "Frontend",
-    icon: Layout,
-    description: "Building responsive, high-performance interfaces that feel great to use.",
-    count: "06",
-    skills: [
-      { name: "React.js",     tag: "Core",      level: 95 },
-      { name: "Next.js",      tag: "Framework", level: 93 },
-      { name: "Tailwind CSS", tag: "Styling",   level: 90 },
-      { name: "React Native", tag: "Mobile",    level: 72 },
-      { name: "Expo",         tag: "Mobile",    level: 68 },
-      { name: "Three.js",     tag: "3D",        level: 55 },
+    cmd: "skills --category frontend",
+    label: "Frontend",
+    comment: "## Frontend ────────────────────────────────────────",
+    rows: [
+      { skills: ["React.js", "Next.js", "Tailwind CSS", "TypeScript"], hi: true },
+      { skills: ["Framer Motion", "React Native", "Expo", "Three.js"], hi: false },
     ],
+    accent: "blue",
   },
   {
-    id: "backend",
-    title: "Backend",
-    fullTitle: "Backend",
-    icon: Server,
-    description: "Designing scalable APIs and server-side systems that integrate seamlessly with AI.",
-    count: "05",
-    skills: [
-      { name: "REST APIs",  tag: "Architecture", level: 95 },
-      { name: "Node.js",    tag: "Runtime",      level: 92 },
-      { name: "Express.js", tag: "Framework",    level: 88 },
-      { name: "FastAPI",    tag: "Framework",    level: 78 },
-      { name: "GraphQL",    tag: "Query",        level: 65 },
+    cmd: "skills --category backend",
+    label: "Backend",
+    comment: "## Backend ─────────────────────────────────────────",
+    rows: [
+      { skills: ["Node.js", "Express.js", "FastAPI", "REST APIs"], hi: true },
+      { skills: ["GraphQL", "WebSockets"], hi: false },
     ],
+    accent: "green",
   },
   {
-    id: "database",
-    title: "Database",
-    fullTitle: "Database",
-    icon: Database,
-    description: "Efficient data modelling, query optimization, and scalable storage design.",
-    count: "03",
-    skills: [
-      { name: "MongoDB",    tag: "NoSQL", level: 90 },
-      { name: "Prisma ORM", tag: "ORM",   level: 82 },
-      { name: "MySQL",      tag: "SQL",   level: 75 },
+    cmd: "skills --category database",
+    label: "Database",
+    comment: "## Database ────────────────────────────────────────",
+    rows: [
+      { skills: ["MongoDB", "Prisma ORM", "MySQL", "Supabase", "Redis"], hi: true },
     ],
+    accent: "green",
   },
   {
-    id: "languages",
-    title: "Languages",
-    fullTitle: "Languages",
-    icon: Code2,
-    description: "Strong fundamentals in algorithms, data structures, and system design.",
-    count: "08",
-    skills: [
-      { name: "JavaScript", tag: "Primary", level: 95 },
-      { name: "HTML",       tag: "Markup",  level: 95 },
-      { name: "TypeScript", tag: "Primary", level: 93 },
-      { name: "CSS",        tag: "Styling", level: 90 },
-      { name: "Python",     tag: "Primary", level: 88 },
-      { name: "C++",        tag: "DSA",     level: 80 },
-      { name: "SQL",        tag: "Query",   level: 78 },
-      { name: "C",          tag: "Systems", level: 72 },
+    cmd: "skills --category languages",
+    label: "Languages",
+    comment: "## Languages ───────────────────────────────────────",
+    rows: [
+      { skills: ["JavaScript", "TypeScript", "Python"], hi: true },
+      { skills: ["C++", "SQL", "HTML", "CSS", "C"], hi: false },
     ],
+    accent: "purple",
   },
   {
-    id: "tools",
-    title: "Tools",
-    fullTitle: "Tools & Platforms",
-    icon: Wrench,
-    description: "Day-to-day development, deployment, and workflow tooling.",
-    count: "06",
-    skills: [
-      { name: "Git",        tag: "VCS",      level: 95 },
-      { name: "VS Code",    tag: "Editor",   level: 95 },
-      { name: "GitHub",     tag: "Platform", level: 92 },
-      { name: "Vercel",     tag: "Deploy",   level: 88 },
-      { name: "Postman",    tag: "API",      level: 85 },
-      { name: "Clerk Auth", tag: "Auth",     level: 82 },
+    cmd: "skills --category tools",
+    label: "Tools",
+    comment: "## Tools & Platforms ───────────────────────────────",
+    rows: [
+      { skills: ["Git", "GitHub", "Vercel", "VS Code"], hi: true },
+      { skills: ["Postman", "Clerk Auth", "Figma"], hi: false },
     ],
+    accent: "blue",
   },
 ];
 
-const panelVariants = {
-  initial: { opacity: 0, y: 8 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.2, ease: "easeOut" } },
-  exit:    { opacity: 0, y: -4, transition: { duration: 0.12 } },
+const ACCENT = {
+  purple: { hi: "text-purple-300/90", lo: "text-purple-200/45" },
+  blue:   { hi: "text-blue-300/90",   lo: "text-blue-200/45"   },
+  green:  { hi: "text-emerald-300/85",lo: "text-emerald-200/45"},
 };
 
-// Individual animated skill row
-function SkillRow({ skill, index, isVisible }) {
-  return (
-    <div className="group flex items-center justify-between py-[11px] lg:py-[13px] border-b border-white/[0.055] first:border-t first:border-white/[0.055]">
-      {/* Left: dot + name */}
-      <div className="flex items-center gap-2.5 flex-1 min-w-0">
-        <span className="w-1.5 h-1.5 rounded-full bg-white/[0.12] group-hover:bg-purple-500/70 transition-colors duration-200 shrink-0" />
-        <span className="text-[13px] lg:text-[15px] font-medium text-white/60 group-hover:text-white transition-colors duration-200 tracking-[-0.01em] font-inter truncate">
-          {skill.name}
-        </span>
-      </div>
-
-      {/* Right: tag + animated bar + percentage */}
-      <div className="flex items-center gap-2.5 lg:gap-3.5 flex-shrink-0">
-        <span className="text-[10px] font-mono text-white/20 uppercase tracking-[.06em] hidden sm:inline">
-          {skill.tag}
-        </span>
-
-        {/* Animated benchmark bar */}
-        <div className="relative w-14 lg:w-28 h-[3px] rounded-full bg-white/[0.06] overflow-hidden">
-          <motion.div
-            className="absolute left-0 top-0 h-full rounded-full"
-            style={{
-              background: "linear-gradient(90deg, rgba(168,85,247,0.4), rgba(139,92,246,0.8))",
-            }}
-            initial={{ width: 0 }}
-            animate={{ width: isVisible ? `${skill.level}%` : 0 }}
-            transition={{
-              duration: 0.9,
-              delay: index * 0.05,
-              ease: [0.16, 1, 0.3, 1],
-            }}
-          />
-          {/* Shimmer on the bar tip */}
-          {isVisible && (
-            <motion.div
-              className="absolute top-0 h-full w-4 rounded-full"
-              style={{
-                background: "linear-gradient(90deg, transparent, rgba(216,180,254,0.6), transparent)",
-              }}
-              initial={{ left: "-10%" }}
-              animate={{ left: `${skill.level - 8}%` }}
-              transition={{
-                duration: 0.9,
-                delay: index * 0.05,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-            />
-          )}
-        </div>
-
-        {/* Animated percentage counter */}
-        <motion.span
-          className="text-[10px] font-mono text-white/30 w-[28px] text-right tabular-nums"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isVisible ? 1 : 0 }}
-          transition={{ delay: index * 0.05 + 0.3, duration: 0.3 }}
-        >
-          {isVisible ? `${skill.level}%` : "0%"}
-        </motion.span>
-      </div>
-    </div>
-  );
+function useTypewriter(text, speed = 22, delay = 0) {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+  useEffect(() => {
+    setDisplayed("");
+    setDone(false);
+    if (!text) return;
+    let i = 0;
+    const t = setTimeout(() => {
+      const iv = setInterval(() => {
+        i++;
+        setDisplayed(text.slice(0, i));
+        if (i >= text.length) { clearInterval(iv); setDone(true); }
+      }, speed);
+      return () => clearInterval(iv);
+    }, delay);
+    return () => clearTimeout(t);
+  }, [text, speed, delay]);
+  return { displayed, done };
 }
 
-// Skills panel — triggers animation when scrolled into view
-function SkillsPanel({ current }) {
-  const ref = useRef(null);
-  // once: true so it only animates once per tab switch
-  const isInView = useInView(ref, { once: false, amount: 0.2 });
+function GroupBlock({ group, show }) {
+  const { displayed: typedCmd, done: cmdDone } = useTypewriter(
+    show ? `$ ${group.cmd}` : "",
+    22,
+    80
+  );
+  const colors = ACCENT[group.accent];
 
   return (
     <motion.div
-      key={current.id}
-      variants={panelVariants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      ref={ref}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: show ? 1 : 0 }}
+      transition={{ duration: 0.25 }}
+      className="mb-1"
     >
-      {/* Panel header */}
-      <div className="mb-5 lg:mb-6">
-        <h3 className="text-[20px] lg:text-[22px] font-space font-bold text-white tracking-tight mb-1.5">
-          {current.fullTitle}
-        </h3>
-        <p className="text-[13px] text-white/35 leading-relaxed max-w-sm font-inter">
-          {current.description}
-        </p>
+      {/* Command line */}
+      <div className="flex items-center gap-2 mb-1 flex-wrap">
+        <span className="font-mono text-[12px] text-purple-400/70">anish</span>
+        <span className="font-mono text-[12px] text-white/20">@portfolio</span>
+        <span className="font-mono text-[12px] text-white/55">{typedCmd}</span>
+        {!cmdDone && show && (
+          <span className="inline-block w-[7px] h-[13px] bg-purple-400/60 animate-pulse" />
+        )}
       </div>
 
-      {current.featured && (
-        <p className="flex items-center gap-2 text-[11px] text-purple-400/55 font-mono mb-5 uppercase tracking-wider">
-          <span className="w-4 h-px bg-purple-500/40 inline-block" />
-          Primary specialization
-        </p>
+      {/* Output */}
+      {cmdDone && (
+        <motion.div
+          initial={{ opacity: 0, y: 3 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25 }}
+          className="pl-4 border-l border-white/[0.05] ml-1 mb-4"
+        >
+          <p className="font-mono text-[10px] text-white/14 mb-2 leading-relaxed tracking-wide">
+            {group.comment}
+          </p>
+          {group.rows.map((row, ri) => (
+            <div key={ri} className="flex flex-wrap gap-x-5 gap-y-1.5 mb-2">
+              {row.skills.map((skill, si) => (
+                <motion.span
+                  key={skill}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: ri * 0.07 + si * 0.035, duration: 0.25 }}
+                  className={`font-mono text-[12px] sm:text-[13px] font-medium cursor-default transition-all duration-150 hover:brightness-125 select-none ${
+                    row.hi ? colors.hi : colors.lo
+                  }`}
+                >
+                  {skill}
+                </motion.span>
+              ))}
+            </div>
+          ))}
+        </motion.div>
       )}
-
-      {/* Skills list */}
-      <div className="flex flex-col">
-        {current.skills.map((skill, i) => (
-          <SkillRow
-            key={skill.name}
-            skill={skill}
-            index={i}
-            isVisible={isInView}
-          />
-        ))}
-      </div>
     </motion.div>
   );
 }
 
 export default function Skills() {
-  const [active, setActive] = useState("ai");
-  const current = categories.find((c) => c.id === active);
+  const [visibleCount, setVisibleCount] = useState(0);
+  const [started, setStarted] = useState(false);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting && !started) setStarted(true); },
+      { threshold: 0.15 }
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, [started]);
+
+  useEffect(() => {
+    if (!started || visibleCount >= GROUPS.length) return;
+    const timer = setTimeout(
+      () => setVisibleCount((v) => v + 1),
+      visibleCount === 0 ? 500 : 950
+    );
+    return () => clearTimeout(timer);
+  }, [started, visibleCount]);
 
   return (
     <section
       id="skills"
-      className="relative py-24 sm:py-32 scroll-mt-20 border-t border-white/[0.06] overflow-hidden"
+      ref={sectionRef}
+      className="py-24 sm:py-32 scroll-mt-20 border-t border-white/[0.06]"
     >
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-purple-500/15 to-transparent" />
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* ── Header ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: EASE }}
+          className="flex items-end justify-between mb-14 flex-wrap gap-6"
+        >
+          <div>
+            <p className="text-[10px] font-mono text-white/20 tracking-[0.3em] uppercase mb-4">
+              ◆ &nbsp; Tech Stack
+            </p>
+            <h2
+              className="font-black text-white leading-none tracking-tight"
+              style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", letterSpacing: "-0.03em" }}
+            >
+              Tools I
+              <br />
+              <span className="text-transparent" style={{ WebkitTextStroke: "1.5px rgba(255,255,255,0.2)" }}>
+                Architect With
+              </span>
+            </h2>
+          </div>
+          <div className="flex items-center gap-8">
+            {[
+              { val: "40+",  label: "Technologies" },
+              { val: "350+", label: "DSA Solved"   },
+              { val: "5+",   label: "AI Systems"   },
+            ].map(({ val, label }) => (
+              <div key={label} className="flex flex-col items-end">
+                <span className="text-2xl font-black text-white/75 leading-none tracking-tight">{val}</span>
+                <span className="text-[9px] font-mono text-white/20 tracking-widest uppercase mt-1">{label}</span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
 
-        <FadeUp className="mb-10 sm:mb-14">
-          <SectionLabel>My Tech Stack</SectionLabel>
-          <h2 className="text-3xl sm:text-4xl font-space font-bold text-white mb-4 leading-tight tracking-tight">
-            Tools I architect with
-          </h2>
-          <p className="text-white/40 max-w-md leading-relaxed text-[14px] font-inter">
-            Technologies I rely on to ship production AI systems, full-stack
-            products, and everything in between.
-          </p>
-        </FadeUp>
-
-        {/* ── MOBILE: horizontal chip strip ── */}
-        <div className="lg:hidden flex gap-2 overflow-x-auto pb-1 mb-6 scrollbar-none -mx-4 px-4">
-          {categories.map((cat) => {
-            const Icon = cat.icon;
-            const isActive = active === cat.id;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setActive(cat.id)}
-                className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-[7px] rounded-full border text-[12px] font-medium font-inter transition-all duration-200 cursor-pointer
-                  ${isActive
-                    ? "bg-purple-500/15 border-purple-500/40 text-purple-300"
-                    : "bg-white/[0.03] border-white/[0.08] text-white/40"
-                  }`}
-              >
-                <Icon className="w-3.5 h-3.5 flex-shrink-0" />
-                {cat.title}
-                <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded
-                  ${isActive
-                    ? "bg-purple-500/20 text-purple-400/70"
-                    : "bg-white/[0.05] text-white/20"
-                  }`}>
-                  {cat.count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* ── DESKTOP: sidebar + panel grid ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-0">
-
-          {/* Desktop left nav */}
-          <nav className="relative hidden lg:flex flex-col gap-0.5">
-            <div className="absolute right-0 top-0 bottom-0 w-px bg-white/[0.07]" />
-            {categories.map((cat) => {
-              const Icon = cat.icon;
-              const isActive = active === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setActive(cat.id)}
-                  className={`group relative flex items-center gap-2.5 px-3 py-2.5 pr-5 rounded-none text-left transition-colors duration-200 cursor-pointer w-full
-                    ${isActive ? "text-white" : "text-white/35 hover:text-white/60"}`}
-                >
-                  {isActive && (
-                    <motion.span
-                      layoutId="activeIndicator"
-                      className="absolute right-[-1px] top-1 bottom-1 w-[2px] rounded-full bg-purple-500/90"
-                    />
-                  )}
-                  <span className={`flex items-center justify-center w-[30px] h-[30px] rounded-lg border transition-colors duration-200 shrink-0
-                    ${isActive
-                      ? "bg-purple-500/12 border-purple-500/25"
-                      : "bg-white/[0.04] border-white/[0.07]"
-                    }`}>
-                    <Icon className={`w-3.5 h-3.5 ${isActive ? "text-purple-300/90" : "text-white/45 group-hover:text-white/65"}`} />
-                  </span>
-                  <span className="text-[13px] font-medium font-inter">{cat.title}</span>
-                  <span className={`ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded
-                    ${isActive
-                      ? "text-purple-400/60 bg-purple-500/10"
-                      : "text-white/20 bg-white/[0.04]"
-                    }`}>
-                    {cat.count}
-                  </span>
-                </button>
-              );
-            })}
-          </nav>
-
-          {/* Right panel */}
-          <div className="lg:pl-10">
-            <AnimatePresence mode="wait">
-              <SkillsPanel key={active} current={current} />
-            </AnimatePresence>
-
-            {/* Stats */}
-            <div className="flex gap-0 mt-8 pt-5 border-t border-white/[0.06]">
-              {[
-                { n: "40+", l: "Technologies" },
-                { n: "12+", l: "Projects shipped" },
-                { n: "4+",  l: "AI systems built" },
-              ].map((s, i) => (
-                <div
-                  key={s.l}
-                  className={`flex flex-col gap-1 flex-1 ${i !== 0 ? "pl-4 border-l border-white/[0.06]" : ""} ${i !== 2 ? "pr-4" : ""}`}
-                >
-                  <span className="text-[20px] lg:text-[22px] font-bold text-white font-mono tracking-[-0.03em]">{s.n}</span>
-                  <span className="text-[10px] lg:text-[11px] text-white/30 tracking-[.04em] uppercase">{s.l}</span>
-                </div>
-              ))}
+        {/* ── Terminal ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.15, ease: EASE }}
+          className="rounded-2xl border border-white/[0.08] overflow-hidden"
+          style={{ background: "#090B13", boxShadow: "0 40px 80px rgba(0,0,0,0.55)" }}
+        >
+          {/* Title bar */}
+          <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.06]" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-red-500/55" />
+              <div className="w-3 h-3 rounded-full bg-yellow-500/55" />
+              <div className="w-3 h-3 rounded-full bg-green-500/55" />
             </div>
+            <span className="font-mono text-[11px] text-white/18 tracking-widest">
+              anish@portfolio — skills
+            </span>
+            <div className="w-16" />
           </div>
 
-        </div>
+          {/* Body */}
+          <div className="px-6 py-7 sm:px-8">
+            {/* Welcome */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: started ? 1 : 0 }}
+              transition={{ duration: 0.4 }}
+              className="mb-5"
+            >
+              <p className="font-mono text-[11px] text-white/18 leading-relaxed">
+                Welcome. Type{" "}
+                <span className="text-purple-400/50">skills --help</span>{" "}
+                for all commands.
+              </p>
+              <p className="font-mono text-[10px] text-white/[0.07] mt-1 tracking-wider">
+                ────────────────────────────────────────────────────
+              </p>
+            </motion.div>
+
+            {/* Initial list command */}
+            {started && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-5">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-[12px] text-purple-400/70">anish</span>
+                  <span className="font-mono text-[12px] text-white/20">@portfolio</span>
+                  <span className="font-mono text-[12px] text-white/55">$ skills --list --all</span>
+                </div>
+                <p className="font-mono text-[10px] text-white/18 pl-4 border-l border-white/[0.05] ml-1 mt-1 mb-4">
+                  Listing all skill categories...
+                </p>
+              </motion.div>
+            )}
+
+            {/* Groups */}
+            {GROUPS.map((group, i) => (
+              <GroupBlock
+                key={group.cmd}
+                group={group}
+                show={started && visibleCount > i}
+              />
+            ))}
+
+            {/* Final cursor */}
+            {visibleCount >= GROUPS.length && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="flex items-center gap-2 mt-2 pt-3 border-t border-white/[0.05]"
+              >
+                <span className="font-mono text-[12px] text-purple-400/70">anish</span>
+                <span className="font-mono text-[12px] text-white/20">@portfolio</span>
+                <span className="inline-block w-[7px] h-[13px] bg-purple-400/55 animate-pulse ml-0.5" />
+              </motion.div>
+            )}
+          </div>
+        </motion.div>
+
       </div>
     </section>
   );
