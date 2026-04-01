@@ -1,328 +1,310 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import {
-  Brain,
-  Terminal,
-  Server,
-  ArrowRight,
-  Github,
-  Mail,
-} from "lucide-react";
-import { EASE, StaggeredText } from "./SharedComponents";
+import { Github, Mail, ArrowUpRight, MapPin } from "lucide-react";
+import { EASE } from "./SharedComponents";
 
-const heroContainer = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.15 } },
-};
+// ── Marquee data ──────────────────────────────────────────────
+const MARQUEE_ITEMS = [
+  "NEXT.JS", "REACT", "NODE.JS", "PYTHON", "FASTAPI",
+  "LANGCHAIN", "CREWAI", "RAG", "PINECONE", "TYPESCRIPT",
+  "MONGODB", "SUPABASE", "FRAMER MOTION", "TAILWIND CSS",
+];
 
-const heroItem = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: EASE } },
-};
+function Marquee() {
+  const items = [...MARQUEE_ITEMS, ...MARQUEE_ITEMS];
+  return (
+    <div className="relative w-full overflow-hidden py-3 border-y border-white/[0.06]">
+      <motion.div
+        className="flex gap-8 w-max"
+        animate={{ x: ["0%", "-50%"] }}
+        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+      >
+        {items.map((item, i) => (
+          <span key={i} className="flex items-center gap-8 whitespace-nowrap">
+            <span className="text-[11px] font-bold tracking-[0.2em] text-white/25">
+              {item}
+            </span>
+            <span className="text-white/10 text-[8px]">◆</span>
+          </span>
+        ))}
+      </motion.div>
+    </div>
+  );
+}
 
-function CursorGlow() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isMobile, setIsMobile] = useState(true);
-
+// ── Local time ────────────────────────────────────────────────
+function LocalTime() {
+  const [time, setTime] = useState("");
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    handleResize();
+    const fmt = () =>
+      setTime(
+        new Date().toLocaleTimeString("en-IN", {
+          timeZone: "Asia/Kolkata",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        })
+      );
+    fmt();
+    const t = setInterval(fmt, 1000);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <span className="font-mono text-[11px] text-white/30 tracking-widest tabular-nums">
+      {time} IST
+    </span>
+  );
+}
 
-    const handleMouseMove = (e) => {
-      setMousePosition({ x: e.pageX, y: e.pageY });
-    };
-
-    if (window.innerWidth >= 768) {
-      window.addEventListener("mousemove", handleMouseMove);
-    }
-
-    window.addEventListener("resize", handleResize);
-
+// ── Cursor glow (unchanged logic, subtle) ─────────────────────
+function CursorGlow() {
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(true);
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 768);
+    onResize();
+    window.addEventListener("resize", onResize);
+    const onMove = (e) => setPos({ x: e.pageX, y: e.pageY });
+    if (window.innerWidth >= 768) window.addEventListener("mousemove", onMove);
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("mousemove", onMove);
     };
   }, []);
-
   if (isMobile) return null;
-
   return (
     <motion.div
-      className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none z-0"
-      animate={{
-        x: mousePosition.x - 250,
-        y: mousePosition.y - 250,
+      className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full pointer-events-none z-0"
+      style={{
+        background:
+          "radial-gradient(circle, rgba(139,92,246,0.07) 0%, transparent 70%)",
       }}
-      transition={{ type: "tween", ease: "backOut", duration: 0.5 }}
+      animate={{ x: pos.x - 300, y: pos.y - 300 }}
+      transition={{ type: "tween", ease: "backOut", duration: 0.6 }}
     />
   );
 }
 
+// ── Main Hero ─────────────────────────────────────────────────
 export default function Hero() {
+  const containerVariants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
+  };
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
+  };
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0B0F1A] pt-20">
+    <section className="relative min-h-screen flex flex-col overflow-hidden bg-[#080A10]">
       <CursorGlow />
 
-      {/* Static glowing orbs */}
-      <div className="absolute top-[20%] right-[10%] w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[20%] left-[10%] w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
+      {/* Subtle ambient orbs */}
+      <div className="absolute top-[-10%] right-[5%] w-[500px] h-[500px] rounded-full pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 65%)" }} />
+      <div className="absolute bottom-[10%] left-[-5%] w-[400px] h-[400px] rounded-full pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(139,92,246,0.05) 0%, transparent 65%)" }} />
 
-      {/* Subtle Noise Texture */}
-      <div
-        className="hidden md:block absolute inset-0 opacity-[0.015] pointer-events-none mix-blend-overlay"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-        }}
-      />
+      {/* ── Top bar ── */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: EASE }}
+        className="relative z-10 flex items-center justify-between px-6 sm:px-10 py-5 border-b border-white/[0.06]"
+      >
+        <div className="flex items-center gap-2 text-[11px] text-white/30 font-mono tracking-widest uppercase">
+          <MapPin className="w-3 h-3" />
+          Dehradun, India
+        </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center flex-1 py-12">
-        {/* Left Side: Text and CTAs */}
-        <motion.div
-          variants={heroContainer}
-          initial="hidden"
-          animate="visible"
-          className="text-left"
-        >
-          {/* Availability Badge */}
-          <motion.div
-            variants={heroItem}
-            className="group relative inline-flex items-center gap-2 px-3 py-1.5 mb-6 bg-white/[0.03] border border-white/10 rounded-full cursor-default hover:bg-white/[0.05] transition-colors"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+        <div className="flex items-center gap-6">
+          <LocalTime />
+          {/* Availability pill */}
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-white/[0.04] border border-white/[0.08] rounded-full">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
             </span>
-            <span className="text-xs font-semibold text-foreground/80 tracking-wide">
+            <span className="text-[10px] font-semibold text-emerald-400/80 tracking-widest uppercase">
               Open to Work
             </span>
-            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-[#1A1F2E] text-white text-[10px] font-medium rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap border border-white/10 shadow-xl z-50">
-              Actively looking for opportunities
-            </div>
-          </motion.div>
+          </div>
+        </div>
+      </motion.div>
 
-          {/* Main Heading */}
+      {/* ── Giant name block ── */}
+      <div className="relative z-10 flex-1 flex flex-col justify-center px-6 sm:px-10 pt-10 pb-0">
+
+        {/* Index tag */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+          className="text-[10px] font-mono text-white/20 tracking-[0.3em] uppercase mb-6"
+        >
+          ◆ &nbsp; Portfolio · 2026
+        </motion.p>
+
+        {/* Name — editorial oversized */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="overflow-hidden"
+        >
           <motion.h1
-            variants={heroItem}
-            className="text-4xl sm:text-5xl lg:text-[60px] tracking-tight font-extrabold mb-6 text-foreground leading-[1.1]"
+            variants={item}
+            className="font-black leading-[0.88] tracking-tight text-white select-none"
+            style={{
+              fontSize: "clamp(4rem, 13vw, 11rem)",
+              letterSpacing: "-0.03em",
+            }}
           >
-            Full-Stack Developer &amp;{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">
-              AI Engineer
-            </span>
-            <br />
-            I ship intelligent SaaS products
+            ANISH
           </motion.h1>
+          <motion.div variants={item} className="flex items-end gap-6 flex-wrap">
+            <h1
+              className="font-black leading-[0.88] tracking-tight text-transparent select-none"
+              style={{
+                fontSize: "clamp(4rem, 13vw, 11rem)",
+                letterSpacing: "-0.03em",
+                WebkitTextStroke: "1.5px rgba(255,255,255,0.25)",
+              }}
+            >
+              SINGH
+            </h1>
+            {/* Role tag — sits inline with SINGH at bottom */}
+            <motion.div
+              variants={item}
+              className="mb-3 sm:mb-5 flex flex-col gap-1"
+            >
+              <span className="text-[11px] font-mono text-white/30 tracking-[0.25em] uppercase">
+                Full Stack Developer
+              </span>
+              <span className="text-[11px] font-mono text-purple-400/60 tracking-[0.25em] uppercase">
+                × AI Engineer
+              </span>
+            </motion.div>
+          </motion.div>
+        </motion.div>
 
-          {/* Single powerful paragraph */}
-          <motion.p
-            variants={heroItem}
-            className="text-lg text-foreground/60 mb-10 max-w-xl leading-relaxed"
-          >
-            I build production-grade web applications with{" "}
-            <span className="font-semibold text-white">Next.js, React, Node.js</span>{" "}
-            and modern databases — then supercharge them with{" "}
-            <span className="font-semibold text-white">AI systems</span> (LLMs, RAG, agents, 
-            multi-agent workflows). From beautiful UX to scalable backends and intelligent features, 
-            I deliver complete AI-powered SaaS products that users actually love.
-          </motion.p>
+        {/* ── Divider line ── */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ delay: 0.55, duration: 0.8, ease: EASE }}
+          className="origin-left h-px bg-white/[0.08] mt-8 mb-8"
+        />
 
-          {/* Trust Indicators */}
-          <motion.div
-            variants={heroItem}
-            className="flex flex-wrap items-center gap-3 mb-10"
-          >
-            <div className="flex items-center gap-2 px-3 py-2 bg-white/[0.02] border border-white/[0.08] rounded-xl backdrop-blur-sm shadow-sm hover:shadow-[0_0_15px_rgba(124,58,237,0.15)] transition-shadow">
-              <Brain className="w-4 h-4 text-purple-400" />
-              <span className="text-xs font-medium text-foreground/75">
-                5+ AI SaaS Built &amp; Shipped
-              </span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-2 bg-white/[0.02] border border-white/[0.08] rounded-xl backdrop-blur-sm shadow-sm hover:shadow-[0_0_15px_rgba(59,130,246,0.15)] transition-shadow">
-              <Terminal className="w-4 h-4 text-blue-400" />
-              <span className="text-xs font-medium text-foreground/75">
-                350+ DSA Problems
-              </span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-2 bg-white/[0.02] border border-white/[0.08] rounded-xl backdrop-blur-sm shadow-sm hover:shadow-[0_0_15px_rgba(6,182,212,0.15)] transition-shadow">
-              <Server className="w-4 h-4 text-cyan-400" />
-              <span className="text-xs font-medium text-foreground/75">
-                Full-Stack + AI
-              </span>
+        {/* ── Bottom row: description + CTAs ── */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-10 pb-10"
+        >
+          {/* Left — description */}
+          <motion.div variants={item} className="space-y-6">
+            <p className="text-base text-white/40 leading-relaxed max-w-md font-light">
+              I build production-grade web apps with{" "}
+              <span className="text-white/70 font-medium">Next.js, Node.js, React</span>{" "}
+              — supercharged with{" "}
+              <span className="text-purple-400/80 font-medium">AI systems</span>:
+              LLMs, RAG pipelines, and multi-agent workflows.
+              Currently interning at{" "}
+              <span className="text-white/70 font-medium">Exponent Solutions</span>.
+            </p>
+
+            {/* Stat row */}
+            <div className="flex items-center gap-8">
+              {[
+                { val: "5+", label: "AI SaaS Shipped" },
+                { val: "350+", label: "DSA Problems" },
+                { val: "B.Tech", label: "CS · AI/ML '26" },
+              ].map(({ val, label }) => (
+                <div key={label} className="flex flex-col">
+                  <span className="text-xl font-bold text-white/80 leading-none">
+                    {val}
+                  </span>
+                  <span className="text-[10px] text-white/25 tracking-widest uppercase mt-1">
+                    {label}
+                  </span>
+                </div>
+              ))}
             </div>
           </motion.div>
 
-          {/* CTA Buttons */}
+          {/* Right — CTAs */}
           <motion.div
-            variants={heroItem}
-            className="flex flex-wrap items-center gap-4"
+            variants={item}
+            className="flex flex-wrap items-start gap-3 lg:justify-end lg:items-center"
           >
             <motion.a
               href="#projects"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="group flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold rounded-xl hover:shadow-[0_0_30px_rgba(139,92,246,0.5)] transition-all duration-300"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="group flex items-center gap-2 px-6 py-3 bg-white text-[#080A10] text-sm font-bold rounded-full transition-all duration-200 hover:bg-white/90"
             >
               View Projects
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </motion.a>
+
             <motion.a
               href="https://github.com/anishsingh234"
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{
-                scale: 1.05,
-                backgroundColor: "rgba(255,255,255,0.05)",
-              }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 px-7 py-3.5 border border-white/20 text-foreground/90 hover:text-white font-bold rounded-xl transition-all duration-300 shadow-[0_4px_14px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_20px_rgba(255,255,255,0.15)] hover:-translate-y-0.5"
+              whileHover={{ scale: 1.03, backgroundColor: "rgba(255,255,255,0.05)" }}
+              whileTap={{ scale: 0.97 }}
+              className="flex items-center gap-2 px-6 py-3 border border-white/[0.12] text-white/60 hover:text-white text-sm font-bold rounded-full transition-all duration-200"
             >
-              <Github className="w-5 h-5" />
+              <Github className="w-4 h-4" />
               GitHub
             </motion.a>
+
             <motion.a
               href="#contact"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 px-7 py-3.5 bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 hover:border-white/10 text-foreground/90 hover:text-white font-bold rounded-xl backdrop-blur-md transition-all duration-300 shadow-[0_4px_14px_rgba(0,0,0,0.1)] hover:-translate-y-0.5"
+              whileHover={{ scale: 1.03, backgroundColor: "rgba(255,255,255,0.05)" }}
+              whileTap={{ scale: 0.97 }}
+              className="flex items-center gap-2 px-6 py-3 border border-white/[0.12] text-white/60 hover:text-white text-sm font-bold rounded-full transition-all duration-200"
             >
-              <Mail className="w-5 h-5" />
+              <Mail className="w-4 h-4" />
               Contact
             </motion.a>
           </motion.div>
         </motion.div>
-
-        {/* Right Side: Floating Visuals (unchanged — they already scream AI) */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.3, ease: EASE }}
-          className="hidden lg:flex relative h-[500px] w-full items-center justify-center pointer-events-none"
-        >
-          {/* Main IDE / Code Mockup */}
-          <motion.div
-            animate={{ y: [-10, 10, -10] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute z-10 w-[380px] bg-[#10141f] border border-white/10 rounded-2xl shadow-2xl overflow-hidden backdrop-blur-xl"
-            style={{ top: "15%", left: "5%" }}
-          >
-            <div className="flex items-center gap-1.5 px-4 py-3 border-b border-white/10 bg-white/5">
-              <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
-              <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
-              <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
-              <span className="ml-2 text-[10px] text-foreground/40 font-mono">
-                llm_pipeline.ts
-              </span>
-            </div>
-            <div className="p-5 font-mono text-[11px] leading-relaxed text-blue-200">
-              <span className="text-purple-400">import</span> {"{ Document }"}{" "}
-              <span className="text-purple-400">from</span>{" "}
-              <span className="text-green-300">"langchain/document"</span>;
-              <br />
-              <br />
-              <span className="text-purple-400">const</span> chain ={" "}
-              <span className="text-purple-400">await</span>{" "}
-              <span className="text-yellow-200">RetrievalQAChain</span>.fromLLM(
-              <br />
-              &nbsp;&nbsp;model,
-              <br />
-              &nbsp;&nbsp;vectorStore.asRetriever()
-              <br />
-              );
-              <br />
-              <br />
-              <span className="text-foreground/40">// Process query...</span>
-              <br />
-              <span className="text-purple-400">const</span> res ={" "}
-              <span className="text-purple-400">await</span> chain.
-              <span className="text-blue-300">call</span>({"{"} query {"}"});
-            </div>
-          </motion.div>
-
-          {/* AI Chat Layout Mockup */}
-          <motion.div
-            animate={{ y: [10, -10, 10] }}
-            transition={{
-              duration: 7,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1,
-            }}
-            className="absolute z-20 w-[300px] bg-white/[0.02] border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden backdrop-blur-2xl"
-            style={{ bottom: "10%", right: "-5%" }}
-          >
-            <div className="p-4 flex flex-col gap-4">
-              <div className="flex gap-3 items-start">
-                <div className="w-7 h-7 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0">
-                  <span className="text-[10px] text-purple-200">USR</span>
-                </div>
-                <div className="bg-white/5 border border-white/5 rounded-2xl rounded-tl-sm p-3 text-[11px] text-foreground/80">
-                  How can we optimize the RAG retrieval speed?
-                </div>
-              </div>
-              <div className="flex gap-3 items-start">
-                <div className="w-7 h-7 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">
-                  <Brain className="w-3.5 h-3.5 text-blue-400" />
-                </div>
-                <div className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-purple-500/20 rounded-2xl rounded-tl-sm p-3 text-[11px] text-foreground/90">
-                  To optimize RAG retrieval, we can use{" "}
-                  <strong>HNSW indexing</strong> and embed document metadata for
-                  pre-filtering before semantic search.
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Subtle connecting spline */}
-          <svg
-            className="absolute inset-0 w-full h-full -z-10 opacity-30 pointer-events-none"
-            viewBox="0 0 500 500"
-          >
-            <path
-              d="M 120 200 C 300 200, 200 350, 400 350"
-              fill="none"
-              stroke="url(#paint0_linear)"
-              strokeWidth="2"
-              strokeDasharray="4 4"
-            />
-            <defs>
-              <linearGradient
-                id="paint0_linear"
-                x1="120"
-                y1="200"
-                x2="400"
-                y2="350"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#9333ea" />
-                <stop offset="1" stopColor="#3b82f6" />
-              </linearGradient>
-            </defs>
-          </svg>
-        </motion.div>
       </div>
 
-      {/* Scroll Indicator & Divider */}
+      {/* ── Tech Marquee ── */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
+        transition={{ delay: 0.9, duration: 0.8 }}
+        className="relative z-10"
       >
-        <span className="text-[10px] font-semibold uppercase tracking-widest text-foreground/30">
-          Scroll
-        </span>
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          className="w-5 h-8 border-[1.5px] border-foreground/20 rounded-full flex justify-center py-1.5"
-        >
-          <div className="w-1 h-1.5 bg-foreground/40 rounded-full" />
-        </motion.div>
+        <Marquee />
       </motion.div>
 
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-[2px] bg-gradient-to-r from-transparent via-purple-500/20 to-transparent blur-sm" />
+      {/* ── Scroll cue ── */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5, duration: 1 }}
+        className="relative z-10 flex items-center justify-between px-6 sm:px-10 py-4"
+      >
+        <span className="text-[10px] font-mono text-white/15 tracking-[0.3em] uppercase">
+          Scroll to explore
+        </span>
+        <motion.div
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+          className="w-4 h-7 border border-white/[0.12] rounded-full flex justify-center py-1"
+        >
+          <div className="w-0.5 h-1.5 bg-white/20 rounded-full" />
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

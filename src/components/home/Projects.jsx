@@ -2,243 +2,232 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { CheckCircle2, ArrowRight, ExternalLink, Github } from "lucide-react";
-import { SectionHeader } from "./SharedComponents";
+import { ArrowUpRight, Github } from "lucide-react";
+import { EASE } from "./SharedComponents";
 
 export const featuredProjects = [
   {
     id: 1,
+    index: "01",
     name: "ChatSathi",
     tag: "AI · SaaS Platform",
-    featured: true,
     image: "/projects/chatsathi.png?v=1",
     oneLiner:
       "Multi-tenant AI chatbot platform enabling businesses to deploy custom assistants via embeddable scripts.",
-    bullets: [
-      "Built embeddable JavaScript SDK for seamless chatbot integration across websites",
-      "Designed multi-tenant backend to manage isolated chatbot configs and conversations",
-      "Integrated Gemini 2.5 Flash for fast, low-latency AI responses",
-      "Developed scalable backend services using MongoDB and Scalekit",
-    ],
-    tech: ["Next.js", "TypeScript", "MongoDB", "Scalekit", "Gemini API", "Tailwind CSS", "Vercel"],
+    tech: ["Next.js", "TypeScript", "MongoDB", "Gemini API", "Tailwind CSS"],
     github: "https://github.com/anishsingh234/ChatSathi",
     demo: "https://chat-sathi.vercel.app/",
   },
   {
     id: 2,
+    index: "02",
     name: "HopeBridge",
     tag: "AI · RAG System",
-    featured: false,
     image: "/projects/hopebridge.png?v=1",
     oneLiner:
       "AI-powered medical assistant delivering source-grounded cancer insights using RAG architecture.",
-    bullets: [
-      "Engineered RAG pipeline using LLMs + vector embeddings for accurate retrieval",
-      "Built semantic search system for contextual medical Q&A",
-      "Reduced hallucinations using document-grounded responses",
-      "Implemented scalable document ingestion + vector indexing pipeline",
-    ],
-    tech: ["Next.js", "React", "Vercel AI SDK", "Gemini 2.5 Flash", "LangChain", "Vector DB"],
+    tech: ["Next.js", "Vercel AI SDK", "Gemini 2.5 Flash", "LangChain", "Vector DB"],
     github: "https://github.com/anishsingh234/HopeBridge",
     demo: "https://try-hope-bridge.vercel.app/",
   },
   {
     id: 3,
+    index: "03",
     name: "HealSync",
     tag: "Full Stack · Healthcare",
-    featured: false,
     image: "/projects/healsync.png?v=1",
     oneLiner:
       "Full-stack healthcare platform enabling appointment booking and real-time consultations.",
-    bullets: [
-      "Built end-to-end booking system with real-time scheduling",
-      "Integrated video consultation features for remote healthcare",
-      "Implemented RBAC-based admin panel with secure access control",
-      "Scaled platform to support 100+ users with optimized backend",
-    ],
-    tech: ["Next.js", "React", "MongoDB", "Prisma ORM", "Clerk Auth", "Tailwind CSS"],
+    tech: ["Next.js", "MongoDB", "Prisma ORM", "Clerk Auth", "Tailwind CSS"],
     github: "https://github.com/anishsingh234/HealSync",
     demo: "https://heal-sync-amber.vercel.app/",
   },
 ];
 
-function ProjectCard({ project }) {
+// ── Single project row ────────────────────────────────────────
+function ProjectRow({ project, index }) {
+  const isEven = index % 2 === 0;
+
   return (
-    <div className="relative h-full group perspective-1000">
-      {project.featured && (
-        <div className="absolute -inset-[1px] rounded-[2rem] bg-gradient-to-br from-purple-500/30 via-blue-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-      )}
-      <div className={`absolute inset-0 rounded-[2rem] bg-gradient-to-br from-purple-500/10 via-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 blur-lg transition-opacity duration-500 -z-10 pointer-events-none ${!project.featured && 'from-white/10 via-white/5'}`} />
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.7, ease: EASE, delay: index * 0.08 }}
+      className="group"
+    >
+      {/* Top border */}
+      <div className="h-px bg-white/[0.07] group-hover:bg-white/[0.14] transition-colors duration-500" />
 
-      <motion.div
-        whileHover={{ scale: 1.02, y: -4 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-        className="relative flex flex-col h-full rounded-[2rem] bg-[#0A0A0E]/80 backdrop-blur-none sm:backdrop-blur-xl border border-white/10 group-hover:border-purple-500/30 overflow-hidden transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.2)] group-hover:shadow-[0_10px_40px_rgba(139,92,246,0.25)]"
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none z-10" />
+      <div className={`grid grid-cols-1 lg:grid-cols-2 gap-0 py-10 lg:py-14 ${isEven ? "" : ""}`}>
 
-        {project.featured && (
-          <div className="absolute top-5 right-5 z-20">
-            <span className="relative flex items-center justify-center px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white bg-gradient-to-r from-purple-600 to-blue-600 rounded-full shadow-[0_4px_12px_rgba(139,92,246,0.4)] overflow-hidden group/tag">
-              <span className="absolute inset-0 w-full h-full bg-white/20 translate-x-[-100%] group-hover/tag:translate-x-[100%] transition-transform duration-700 ease-out" />
-              Featured
+        {/* ── Left: meta + content ── */}
+        <div className={`flex flex-col justify-between gap-8 pr-0 lg:pr-16 ${isEven ? "order-1" : "order-1 lg:order-2 lg:pl-16 lg:pr-0"}`}>
+
+          {/* Index + tag row */}
+          <div className="flex items-center justify-between">
+            <span
+              className="font-black text-white/[0.06] leading-none select-none"
+              style={{ fontSize: "clamp(3.5rem, 7vw, 6rem)", letterSpacing: "-0.04em" }}
+            >
+              _{project.index}.
             </span>
-          </div>
-        )}
-
-        <div className="relative w-full aspect-[16/10] overflow-hidden border-b border-white/[0.06] bg-[#050508]">
-          <div className="hidden sm:block absolute inset-0">
-            <Image
-              src={project.image}
-              alt={`${project.name} background blur`}
-              fill
-              unoptimized
-              className="object-cover blur-[24px] opacity-40 scale-125 saturate-150 group-hover:opacity-60 transition-all duration-700 pointer-events-none"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-          </div>
-          <Image
-            src={project.image}
-            alt={project.name}
-            fill
-            unoptimized
-            className="object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-transform duration-700 ease-out z-10 p-2 sm:p-4"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(5,5,8,0.7)_120%)] z-20 pointer-events-none transition-opacity duration-500 group-hover:opacity-50" />
-          <div className="absolute inset-0 bg-[#0A0A0E]/10 group-hover:bg-transparent transition-colors duration-500 z-20 pointer-events-none" />
-        </div>
-
-        <div className="p-7 flex flex-col flex-1 relative z-20">
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-purple-400 drop-shadow-sm group-hover:text-purple-300 transition-colors">
-              {project.tag}
-            </p>
-            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 border border-white/10 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.15)] group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)] transition-shadow">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
+            <div className="flex items-center gap-3">
+              <span className="text-[10px] font-mono text-white/25 tracking-[0.2em] uppercase">
+                {project.tag}
               </span>
-              <span className="text-[9px] font-semibold text-white/70 uppercase tracking-wider">Live</span>
+              <div className="flex items-center gap-1.5">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
+                </span>
+                <span className="text-[9px] font-mono text-emerald-400/60 uppercase tracking-widest">Live</span>
+              </div>
             </div>
           </div>
 
-          <h3 className="text-xl font-semibold text-white mb-2 leading-tight">
-            {project.name}
-          </h3>
+          {/* Title */}
+          <div>
+            <h3
+              className="font-black text-white leading-none tracking-tight mb-5 group-hover:text-white/90 transition-colors"
+              style={{ fontSize: "clamp(2.2rem, 4.5vw, 4rem)", letterSpacing: "-0.03em" }}
+            >
+              {project.name}
+            </h3>
+            <p className="text-sm text-white/40 leading-relaxed max-w-sm font-light">
+              {project.oneLiner}
+            </p>
+          </div>
 
-          <p className="text-[13px] text-white/70 leading-relaxed mb-5 min-h-[40px]">
-            {project.oneLiner}
-          </p>
-
-          <ul className="space-y-2 mb-6 flex-1">
-            {project.bullets.map((b, i) => (
-              <li key={i} className="flex items-start gap-2.5 text-[13px] text-white/60 group-hover:text-white/80 transition-colors">
-                <CheckCircle2 className="w-4 h-4 text-purple-500/70 mt-[1px] shrink-0" />
-                <span className="leading-snug">{b}</span>
-              </li>
-            ))}
-          </ul>
-
-          <div className="flex flex-wrap gap-1.5 mb-8">
+          {/* Tech tags */}
+          <div className="flex flex-wrap gap-2">
             {project.tech.map((t) => (
               <span
                 key={t}
-                className="px-3 py-1 text-xs font-semibold text-white/80 bg-white/10 rounded-full backdrop-blur-md hover:bg-purple-500/20 hover:text-purple-200 transition-colors duration-300 cursor-default shadow-sm"
+                className="text-[10px] font-mono text-white/30 tracking-widest uppercase border border-white/[0.07] rounded-full px-3 py-1 hover:border-white/20 hover:text-white/50 transition-colors"
               >
                 {t}
               </span>
             ))}
           </div>
 
-          <div className="flex gap-2.5 mt-auto">
+          {/* CTA row */}
+          <div className="flex items-center gap-4">
             {project.demo && (
-              <a
+              <motion.a
                 href={project.demo}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 text-[13px] font-semibold text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl hover:scale-105 hover:shadow-[0_0_20px_rgba(139,92,246,0.6)] transition-all duration-300 group/btn relative overflow-hidden"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="group/btn flex items-center gap-2 px-5 py-2.5 bg-white text-[#080A10] text-xs font-bold rounded-full transition-all"
               >
-                <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-[600ms] ease-out" />
-                <ExternalLink className="w-3.5 h-3.5 relative z-10 group-hover/btn:rotate-[-5deg] transition-transform" />
-                <span className="relative z-10 hidden sm:inline">Live Demo</span>
-                <span className="relative z-10 sm:hidden">Demo</span>
-                <ArrowRight className="w-3.5 h-3.5 relative z-10 opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all duration-300 -ml-1 border-l border-white/20 pl-1" />
-              </a>
+                View Live
+                <ArrowUpRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
+              </motion.a>
             )}
             {project.github && (
-              <a
+              <motion.a
                 href={project.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 text-[13px] font-semibold bg-transparent border border-white/20 text-white/80 rounded-xl hover:bg-white/10 hover:text-white hover:scale-[1.02] transition-all duration-300 group/git"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center gap-2 px-5 py-2.5 border border-white/[0.1] text-white/50 hover:text-white hover:border-white/25 text-xs font-bold rounded-full transition-all"
               >
-                <Github className="w-3.5 h-3.5 group-hover/git:scale-110 transition-transform" />
-                <span className="relative">
-                  GitHub
-                  <span className="absolute left-0 bottom-0 w-full h-[1px] bg-white scale-x-0 group-hover/git:scale-x-100 transition-transform origin-left" />
-                </span>
-              </a>
+                <Github className="w-3.5 h-3.5" />
+                GitHub
+              </motion.a>
             )}
           </div>
         </div>
-      </motion.div>
-    </div>
+
+        {/* ── Right: image ── */}
+        <div className={`relative ${isEven ? "order-2" : "order-2 lg:order-1"}`}>
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden border border-white/[0.07] group-hover:border-white/[0.12] transition-colors duration-500 bg-[#0D0F18]"
+          >
+            {/* Blurred bg */}
+            <div className="absolute inset-0">
+              <Image
+                src={project.image}
+                alt=""
+                fill
+                unoptimized
+                className="object-cover blur-2xl opacity-30 scale-110 saturate-150"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+            </div>
+            {/* Main image */}
+            <Image
+              src={project.image}
+              alt={project.name}
+              fill
+              unoptimized
+              className="object-contain p-4 z-10 group-hover:scale-[1.03] transition-transform duration-700 ease-out drop-shadow-2xl"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+            {/* Vignette */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_50%,rgba(8,10,16,0.6)_100%)] z-20 pointer-events-none" />
+          </motion.div>
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { duration: 0.6, ease: "easeOut" } 
-  },
-};
-
+// ── Main export ───────────────────────────────────────────────
 export default function Projects() {
   return (
     <section id="projects" className="py-24 sm:py-32 scroll-mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHeader
-          label="Featured Projects"
-          title="What I've built"
-          subtitle="Production-grade SaaS platforms and AI systems."
-        />
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+
+        {/* ── Section header ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: EASE }}
+          className="flex items-end justify-between mb-16 flex-wrap gap-6"
         >
-          {featuredProjects.map((p) => (
-            <motion.div key={p.id} variants={itemVariants} className="h-full">
-              <ProjectCard project={p} />
-            </motion.div>
-          ))}
-        </motion.div>
-        <div className="mt-14 pt-8 border-t border-white/[0.06] text-center">
+          <div>
+            <p className="text-[10px] font-mono text-white/20 tracking-[0.3em] uppercase mb-4">
+              ◆ &nbsp; Selected Work
+            </p>
+            <h2
+              className="font-black text-white leading-none tracking-tight"
+              style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", letterSpacing: "-0.03em" }}
+            >
+              What I've
+              <br />
+              <span
+                className="text-transparent"
+                style={{ WebkitTextStroke: "1.5px rgba(255,255,255,0.2)" }}
+              >
+                Built
+              </span>
+            </h2>
+          </div>
           <Link
             href="/projects"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-white/[0.03] hover:bg-white/[0.08] text-sm font-semibold text-foreground/80 hover:text-foreground border border-white/[0.08] hover:border-white/[0.15] rounded-xl backdrop-blur-sm transition-all duration-300 group"
+            className="group flex items-center gap-2 text-sm font-bold text-white/30 hover:text-white transition-colors"
           >
-            View all projects
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            View all
+            <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </Link>
+        </motion.div>
+
+        {/* ── Project rows ── */}
+        <div>
+          {featuredProjects.map((project, i) => (
+            <ProjectRow key={project.id} project={project} index={i} />
+          ))}
+          {/* Bottom border */}
+          <div className="h-px bg-white/[0.07]" />
         </div>
+
       </div>
     </section>
   );

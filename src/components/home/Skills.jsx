@@ -1,229 +1,154 @@
 "use client";
-import { useState, useRef } from "react";
-import { AnimatePresence, motion, useInView } from "framer-motion";
-import {
-  Brain, Layout, Server, Database, Code2, Wrench,
-} from "lucide-react";
-import { FadeUp, SectionLabel } from "./SharedComponents";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { EASE } from "./SharedComponents";
 
 const categories = [
   {
     id: "ai",
-    title: "AI / ML",
-    fullTitle: "AI & Machine Learning",
-    icon: Brain,
-    description: "The core of what I build — agents, pipelines, and intelligent systems at production scale.",
-    count: "12",
-    featured: true,
+    label: "AI / ML",
+    index: "01",
+    description: "Agents, pipelines & intelligent systems at production scale.",
     skills: [
-      { name: "LLMs",                tag: "Core",      level: 95 },
-      { name: "Prompt Engineering",  tag: "Core",      level: 92 },
-      { name: "RAG Pipelines",       tag: "Core",      level: 90 },
-      { name: "LangChain",           tag: "Framework", level: 88 },
-      { name: "Tool Calling",        tag: "Core",      level: 88 },
-      { name: "Vercel AI SDK",       tag: "SDK",       level: 85 },
-      { name: "Vector Databases",    tag: "Infra",     level: 82 },
-      { name: "Pinecone",            tag: "Infra",     level: 80 },
-      { name: "CrewAI",              tag: "Framework", level: 78 },
-      { name: "Multi-Agent Systems", tag: "Emerging",  level: 75 },
-      { name: "Hugging Face",        tag: "Platform",  level: 72 },
-      { name: "Ollama",              tag: "Local",     level: 70 },
+      { name: "LLMs",                tier: "Core"      },
+      { name: "RAG Pipelines",       tier: "Core"      },
+      { name: "Prompt Engineering",  tier: "Core"      },
+      { name: "Tool Calling",        tier: "Core"      },
+      { name: "LangChain",           tier: "Framework" },
+      { name: "Vercel AI SDK",       tier: "SDK"       },
+      { name: "CrewAI",              tier: "Framework" },
+      { name: "Multi-Agent Systems", tier: "Emerging"  },
+      { name: "Vector Databases",    tier: "Infra"     },
+      { name: "Pinecone",            tier: "Infra"     },
+      { name: "Hugging Face",        tier: "Platform"  },
+      { name: "Ollama",              tier: "Local"     },
     ],
   },
   {
     id: "frontend",
-    title: "Frontend",
-    fullTitle: "Frontend",
-    icon: Layout,
-    description: "Building responsive, high-performance interfaces that feel great to use.",
-    count: "06",
+    label: "Frontend",
+    index: "02",
+    description: "Responsive, high-performance interfaces that feel great.",
     skills: [
-      { name: "React.js",     tag: "Core",      level: 95 },
-      { name: "Next.js",      tag: "Framework", level: 93 },
-      { name: "Tailwind CSS", tag: "Styling",   level: 90 },
-      { name: "React Native", tag: "Mobile",    level: 72 },
-      { name: "Expo",         tag: "Mobile",    level: 68 },
-      { name: "Three.js",     tag: "3D",        level: 55 },
+      { name: "React.js",      tier: "Core"      },
+      { name: "Next.js",       tier: "Framework" },
+      { name: "Tailwind CSS",  tier: "Styling"   },
+      { name: "Framer Motion", tier: "Animation" },
+      { name: "TypeScript",    tier: "Language"  },
+      { name: "React Native",  tier: "Mobile"    },
+      { name: "Expo",          tier: "Mobile"    },
+      { name: "Three.js",      tier: "3D"        },
     ],
   },
   {
     id: "backend",
-    title: "Backend",
-    fullTitle: "Backend",
-    icon: Server,
-    description: "Designing scalable APIs and server-side systems that integrate seamlessly with AI.",
-    count: "05",
+    label: "Backend",
+    index: "03",
+    description: "Scalable APIs & server-side systems built for AI integration.",
     skills: [
-      { name: "REST APIs",  tag: "Architecture", level: 95 },
-      { name: "Node.js",    tag: "Runtime",      level: 92 },
-      { name: "Express.js", tag: "Framework",    level: 88 },
-      { name: "FastAPI",    tag: "Framework",    level: 78 },
-      { name: "GraphQL",    tag: "Query",        level: 65 },
+      { name: "Node.js",    tier: "Runtime"      },
+      { name: "Express.js", tier: "Framework"    },
+      { name: "FastAPI",    tier: "Framework"    },
+      { name: "REST APIs",  tier: "Architecture" },
+      { name: "GraphQL",    tier: "Query"        },
+      { name: "WebSockets", tier: "Realtime"     },
     ],
   },
   {
-    id: "database",
-    title: "Database",
-    fullTitle: "Database",
-    icon: Database,
-    description: "Efficient data modelling, query optimization, and scalable storage design.",
-    count: "03",
+    id: "data",
+    label: "Data & DB",
+    index: "04",
+    description: "Efficient data modelling, storage & query optimization.",
     skills: [
-      { name: "MongoDB",    tag: "NoSQL", level: 90 },
-      { name: "Prisma ORM", tag: "ORM",   level: 82 },
-      { name: "MySQL",      tag: "SQL",   level: 75 },
+      { name: "MongoDB",    tier: "NoSQL" },
+      { name: "MySQL",      tier: "SQL"   },
+      { name: "Prisma ORM", tier: "ORM"   },
+      { name: "Supabase",   tier: "BaaS"  },
+      { name: "Redis",      tier: "Cache" },
     ],
   },
   {
     id: "languages",
-    title: "Languages",
-    fullTitle: "Languages",
-    icon: Code2,
-    description: "Strong fundamentals in algorithms, data structures, and system design.",
-    count: "08",
+    label: "Languages",
+    index: "05",
+    description: "Strong fundamentals in algorithms, data structures & systems.",
     skills: [
-      { name: "JavaScript", tag: "Primary", level: 95 },
-      { name: "HTML",       tag: "Markup",  level: 95 },
-      { name: "TypeScript", tag: "Primary", level: 93 },
-      { name: "CSS",        tag: "Styling", level: 90 },
-      { name: "Python",     tag: "Primary", level: 88 },
-      { name: "C++",        tag: "DSA",     level: 80 },
-      { name: "SQL",        tag: "Query",   level: 78 },
-      { name: "C",          tag: "Systems", level: 72 },
+      { name: "JavaScript", tier: "Primary" },
+      { name: "TypeScript", tier: "Primary" },
+      { name: "Python",     tier: "Primary" },
+      { name: "C++",        tier: "DSA"     },
+      { name: "SQL",        tier: "Query"   },
+      { name: "HTML",       tier: "Markup"  },
+      { name: "CSS",        tier: "Styling" },
+      { name: "C",          tier: "Systems" },
     ],
   },
   {
     id: "tools",
-    title: "Tools",
-    fullTitle: "Tools & Platforms",
-    icon: Wrench,
-    description: "Day-to-day development, deployment, and workflow tooling.",
-    count: "06",
+    label: "Tools",
+    index: "06",
+    description: "Dev, deployment, and workflow tooling for shipping fast.",
     skills: [
-      { name: "Git",        tag: "VCS",      level: 95 },
-      { name: "VS Code",    tag: "Editor",   level: 95 },
-      { name: "GitHub",     tag: "Platform", level: 92 },
-      { name: "Vercel",     tag: "Deploy",   level: 88 },
-      { name: "Postman",    tag: "API",      level: 85 },
-      { name: "Clerk Auth", tag: "Auth",     level: 82 },
+      { name: "Git",        tier: "VCS"      },
+      { name: "GitHub",     tier: "Platform" },
+      { name: "Vercel",     tier: "Deploy"   },
+      { name: "Postman",    tier: "API"      },
+      { name: "Clerk Auth", tier: "Auth"     },
+      { name: "VS Code",    tier: "Editor"   },
+      { name: "Figma",      tier: "Design"   },
     ],
   },
 ];
 
-const panelVariants = {
-  initial: { opacity: 0, y: 8 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.2, ease: "easeOut" } },
-  exit:    { opacity: 0, y: -4, transition: { duration: 0.12 } },
+const tierColor = {
+  Core:         "text-purple-300/80  border-purple-400/20  bg-purple-500/[0.08]",
+  Framework:    "text-blue-300/70    border-blue-400/20    bg-blue-500/[0.07]",
+  SDK:          "text-blue-300/60    border-blue-400/15    bg-blue-500/[0.05]",
+  Emerging:     "text-emerald-300/70 border-emerald-400/20 bg-emerald-500/[0.07]",
+  Infra:        "text-amber-300/65   border-amber-400/18   bg-amber-500/[0.06]",
+  Platform:     "text-white/45       border-white/10       bg-white/[0.04]",
+  Local:        "text-white/35       border-white/08       bg-white/[0.03]",
+  Primary:      "text-purple-300/75  border-purple-400/20  bg-purple-500/[0.08]",
+  Language:     "text-blue-300/65    border-blue-400/18    bg-blue-500/[0.06]",
+  Animation:    "text-pink-300/65    border-pink-400/18    bg-pink-500/[0.06]",
+  Mobile:       "text-cyan-300/65    border-cyan-400/18    bg-cyan-500/[0.06]",
+  "3D":         "text-white/40       border-white/10       bg-white/[0.04]",
+  Runtime:      "text-emerald-300/65 border-emerald-400/18 bg-emerald-500/[0.06]",
+  Architecture: "text-white/40       border-white/10       bg-white/[0.04]",
+  Query:        "text-amber-300/65   border-amber-400/18   bg-amber-500/[0.06]",
+  Realtime:     "text-cyan-300/60    border-cyan-400/15    bg-cyan-500/[0.05]",
+  NoSQL:        "text-emerald-300/65 border-emerald-400/18 bg-emerald-500/[0.06]",
+  SQL:          "text-blue-300/60    border-blue-400/15    bg-blue-500/[0.05]",
+  ORM:          "text-white/40       border-white/10       bg-white/[0.04]",
+  BaaS:         "text-emerald-300/60 border-emerald-400/15 bg-emerald-500/[0.05]",
+  Cache:        "text-red-300/60     border-red-400/15     bg-red-500/[0.05]",
+  DSA:          "text-amber-300/65   border-amber-400/18   bg-amber-500/[0.06]",
+  Markup:       "text-white/35       border-white/08       bg-white/[0.03]",
+  Styling:      "text-pink-300/60    border-pink-400/15    bg-pink-500/[0.05]",
+  Systems:      "text-white/35       border-white/08       bg-white/[0.03]",
+  VCS:          "text-orange-300/60  border-orange-400/15  bg-orange-500/[0.05]",
+  Deploy:       "text-blue-300/65    border-blue-400/18    bg-blue-500/[0.06]",
+  API:          "text-white/40       border-white/10       bg-white/[0.04]",
+  Auth:         "text-purple-300/60  border-purple-400/15  bg-purple-500/[0.05]",
+  Editor:       "text-white/35       border-white/08       bg-white/[0.03]",
+  Design:       "text-pink-300/60    border-pink-400/15    bg-pink-500/[0.05]",
 };
 
-// Individual animated skill row
-function SkillRow({ skill, index, isVisible }) {
-  return (
-    <div className="group flex items-center justify-between py-[11px] lg:py-[13px] border-b border-white/[0.055] first:border-t first:border-white/[0.055]">
-      {/* Left: dot + name */}
-      <div className="flex items-center gap-2.5 flex-1 min-w-0">
-        <span className="w-1.5 h-1.5 rounded-full bg-white/[0.12] group-hover:bg-purple-500/70 transition-colors duration-200 shrink-0" />
-        <span className="text-[13px] lg:text-[15px] font-medium text-white/60 group-hover:text-white transition-colors duration-200 tracking-[-0.01em] font-inter truncate">
-          {skill.name}
-        </span>
-      </div>
-
-      {/* Right: tag + animated bar + percentage */}
-      <div className="flex items-center gap-2.5 lg:gap-3.5 flex-shrink-0">
-        <span className="text-[10px] font-mono text-white/20 uppercase tracking-[.06em] hidden sm:inline">
-          {skill.tag}
-        </span>
-
-        {/* Animated benchmark bar */}
-        <div className="relative w-14 lg:w-28 h-[3px] rounded-full bg-white/[0.06] overflow-hidden">
-          <motion.div
-            className="absolute left-0 top-0 h-full rounded-full"
-            style={{
-              background: "linear-gradient(90deg, rgba(168,85,247,0.4), rgba(139,92,246,0.8))",
-            }}
-            initial={{ width: 0 }}
-            animate={{ width: isVisible ? `${skill.level}%` : 0 }}
-            transition={{
-              duration: 0.9,
-              delay: index * 0.05,
-              ease: [0.16, 1, 0.3, 1],
-            }}
-          />
-          {/* Shimmer on the bar tip */}
-          {isVisible && (
-            <motion.div
-              className="absolute top-0 h-full w-4 rounded-full"
-              style={{
-                background: "linear-gradient(90deg, transparent, rgba(216,180,254,0.6), transparent)",
-              }}
-              initial={{ left: "-10%" }}
-              animate={{ left: `${skill.level - 8}%` }}
-              transition={{
-                duration: 0.9,
-                delay: index * 0.05,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-            />
-          )}
-        </div>
-
-        {/* Animated percentage counter */}
-        <motion.span
-          className="text-[10px] font-mono text-white/30 w-[28px] text-right tabular-nums"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isVisible ? 1 : 0 }}
-          transition={{ delay: index * 0.05 + 0.3, duration: 0.3 }}
-        >
-          {isVisible ? `${skill.level}%` : "0%"}
-        </motion.span>
-      </div>
-    </div>
-  );
-}
-
-// Skills panel — triggers animation when scrolled into view
-function SkillsPanel({ current }) {
-  const ref = useRef(null);
-  // once: true so it only animates once per tab switch
-  const isInView = useInView(ref, { once: false, amount: 0.2 });
-
+function SkillChip({ skill, i }) {
+  const color = tierColor[skill.tier] ?? "text-white/35 border-white/08 bg-white/[0.03]";
   return (
     <motion.div
-      key={current.id}
-      variants={panelVariants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      ref={ref}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: i * 0.035, ease: "easeOut" }}
+      className={`group flex items-center justify-between gap-3 px-4 py-3 rounded-xl border transition-all duration-200 hover:border-white/20 hover:bg-white/[0.04] ${color}`}
     >
-      {/* Panel header */}
-      <div className="mb-5 lg:mb-6">
-        <h3 className="text-[20px] lg:text-[22px] font-space font-bold text-white tracking-tight mb-1.5">
-          {current.fullTitle}
-        </h3>
-        <p className="text-[13px] text-white/35 leading-relaxed max-w-sm font-inter">
-          {current.description}
-        </p>
-      </div>
-
-      {current.featured && (
-        <p className="flex items-center gap-2 text-[11px] text-purple-400/55 font-mono mb-5 uppercase tracking-wider">
-          <span className="w-4 h-px bg-purple-500/40 inline-block" />
-          Primary specialization
-        </p>
-      )}
-
-      {/* Skills list */}
-      <div className="flex flex-col">
-        {current.skills.map((skill, i) => (
-          <SkillRow
-            key={skill.name}
-            skill={skill}
-            index={i}
-            isVisible={isInView}
-          />
-        ))}
-      </div>
+      <span className="text-[13px] font-medium text-white/70 group-hover:text-white transition-colors tracking-tight">
+        {skill.name}
+      </span>
+      <span className="text-[9px] font-mono tracking-widest uppercase opacity-60 shrink-0">
+        {skill.tier}
+      </span>
     </motion.div>
   );
 }
@@ -235,116 +160,147 @@ export default function Skills() {
   return (
     <section
       id="skills"
-      className="relative py-24 sm:py-32 scroll-mt-20 border-t border-white/[0.06] overflow-hidden"
+      className="py-24 sm:py-32 scroll-mt-20 border-t border-white/[0.06]"
     >
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-purple-500/15 to-transparent" />
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-
-        <FadeUp className="mb-10 sm:mb-14">
-          <SectionLabel>My Tech Stack</SectionLabel>
-          <h2 className="text-3xl sm:text-4xl font-space font-bold text-white mb-4 leading-tight tracking-tight">
-            Tools I architect with
-          </h2>
-          <p className="text-white/40 max-w-md leading-relaxed text-[14px] font-inter">
-            Technologies I rely on to ship production AI systems, full-stack
-            products, and everything in between.
-          </p>
-        </FadeUp>
-
-        {/* ── MOBILE: horizontal chip strip ── */}
-        <div className="lg:hidden flex gap-2 overflow-x-auto pb-1 mb-6 scrollbar-none -mx-4 px-4">
-          {categories.map((cat) => {
-            const Icon = cat.icon;
-            const isActive = active === cat.id;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setActive(cat.id)}
-                className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-[7px] rounded-full border text-[12px] font-medium font-inter transition-all duration-200 cursor-pointer
-                  ${isActive
-                    ? "bg-purple-500/15 border-purple-500/40 text-purple-300"
-                    : "bg-white/[0.03] border-white/[0.08] text-white/40"
-                  }`}
+        {/* ── Section header ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="flex items-end justify-between mb-16 flex-wrap gap-6"
+        >
+          <div>
+            <p className="text-[10px] font-mono text-white/20 tracking-[0.3em] uppercase mb-4">
+              ◆ &nbsp; Tech Stack
+            </p>
+            <h2
+              className="font-black text-white leading-none tracking-tight"
+              style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", letterSpacing: "-0.03em" }}
+            >
+              Tools I
+              <br />
+              <span
+                className="text-transparent"
+                style={{ WebkitTextStroke: "1.5px rgba(255,255,255,0.2)" }}
               >
-                <Icon className="w-3.5 h-3.5 flex-shrink-0" />
-                {cat.title}
-                <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded
-                  ${isActive
-                    ? "bg-purple-500/20 text-purple-400/70"
-                    : "bg-white/[0.05] text-white/20"
-                  }`}>
-                  {cat.count}
+                Architect With
+              </span>
+            </h2>
+          </div>
+
+          <div className="flex items-center gap-8">
+            {[
+              { val: "40+", label: "Technologies" },
+              { val: "12+", label: "Projects" },
+              { val: "5+",  label: "AI Systems" },
+            ].map(({ val, label }) => (
+              <div key={label} className="flex flex-col items-end">
+                <span className="text-2xl font-black text-white/80 leading-none tracking-tight">
+                  {val}
                 </span>
-              </button>
-            );
-          })}
-        </div>
+                <span className="text-[9px] font-mono text-white/20 tracking-widest uppercase mt-1">
+                  {label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
 
-        {/* ── DESKTOP: sidebar + panel grid ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-0">
+        {/* ── Body ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-0">
 
-          {/* Desktop left nav */}
-          <nav className="relative hidden lg:flex flex-col gap-0.5">
-            <div className="absolute right-0 top-0 bottom-0 w-px bg-white/[0.07]" />
-            {categories.map((cat) => {
-              const Icon = cat.icon;
-              const isActive = active === cat.id;
-              return (
+          {/* ── Left nav ── */}
+          <div className="relative">
+            <div className="hidden lg:block absolute right-0 top-0 bottom-0 w-px bg-white/[0.07]" />
+
+            {/* Mobile tabs */}
+            <div className="lg:hidden flex gap-2 overflow-x-auto pb-4 mb-8 scrollbar-none -mx-6 px-6">
+              {categories.map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => setActive(cat.id)}
-                  className={`group relative flex items-center gap-2.5 px-3 py-2.5 pr-5 rounded-none text-left transition-colors duration-200 cursor-pointer w-full
-                    ${isActive ? "text-white" : "text-white/35 hover:text-white/60"}`}
+                  className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full border text-[11px] font-bold font-mono tracking-widest uppercase transition-all ${
+                    active === cat.id
+                      ? "bg-white text-[#080A10] border-white"
+                      : "border-white/[0.1] text-white/35 hover:text-white/60"
+                  }`}
                 >
-                  {isActive && (
-                    <motion.span
-                      layoutId="activeIndicator"
-                      className="absolute right-[-1px] top-1 bottom-1 w-[2px] rounded-full bg-purple-500/90"
-                    />
-                  )}
-                  <span className={`flex items-center justify-center w-[30px] h-[30px] rounded-lg border transition-colors duration-200 shrink-0
-                    ${isActive
-                      ? "bg-purple-500/12 border-purple-500/25"
-                      : "bg-white/[0.04] border-white/[0.07]"
-                    }`}>
-                    <Icon className={`w-3.5 h-3.5 ${isActive ? "text-purple-300/90" : "text-white/45 group-hover:text-white/65"}`} />
-                  </span>
-                  <span className="text-[13px] font-medium font-inter">{cat.title}</span>
-                  <span className={`ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded
-                    ${isActive
-                      ? "text-purple-400/60 bg-purple-500/10"
-                      : "text-white/20 bg-white/[0.04]"
-                    }`}>
-                    {cat.count}
-                  </span>
+                  <span className="text-[9px] opacity-50">{cat.index}.</span>
+                  {cat.label}
                 </button>
-              );
-            })}
-          </nav>
-
-          {/* Right panel */}
-          <div className="lg:pl-10">
-            <AnimatePresence mode="wait">
-              <SkillsPanel key={active} current={current} />
-            </AnimatePresence>
-
-            {/* Stats */}
-            <div className="flex gap-0 mt-8 pt-5 border-t border-white/[0.06]">
-              {[
-                { n: "40+", l: "Technologies" },
-                { n: "12+", l: "Projects shipped" },
-                { n: "4+",  l: "AI systems built" },
-              ].map((s, i) => (
-                <div
-                  key={s.l}
-                  className={`flex flex-col gap-1 flex-1 ${i !== 0 ? "pl-4 border-l border-white/[0.06]" : ""} ${i !== 2 ? "pr-4" : ""}`}
-                >
-                  <span className="text-[20px] lg:text-[22px] font-bold text-white font-mono tracking-[-0.03em]">{s.n}</span>
-                  <span className="text-[10px] lg:text-[11px] text-white/30 tracking-[.04em] uppercase">{s.l}</span>
-                </div>
               ))}
             </div>
+
+            {/* Desktop nav */}
+            <nav className="hidden lg:flex flex-col pr-8">
+              {categories.map((cat) => {
+                const isActive = active === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setActive(cat.id)}
+                    className={`group relative flex items-center gap-4 py-4 text-left w-full transition-colors duration-200 border-b border-white/[0.05] last:border-0 cursor-pointer`}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeBar"
+                        className="absolute right-[-33px] top-3 bottom-3 w-[2px] bg-white rounded-full"
+                      />
+                    )}
+                    <span className={`text-[11px] font-mono shrink-0 transition-colors ${isActive ? "text-white/30" : "text-white/12 group-hover:text-white/22"}`}>
+                      {cat.index}.
+                    </span>
+                    <span className={`text-[15px] font-bold transition-colors tracking-tight ${isActive ? "text-white" : "text-white/30 group-hover:text-white/55"}`}>
+                      {cat.label}
+                    </span>
+                    <span className={`ml-auto text-[10px] font-mono px-2 py-0.5 rounded-full border transition-colors ${isActive ? "text-white/50 border-white/20 bg-white/[0.06]" : "text-white/15 border-white/[0.06]"}`}>
+                      {String(cat.skills.length).padStart(2, "0")}
+                    </span>
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* ── Right panel ── */}
+          <div className="lg:pl-12 pt-0 lg:pt-1">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={active}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.22, ease: "easeOut" }}
+              >
+                {/* Panel header */}
+                <div className="mb-8">
+                  <div className="flex items-baseline gap-4 mb-3">
+                    <span className="text-[11px] font-mono text-white/15 tracking-widest">
+                      _{current.index}.
+                    </span>
+                    <h3
+                      className="font-black text-white leading-none tracking-tight"
+                      style={{ fontSize: "clamp(1.8rem, 3vw, 2.8rem)", letterSpacing: "-0.03em" }}
+                    >
+                      {current.label}
+                    </h3>
+                  </div>
+                  <p className="text-[13px] text-white/35 leading-relaxed max-w-md font-light">
+                    {current.description}
+                  </p>
+                </div>
+
+                {/* Chip grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2">
+                  {current.skills.map((skill, i) => (
+                    <SkillChip key={skill.name} skill={skill} i={i} />
+                  ))}
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
         </div>
