@@ -1,103 +1,165 @@
 "use client";
-import { Mail, Linkedin } from "lucide-react";
-import { SectionLabel, FadeUp } from "./SharedComponents";
+import { motion } from "framer-motion";
+import { Mail, ArrowUpRight } from "lucide-react";
+import { EASE } from "./SharedComponents";
+
+const stats = [
+  { value: "12+",      label: "Projects",    sub: "Full-Stack & AI"      },
+  { value: "350+",     label: "DSA Solved",  sub: "LeetCode"             },
+  { value: "6mo+",     label: "Experience",  sub: "Exponent Solutions"   },
+  { value: "5+",       label: "AI SaaS",     sub: "Built & Shipped"      },
+  { value: "'26",      label: "Graduating",  sub: "B.Tech AI & ML"       },
+];
 
 export default function AboutSection() {
-  const stats = [
-    { value: "12+", label: "Projects Completed", sub: "Full-Stack & AI" },
-    { value: "350+", label: "DSA Problems Solved", sub: "C++ & Java" },
-    { value: "6 months+", label: "Professional Experience", sub: "Full-Stack + AI" },
-    { value: "5+", label: "AI SaaS Applications", sub: "Built & Shipped" },
-    { value: "2026", label: "Graduating 2026", sub: "B.Tech AI & ML" },
-  ];
-
   return (
     <section
       id="about"
-      className="py-24 sm:py-32 border-t border-white/[0.06] scroll-mt-20 overflow-hidden relative"
+      className="py-24 sm:py-32 border-t border-white/[0.06] scroll-mt-20"
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center">
-          <FadeUp>
-            <SectionLabel>About</SectionLabel>
-            <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-6 leading-tight tracking-tight">
-              Full-Stack Developer &amp;{" "}
-              <span className="bg-gradient-to-r from-purple-400 to-blue-400 text-transparent bg-clip-text">
-                AI Engineer
-              </span>
-            </h2>
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
 
-            <div className="space-y-6 text-foreground/70 leading-[1.75] text-[16.5px] sm:text-[17px] max-w-lg">
+        {/* ── Section header ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: EASE }}
+          className="mb-16"
+        >
+          <p className="text-[10px] font-mono text-white/20 tracking-[0.3em] uppercase mb-4">
+            ◆ &nbsp; About
+          </p>
+          <h2
+            className="font-black text-white leading-none tracking-tight"
+            style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", letterSpacing: "-0.03em" }}
+          >
+            Who I
+            <br />
+            <span
+              className="text-transparent"
+              style={{ WebkitTextStroke: "1.5px rgba(255,255,255,0.2)" }}
+            >
+              Actually Am
+            </span>
+          </h2>
+        </motion.div>
+
+        {/* ── Body grid ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+
+          {/* ── Left: text ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
+            className="flex flex-col gap-8"
+          >
+            {/* Paragraphs */}
+            <div className="space-y-5 text-[15px] text-white/40 leading-[1.85] font-light max-w-lg">
               <p>
-                I&apos;m a passionate <span className="font-semibold text-white">Full-Stack Developer</span> with strong expertise in building production-ready web applications using{" "}
-                <span className="font-semibold text-white">Next.js</span>,{" "}
-                <span className="font-semibold text-white">React</span>,{" "}
-                <span className="font-semibold text-white">Node.js</span>, and modern databases.
+                I&apos;m a{" "}
+                <span className="text-white/80 font-semibold">Full-Stack Developer</span>{" "}
+                who builds production-grade web applications with{" "}
+                <span className="text-white/70 font-medium">Next.js, React, Node.js</span>{" "}
+                and modern databases — then makes them intelligent.
               </p>
-
               <p>
-                What sets me apart is my ability to seamlessly integrate powerful{" "}
-                <span className="font-semibold text-white">AI capabilities</span> into applications. 
-                I specialize in building intelligent systems using LLMs, RAG pipelines, AI agents, 
-                and multi-agent architectures.
+                What sets me apart is the ability to seamlessly layer{" "}
+                <span className="text-purple-300/80 font-medium">AI capabilities</span>{" "}
+                on top of solid engineering — LLMs, RAG pipelines, agents, and
+                multi-agent workflows that actually work in production.
               </p>
-
               <p>
-                I&apos;ve designed, developed, and shipped multiple{" "}
-                <span className="font-semibold text-white">AI-powered SaaS applications</span> that combine 
-                beautiful, responsive frontends with scalable backends and cutting-edge AI features — 
-                delivering real value to users.
-              </p>
-
-              <p className="text-white/80">
-                Currently focused on advancing my skills in autonomous AI agents and next-generation 
-                AI tooling while pursuing my B.Tech in Artificial Intelligence &amp; Machine Learning.
+                I&apos;ve shipped multiple{" "}
+                <span className="text-white/70 font-medium">AI-powered SaaS products</span>{" "}
+                that combine beautiful frontends with scalable backends and
+                cutting-edge AI features. Currently interning at{" "}
+                <span className="text-white/70 font-medium">Exponent Solutions</span>{" "}
+                and finishing my B.Tech in AI & ML — graduating 2026.
               </p>
             </div>
 
-            <div className="mt-10">
-              <p className="text-sm font-medium text-foreground/50 mb-3 ml-0.5">
-                Open to full-time roles &amp; exciting opportunities
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <a
-                  href="mailto:anishsingh210204@gmail.com"
-                  className="flex items-center gap-2 px-5 py-2.5 bg-white text-black text-[15px] font-semibold rounded-lg hover:bg-white/90 transition-all hover:-translate-y-0.5 shadow-[0_0_20px_rgba(255,255,255,0.1)] active:scale-95"
+            {/* Divider */}
+            <div className="h-px bg-white/[0.07]" />
+
+            {/* CTAs */}
+            <div className="flex flex-wrap gap-3">
+              <motion.a
+                href="mailto:anishsingh210204@gmail.com"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="group flex items-center gap-2 px-6 py-3 bg-white text-[#080A10] text-sm font-bold rounded-full transition-all hover:bg-white/90"
+              >
+                <Mail className="w-4 h-4" />
+                Get in Touch
+              </motion.a>
+              <motion.a
+                href="https://linkedin.com/in/anish-ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.03, backgroundColor: "rgba(255,255,255,0.05)" }}
+                whileTap={{ scale: 0.97 }}
+                className="group flex items-center gap-2 px-6 py-3 border border-white/[0.1] text-white/55 hover:text-white text-sm font-bold rounded-full transition-all"
+              >
+                LinkedIn
+                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </motion.a>
+            </div>
+          </motion.div>
+
+          {/* ── Right: stats ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: EASE, delay: 0.2 }}
+          >
+            {/* Stat rows */}
+            <div className="flex flex-col">
+              {stats.map(({ value, label, sub }, i) => (
+                <motion.div
+                  key={label}
+                  initial={{ opacity: 0, x: 16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, ease: EASE, delay: 0.15 + i * 0.07 }}
+                  className="group flex items-center justify-between py-5 border-b border-white/[0.06] hover:border-white/[0.12] transition-colors duration-300 cursor-default"
                 >
-                  <Mail className="w-4 h-4" />
-                  Get in Touch
-                </a>
-                <a
-                  href="https://linkedin.com/in/anish-ai"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-5 py-2.5 bg-white/[0.04] hover:bg-white/[0.08] text-white/80 hover:text-white border border-white/10 text-[15px] font-semibold rounded-lg transition-all hover:-translate-y-0.5 active:scale-95"
-                >
-                  <Linkedin className="w-4 h-4" />
-                  LinkedIn
-                </a>
+                  {/* Left: label + sub */}
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[13px] font-semibold text-white/55 tracking-tight group-hover:text-white/75 transition-colors">
+                      {label}
+                    </span>
+                    <span className="text-[10px] font-mono text-white/20 tracking-widest uppercase">
+                      {sub}
+                    </span>
+                  </div>
+
+                  {/* Right: value */}
+                  <span
+                    className="font-black text-white/70 leading-none tracking-tight group-hover:text-white transition-colors"
+                    style={{ fontSize: "clamp(1.6rem, 3vw, 2.4rem)", letterSpacing: "-0.03em" }}
+                  >
+                    {value}
+                  </span>
+                </motion.div>
+              ))}
+
+              {/* Bottom note */}
+              <div className="pt-6 flex items-center gap-3">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                </span>
+                <span className="text-[11px] font-mono text-white/25 tracking-widest uppercase">
+                  Open to full-time roles & exciting opportunities
+                </span>
               </div>
             </div>
-          </FadeUp>
+          </motion.div>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 gap-4">
-            {stats.map(({ value, label, sub }, i) => (
-              <FadeUp key={label} delay={i * 0.1}>
-                <div className="p-6 rounded-[1.5rem] bg-white/[0.015] border border-white/[0.06] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_4px_16px_rgba(0,0,0,0.1)] hover:bg-white/[0.03] hover:border-purple-500/[0.25] hover:-translate-y-1 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_12px_32px_rgba(139,92,246,0.12)] transition-all duration-300 ease-out">
-                  <p className="text-3xl font-extrabold text-foreground mb-1.5 tracking-tight">
-                    {value}
-                  </p>
-                  <p className="text-[13px] font-semibold text-foreground/70">
-                    {label}
-                  </p>
-                  <p className="text-[11px] font-medium text-purple-400/80 mt-1">
-                    {sub}
-                  </p>
-                </div>
-              </FadeUp>
-            ))}
-          </div>
         </div>
       </div>
     </section>

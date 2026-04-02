@@ -1,21 +1,28 @@
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Github, Linkedin, CheckCircle2 } from "lucide-react";
+import { Mail, Github, Linkedin, CheckCircle2, ArrowUpRight } from "lucide-react";
 import Form from "@/components/contact/Form";
+import { EASE } from "./SharedComponents";
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: { 
-    opacity: 1, 
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 } 
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
-};
+const socials = [
+  {
+    label: "GitHub",
+    sub: "anishsingh234",
+    href: "https://github.com/anishsingh234",
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+      </svg>
+    ),
+  },
+  {
+    label: "LinkedIn",
+    sub: "linkedin.com/in/anish-ai",
+    href: "https://linkedin.com/in/anish-ai",
+    icon: <Linkedin className="w-[15px] h-[15px]" />,
+  },
+];
 
 export default function Contact() {
   const [copied, setCopied] = useState(false);
@@ -27,100 +34,139 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="relative py-24 sm:py-32 bg-[#0a0a0f] overflow-hidden scroll-mt-20 border-t border-white/[0.06]">
-      {/* Background radial gradient */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.15),transparent_70%)] pointer-events-none" />
-      
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <motion.div 
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={containerVariants}
-          className="flex flex-col items-center text-center"
+    <section
+      id="contact"
+      className="py-24 sm:py-32 border-t border-white/[0.06] scroll-mt-20"
+    >
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+
+        {/* ── Section header ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: EASE }}
+          className="mb-16"
         >
-          <motion.h2 
-            variants={itemVariants}
-            className="text-4xl sm:text-5xl font-extrabold mb-6 bg-gradient-to-r from-purple-400 to-blue-500 text-transparent bg-clip-text drop-shadow-sm pb-1"
+          <p className="text-[10px] font-mono text-white/20 tracking-[0.3em] uppercase mb-4">
+            ◆ &nbsp; Contact
+          </p>
+          <h2
+            className="font-black text-white leading-none tracking-tight"
+            style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", letterSpacing: "-0.03em" }}
           >
-            Let&apos;s Connect
-          </motion.h2>
-          
-          <motion.p 
-            variants={itemVariants}
-            className="text-lg text-foreground/70 max-w-2xl mx-auto mb-12 leading-relaxed"
-          >
-            I&apos;m actively looking for Full-Stack / AI Engineering opportunities. Let&apos;s build something impactful.
-          </motion.p>
-          
-          <motion.div 
-            variants={itemVariants}
-            className="w-full max-w-2xl bg-white/5 backdrop-blur-none sm:backdrop-blur-lg border border-white/10 rounded-2xl p-8 sm:p-10 shadow-lg relative"
-          >
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12">
-              <motion.button
-                onClick={copyEmail}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="relative flex items-center justify-center gap-2.5 px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-xl hover:shadow-[0_0_25px_rgba(139,92,246,0.4)] transition-all duration-300 w-full sm:w-auto overflow-hidden group"
-              >
-                {copied ? <CheckCircle2 className="w-5 h-5 shrink-0" /> : <Mail className="w-5 h-5 shrink-0 group-hover:animate-bounce" />}
-                {copied ? "Email Copied!" : "Email Me"}
-                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-              </motion.button>
-
-              <motion.a
-                href="https://github.com/anishsingh234"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="group flex items-center justify-center gap-2.5 px-6 py-3 border border-white/20 hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] text-foreground/90 hover:text-white font-semibold rounded-xl transition-all duration-300 w-full sm:w-auto"
-              >
-                <Github className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                <span className="relative">
-                  GitHub
-                  <span className="absolute left-0 bottom-0 w-full h-[1.5px] bg-white scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
-                </span>
-              </motion.a>
-
-              <motion.a
-                href="https://linkedin.com/in/anish-ai"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="group flex items-center justify-center gap-2.5 px-6 py-3 border border-white/20 hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] text-foreground/90 hover:text-white font-semibold rounded-xl transition-all duration-300 w-full sm:w-auto"
-              >
-                <Linkedin className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                <span className="relative">
-                  LinkedIn
-                  <span className="absolute left-0 bottom-0 w-full h-[1.5px] bg-white scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
-                </span>
-              </motion.a>
-            </div>
-
-            <div className="w-full text-left relative pt-10 border-t border-white/10 mt-4">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#0d0d14] px-4 py-1 border border-white/10 rounded-full z-10">
-                <span className="text-xs font-semibold text-foreground/50 uppercase tracking-widest whitespace-nowrap">
-                  Or send a message
-                </span>
-              </div>
-              <div className="-mx-4">
-                <Form />
-              </div>
-            </div>
-            
-          </motion.div>
-          
-          <motion.p 
-            variants={itemVariants}
-            className="mt-12 text-foreground/60 font-medium tracking-wide flex items-center gap-2 group cursor-default"
-          >
-            Let&apos;s build something amazing together
-            <span className="group-hover:animate-bounce">🚀</span>
-          </motion.p>
+            Let&apos;s
+            <br />
+            <span
+              className="text-transparent"
+              style={{ WebkitTextStroke: "1.5px rgba(255,255,255,0.2)" }}
+            >
+              Connect.
+            </span>
+          </h2>
         </motion.div>
+
+        {/* ── Two column body ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+
+          {/* ── Left: info + socials ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
+            className="flex flex-col gap-8"
+          >
+            <p className="text-[15px] text-white/40 leading-[1.85] font-light max-w-md">
+              I&apos;m actively looking for{" "}
+              <span className="text-white/70 font-medium">Full-Stack / AI Engineering</span>{" "}
+              opportunities. If you have an exciting role or project — let&apos;s talk.
+            </p>
+
+            {/* Email block */}
+            <div className="flex flex-col gap-3">
+              <span className="text-[10px] font-mono text-white/20 tracking-[0.25em] uppercase">
+                Email
+              </span>
+              <div className="flex items-center gap-4">
+                <span className="text-[15px] font-semibold text-white/65 tracking-tight">
+                  anishsingh210204@gmail.com
+                </span>
+                <motion.button
+                  onClick={copyEmail}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 border border-white/[0.1] rounded-full text-[10px] font-mono text-white/35 hover:text-white hover:border-white/25 transition-all tracking-widest uppercase"
+                >
+                  {copied ? (
+                    <><CheckCircle2 className="w-3 h-3 text-emerald-400" /> Copied</>
+                  ) : (
+                    <><Mail className="w-3 h-3" /> Copy</>
+                  )}
+                </motion.button>
+              </div>
+            </div>
+
+            <div className="h-px bg-white/[0.07]" />
+
+            {/* Social rows */}
+            <div className="flex flex-col gap-0">
+              {socials.map(({ label, sub, href, icon }) => (
+                <motion.a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ x: 4 }}
+                  transition={{ duration: 0.2 }}
+                  className="group flex items-center justify-between py-4 border-b border-white/[0.06] hover:border-white/[0.13] transition-colors"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-9 h-9 rounded-xl border border-white/[0.07] bg-white/[0.02] flex items-center justify-center text-white/40 group-hover:text-white/70 group-hover:border-white/[0.15] group-hover:bg-white/[0.04] transition-all">
+                      {icon}
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[13px] font-semibold text-white/55 group-hover:text-white/85 transition-colors tracking-tight">
+                        {label}
+                      </span>
+                      <span className="text-[10px] font-mono text-white/22 tracking-wide">
+                        {sub}
+                      </span>
+                    </div>
+                  </div>
+                  <ArrowUpRight className="w-4 h-4 text-white/15 group-hover:text-white/50 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                </motion.a>
+              ))}
+              <div className="h-px bg-white/[0.06]" />
+            </div>
+
+            {/* Availability note */}
+            <div className="flex items-center gap-3">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+              <span className="text-[11px] font-mono text-white/25 tracking-widest uppercase">
+                Available for full-time roles · Jun 2026
+              </span>
+            </div>
+          </motion.div>
+
+          {/* ── Right: form ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: EASE, delay: 0.2 }}
+            className="border border-white/[0.07] rounded-2xl p-7 sm:p-8 bg-white/[0.02]"
+          >
+            <p className="text-[10px] font-mono text-white/20 tracking-[0.25em] uppercase mb-6">
+              Send a message
+            </p>
+            <Form />
+          </motion.div>
+
+        </div>
       </div>
     </section>
   );
