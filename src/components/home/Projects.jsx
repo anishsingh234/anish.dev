@@ -120,7 +120,7 @@ function ProjectRow({ project, index }) {
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="group/btn flex items-center gap-2 px-5 py-2.5 bg-white text-[#080A10] text-xs font-bold rounded-full transition-all"
+                className="group/btn flex items-center gap-2 px-5 py-2.5 bg-white text-[#111318] text-xs font-bold rounded-full transition-all"
               >
                 View Live
                 <ArrowUpRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />

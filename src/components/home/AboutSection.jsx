@@ -90,7 +90,7 @@ export default function AboutSection() {
                 href="mailto:anishsingh210204@gmail.com"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="group flex items-center gap-2 px-6 py-3 bg-white text-[#080A10] text-sm font-bold rounded-full transition-all hover:bg-white/90"
+                className="group flex items-center gap-2 px-6 py-3 bg-white text-[#111318] text-sm font-bold rounded-full transition-all hover:bg-white/90"
               >
                 <Mail className="w-4 h-4" />
                 Get in Touch

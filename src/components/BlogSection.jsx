@@ -101,7 +101,7 @@ const BlogRow = ({ blog, index, onOpen }) => {
             {/* Vignette */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(8,10,16,0.55)_100%)] pointer-events-none" />
             {/* Dark tint */}
-            <div className="absolute inset-0 bg-[#080A10]/20 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
+            <div className="absolute inset-0 bg-[#111318]/20 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
           </motion.div>
         </div>
       </div>

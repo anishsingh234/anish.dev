@@ -24,7 +24,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative border-t border-white/[0.06] overflow-hidden bg-[#080A10]">
+    <footer className="relative border-t border-white/[0.06] overflow-hidden bg-[#111318]">
 
       {/* ── Giant background name ── */}
       <div
@@ -163,7 +163,7 @@ export default function Footer() {
         suppressHydrationWarning
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="fixed bottom-8 right-8 w-9 h-9 rounded-full border border-white/[0.1] bg-[#080A10]/80 hidden md:flex items-center justify-center text-white/25 hover:text-white/60 hover:border-white/25 transition-all backdrop-blur-sm"
+        className="fixed bottom-8 right-8 w-9 h-9 rounded-full border border-white/[0.1] bg-[#111318]/80 hidden md:flex items-center justify-center text-white/25 hover:text-white/60 hover:border-white/25 transition-all backdrop-blur-sm"
       >
         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />

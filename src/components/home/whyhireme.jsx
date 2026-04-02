@@ -128,7 +128,7 @@ export default function WhyHireMe() {
               href="#contact"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="group inline-flex items-center gap-2 px-6 py-3 bg-white text-[#080A10] text-sm font-bold rounded-full w-fit transition-all hover:bg-white/90"
+              className="group inline-flex items-center gap-2 px-6 py-3 bg-white text-[#111318] text-sm font-bold rounded-full w-fit transition-all hover:bg-white/90"
             >
               Let&apos;s work together
               <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />

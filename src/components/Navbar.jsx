@@ -205,13 +205,13 @@ export default function Navbar() {
         initial={{ x: -40, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: EASE, delay: 0.05 }}
-        className="hidden lg:flex fixed top-0 left-0 h-screen w-[220px] z-[100] flex-col border-r border-white/[0.06] bg-[#080A10]/90 backdrop-blur-xl"
+        className="hidden lg:flex fixed top-0 left-0 h-screen w-[220px] z-[100] flex-col border-r border-white/[0.06] bg-[#111318]/90 backdrop-blur-xl"
       >
         {/* Logo */}
         <div className="px-5 py-5 border-b border-white/[0.06]">
           <Link href="/" className="group flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shrink-0">
-              <span className="text-[#080A10] font-black text-[11px] leading-none tracking-tight">AK</span>
+              <span className="text-[#111318] font-black text-[11px] leading-none tracking-tight">AK</span>
             </div>
             <div className="flex flex-col">
               <span className="text-[12px] font-bold text-white/80 group-hover:text-white transition-colors leading-tight">
@@ -337,12 +337,12 @@ export default function Navbar() {
         initial={{ y: -60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: EASE }}
-        className="lg:hidden fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-5 h-14 border-b border-white/[0.06] bg-[#080A10]/90 backdrop-blur-xl"
+        className="lg:hidden fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-5 h-14 border-b border-white/[0.06] bg-[#111318]/90 backdrop-blur-xl"
       >
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center">
-            <span className="text-[#080A10] font-black text-[10px]">AK</span>
+            <span className="text-[#111318] font-black text-[10px]">AK</span>
           </div>
           <span className="text-[13px] font-bold text-white/75">Anish Kumar</span>
         </Link>
