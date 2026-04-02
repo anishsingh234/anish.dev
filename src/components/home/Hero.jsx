@@ -120,18 +120,42 @@ export default function Hero() {
           Dehradun, India
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3">
           <LocalTime />
-          {/* Availability pill */}
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-white/[0.04] border border-white/[0.08] rounded-full">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
-            </span>
-            <span className="text-[10px] font-semibold text-emerald-400/80 tracking-widest uppercase">
-              Open to Work
-            </span>
-          </div>
+
+          {/* GitHub */}
+          <a
+            href="https://github.com/anishsingh234"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="GitHub"
+            className="flex items-center justify-center w-8 h-8 rounded-lg border border-white/[0.08] text-white/30 hover:text-white/65 hover:border-white/[0.2] transition-all"
+          >
+            <Github className="w-3.5 h-3.5" />
+          </a>
+
+          {/* Music */}
+          <button
+            title="Now Playing"
+            className="flex items-center justify-center w-8 h-8 rounded-lg border border-white/[0.08] text-white/30 hover:text-white/65 hover:border-white/[0.2] transition-all"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 18V5l12-2v13" />
+              <circle cx="6" cy="18" r="3" />
+              <circle cx="18" cy="16" r="3" />
+            </svg>
+          </button>
+
+          {/* Resume */}
+          <a
+            href="/resume"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 border border-white/[0.08] rounded-lg text-[10px] font-mono text-white/30 hover:text-white/65 hover:border-white/[0.2] transition-all tracking-widest uppercase"
+          >
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+            </svg>
+            Resume
+          </a>
         </div>
       </motion.div>
 

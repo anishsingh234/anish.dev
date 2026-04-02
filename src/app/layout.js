@@ -3,7 +3,7 @@ import "./globals.css";
 import clsx from "clsx";
 import Footer from "@/components/footer";
 import CustomCursor from "@/components/home/CustomCursor";
-
+import StarBackground from "@/components/StarBackground";
 // Configure Space Grotesk font
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -32,6 +32,7 @@ export default function RootLayout({ children }) {
       >
         {children}
         <CustomCursor />
+        <StarBackground />
       </body>
     </html>
   );

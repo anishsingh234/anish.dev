@@ -293,25 +293,42 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Links row */}
-          <div className="flex items-center gap-2">
-            <a
-              href="https://github.com/anishsingh234"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center w-7 h-7 rounded-lg border border-white/[0.07] text-white/30 hover:text-white/65 hover:border-white/[0.15] transition-all"
-            >
-              <Github className="w-3.5 h-3.5" />
-            </a>
-            <a
-              href="/resume.pdf"
-              download
-              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 border border-white/[0.08] rounded-lg text-[10px] font-mono text-white/30 hover:text-white/65 hover:border-white/[0.18] transition-all tracking-widest uppercase"
-            >
-              <Download className="w-3 h-3" />
-              Resume
-            </a>
-          </div>
+        
+         {/* Links row: GitHub + Music + Resume Download */}
+<div className="flex items-center gap-2">
+  {/* GitHub */}
+  <a
+    href="https://github.com/anishsingh234"
+    target="_blank"
+    rel="noopener noreferrer"
+    title="GitHub"
+    className="flex items-center justify-center w-8 h-8 rounded-lg border border-white/[0.07] text-white/30 hover:text-white/65 hover:border-white/[0.18] transition-all"
+  >
+    <Github className="w-3.5 h-3.5" />
+  </a>
+
+  {/* Music */}
+  <button
+    title="Now Playing"
+    className="flex items-center justify-center w-8 h-8 rounded-lg border border-white/[0.07] text-white/30 hover:text-white/65 hover:border-white/[0.18] transition-all"
+  >
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 18V5l12-2v13" />
+      <circle cx="6" cy="18" r="3" />
+      <circle cx="18" cy="16" r="3" />
+    </svg>
+  </button>
+
+  {/* Resume Download */}
+  <a
+    href="/resume.pdf"
+    download="Anish_Kumar_Singh_Resume.pdf"
+    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 border border-white/[0.08] rounded-lg text-[10px] font-mono text-white/30 hover:text-white/65 hover:border-white/[0.18] transition-all tracking-widest uppercase"
+  >
+    <Download className="w-3 h-3" />
+    Resume
+  </a>
+</div>
         </div>
       </motion.aside>
 
