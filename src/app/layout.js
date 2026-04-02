@@ -4,7 +4,16 @@ import clsx from "clsx";
 import Footer from "@/components/footer";
 import CustomCursor from "@/components/home/CustomCursor";
 import StarBackground from "@/components/StarBackground";
+import Preloader from "@/components/home/Preloader";
+import { Bebas_Neue } from 'next/font/google';
+
+const bebas = Bebas_Neue({
+  weight: '400',
+  subsets: ['latin'],
+  display: 'swap',
+});
 // Configure Space Grotesk font
+
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
@@ -30,6 +39,7 @@ export default function RootLayout({ children }) {
           "bg-background text-foreground font-sans"
         )}
       >
+        <Preloader />
         {children}
         <CustomCursor />
         <StarBackground />

@@ -1,15 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: [
-      "ghchart.rshah.org",
-      "skillicons.dev",
-      "github-profile-trophy.vercel.app",
-      "raw.githubusercontent.com",
-      "camo.githubusercontent.com",
-      "github-readme-stats.vercel.app",
-      "res.cloudinary.com",
-    ],
     remotePatterns: [
       {
         protocol: 'https',
@@ -44,6 +35,18 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'camo.githubusercontent.com',
         port: '',
         pathname: '/**',
       },

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Github, Mail, ArrowUpRight, MapPin } from "lucide-react";
 import { EASE } from "./SharedComponents";
-
+import ArrowAnimation from "./ArrowAnimation";
 const MARQUEE_ITEMS = [
   "NEXT.JS","REACT","NODE.JS","PYTHON","FASTAPI",
   "LANGCHAIN","CREWAI","RAG","PINECONE","TYPESCRIPT",
