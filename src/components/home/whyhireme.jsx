@@ -52,7 +52,7 @@ export default function WhyHireMe() {
           transition={{ duration: 0.7, ease: EASE }}
           className="mb-16"
         >
-          <p className="text-[10px] font-mono text-white/20 tracking-[0.3em] uppercase mb-4">
+          <p className="text-[10px] font-mono text-white/58 tracking-[0.3em] uppercase mb-4">
             ◆ &nbsp; Why Hire Me
           </p>
           <h2
@@ -63,7 +63,7 @@ export default function WhyHireMe() {
             <br />
             <span
               className="text-transparent"
-              style={{ WebkitTextStroke: "1.5px rgba(255,255,255,0.2)" }}
+              style={{ WebkitTextStroke: "1.5px rgba(167,139,250,0.45)" }}
             >
               for hiring me.
             </span>
@@ -81,7 +81,7 @@ export default function WhyHireMe() {
             transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
             className="flex flex-col gap-7"
           >
-            <div className="space-y-5 text-[15px] text-white/40 leading-[1.85] font-light max-w-lg">
+            <div className="space-y-5 text-[15px] text-white/65 leading-[1.85] font-light max-w-lg">
               <p>
                 I&apos;m not just another dev who can build a CRUD app. I combine{" "}
                 <span className="text-white/75 font-semibold">solid full-stack engineering</span>{" "}
@@ -113,10 +113,10 @@ export default function WhyHireMe() {
                 { label: "Startup Mindset",   detail: "Ships fast · Self-driven · Thinks in systems" },
               ].map(({ label, detail }) => (
                 <div key={label} className="flex items-center gap-4">
-                  <span className="text-[10px] font-mono text-white/25 tracking-widest uppercase w-28 shrink-0">
+                  <span className="text-[10px] font-mono text-white/68 tracking-widest uppercase w-28 shrink-0">
                     {label}
                   </span>
-                  <span className="text-[11px] font-mono text-white/35 tracking-wide">
+                  <span className="text-[11px] font-mono text-white/58 tracking-wide">
                     {detail}
                   </span>
                 </div>
@@ -128,7 +128,7 @@ export default function WhyHireMe() {
               href="#contact"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="group inline-flex items-center gap-2 px-6 py-3 bg-white text-[#111318] text-sm font-bold rounded-full w-fit transition-all hover:bg-white/90"
+              className="group inline-flex items-center gap-2 px-6 py-3 bg-white text-[#0E0B1A] text-sm font-bold rounded-full w-fit transition-all hover:bg-white/90"
             >
               Let&apos;s work together
               <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -159,17 +159,17 @@ export default function WhyHireMe() {
 
                   {/* Text */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-semibold text-white/60 group-hover:text-white/85 transition-colors tracking-tight">
+                    <p className="text-[13px] font-semibold text-white/78 group-hover:text-white/85 transition-colors tracking-tight">
                       {title}
                     </p>
-                    <p className="text-[10px] font-mono text-white/22 mt-0.5 tracking-wide truncate">
+                    <p className="text-[10px] font-mono text-white/78 mt-0.5 tracking-wide truncate">
                       {sub}
                     </p>
                   </div>
 
                   {/* Stat */}
                   <span
-                    className="font-black text-white/18 group-hover:text-white/55 transition-colors leading-none tracking-tight shrink-0"
+                    className="font-black text-white/52 group-hover:text-white/75 transition-colors leading-none tracking-tight shrink-0"
                     style={{ fontSize: "clamp(1.4rem, 2.5vw, 2rem)", letterSpacing: "-0.03em" }}
                   >
                     {stat}

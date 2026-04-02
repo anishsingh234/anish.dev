@@ -71,7 +71,7 @@ function ExperienceRow({ exp, index }) {
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-5">
               <span
-                className="font-black text-white/[0.06] leading-none select-none"
+                className="font-black text-white/[0.1] leading-none select-none"
                 style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)", letterSpacing: "-0.04em" }}
               >
                 _{exp.index}.
@@ -80,13 +80,13 @@ function ExperienceRow({ exp, index }) {
                 className={`text-[9px] font-mono tracking-widest uppercase px-3 py-1.5 rounded-full border ${
                   isWork
                     ? "text-purple-300/70 border-purple-400/20 bg-purple-500/[0.08]"
-                    : "text-white/30 border-white/[0.09] bg-white/[0.03]"
+                    : "text-white/52 border-white/[0.09] bg-white/[0.03]"
                 }`}
               >
                 {isWork ? "Work" : "Education"}
               </span>
             </div>
-            <span className="font-mono text-[11px] text-white/25 tracking-widest">
+            <span className="font-mono text-[11px] text-white/68 tracking-widest">
               {exp.period}
             </span>
           </div>
@@ -100,13 +100,13 @@ function ExperienceRow({ exp, index }) {
               {exp.role}
             </h3>
             <div className="flex items-center gap-3 flex-wrap">
-              <span className={`text-[13px] font-semibold ${isWork ? "text-purple-300/75" : "text-white/50"}`}>
+              <span className={`text-[13px] font-semibold ${isWork ? "text-purple-300/75" : "text-white/72"}`}>
                 {exp.company}
               </span>
               {exp.location && (
                 <>
-                  <span className="text-white/15 text-xs">·</span>
-                  <span className="text-[12px] font-mono text-white/25 tracking-wide">
+                  <span className="text-white/48 text-xs">·</span>
+                  <span className="text-[12px] font-mono text-white/68 tracking-wide">
                     {exp.location}
                   </span>
                 </>
@@ -118,8 +118,8 @@ function ExperienceRow({ exp, index }) {
           {exp.bullets.length > 0 && (
             <ul className="space-y-2.5">
               {exp.bullets.map((b, i) => (
-                <li key={i} className="flex items-start gap-3 text-[13px] text-white/40 leading-relaxed font-light group-hover:text-white/50 transition-colors">
-                  <span className="text-white/15 mt-[5px] shrink-0 text-[7px] font-black">◆</span>
+                <li key={i} className="flex items-start gap-3 text-[13px] text-white/65 leading-relaxed font-light group-hover:text-white/72 transition-colors">
+                  <span className="text-white/48 mt-[5px] shrink-0 text-[7px] font-black">◆</span>
                   {b}
                 </li>
               ))}
@@ -132,7 +132,7 @@ function ExperienceRow({ exp, index }) {
               {exp.tech.map((t) => (
                 <span
                   key={t}
-                  className="text-[9px] font-mono text-white/25 tracking-widest uppercase border border-white/[0.07] rounded-full px-3 py-1 hover:border-white/15 hover:text-white/40 transition-colors"
+                  className="text-[9px] font-mono text-white/68 tracking-widest uppercase border border-white/[0.07] rounded-full px-3 py-1 hover:border-white/15 hover:text-white/65 transition-colors"
                 >
                   {t}
                 </span>
@@ -145,7 +145,7 @@ function ExperienceRow({ exp, index }) {
         {isWork && (
           <div className="hidden lg:flex items-start pt-12">
             <div className="w-10 h-10 rounded-full border border-white/[0.08] flex items-center justify-center group-hover:border-white/25 group-hover:bg-white/[0.04] transition-all duration-300">
-              <ArrowUpRight className="w-4 h-4 text-white/20 group-hover:text-white/60 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
+              <ArrowUpRight className="w-4 h-4 text-white/58 group-hover:text-white/78 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
             </div>
           </div>
         )}
@@ -168,7 +168,7 @@ export default function Experience() {
           className="flex items-end justify-between mb-16 flex-wrap gap-6"
         >
           <div>
-            <p className="text-[10px] font-mono text-white/20 tracking-[0.3em] uppercase mb-4">
+            <p className="text-[10px] font-mono text-white/58 tracking-[0.3em] uppercase mb-4">
               ◆ &nbsp; Background
             </p>
             <h2
@@ -179,7 +179,7 @@ export default function Experience() {
               <br />
               <span
                 className="text-transparent"
-                style={{ WebkitTextStroke: "1.5px rgba(255,255,255,0.2)" }}
+                style={{ WebkitTextStroke: "1.5px rgba(167,139,250,0.45)" }}
               >
                 Worked & Studied
               </span>

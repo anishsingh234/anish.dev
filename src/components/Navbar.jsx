@@ -63,19 +63,19 @@ function CommandPalette({ open, onClose, onNavigate }) {
           exit={{ opacity: 0, scale: 0.96, y: -10 }}
           transition={{ duration: 0.2, ease: EASE }}
           onClick={(e) => e.stopPropagation()}
-          className="relative w-full max-w-md rounded-2xl border border-white/[0.1] bg-[#0D0F18] shadow-2xl overflow-hidden"
+          className="relative w-full max-w-md rounded-2xl border border-white/[0.1] bg-[#120F20] shadow-2xl overflow-hidden"
         >
           {/* Search input */}
           <div className="flex items-center gap-3 px-4 py-3.5 border-b border-white/[0.07]">
-            <Search className="w-4 h-4 text-white/30 shrink-0" />
+            <Search className="w-4 h-4 text-white/52 shrink-0" />
             <input
               autoFocus
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search sections..."
-              className="flex-1 bg-transparent text-sm text-white/70 placeholder:text-white/25 outline-none font-mono tracking-wide"
+              className="flex-1 bg-transparent text-sm text-white/70 placeholder:text-white/68 outline-none font-mono tracking-wide"
             />
-            <kbd className="text-[10px] font-mono text-white/20 border border-white/[0.08] rounded px-1.5 py-0.5">
+            <kbd className="text-[10px] font-mono text-white/58 border border-white/[0.08] rounded px-1.5 py-0.5">
               ESC
             </kbd>
           </div>
@@ -83,7 +83,7 @@ function CommandPalette({ open, onClose, onNavigate }) {
           {/* Results */}
           <div className="py-2 max-h-64 overflow-y-auto">
             {filtered.length === 0 ? (
-              <p className="text-center text-sm text-white/25 py-6 font-mono">
+              <p className="text-center text-sm text-white/68 py-6 font-mono">
                 No results found
               </p>
             ) : (
@@ -93,13 +93,13 @@ function CommandPalette({ open, onClose, onNavigate }) {
                   onClick={() => { onNavigate(item); onClose(); }}
                   className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/[0.04] transition-colors text-left group"
                 >
-                  <span className="text-[10px] font-mono text-white/20 w-5 shrink-0">
+                  <span className="text-[10px] font-mono text-white/58 w-5 shrink-0">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <span className="text-sm text-white/55 group-hover:text-white/85 transition-colors tracking-tight font-medium">
+                  <span className="text-sm text-white/75 group-hover:text-white/85 transition-colors tracking-tight font-medium">
                     {item.label}
                   </span>
-                  <ArrowUpRight className="w-3 h-3 text-white/15 ml-auto group-hover:text-white/40" />
+                  <ArrowUpRight className="w-3 h-3 text-white/48 ml-auto group-hover:text-white/65" />
                 </button>
               ))
             )}
@@ -129,7 +129,7 @@ function LiveClock() {
     return () => clearInterval(t);
   }, []);
   return (
-    <span className="font-mono text-[10px] text-white/25 tracking-widest tabular-nums">
+    <span className="font-mono text-[10px] text-white/68 tracking-widest tabular-nums">
       {time}
     </span>
   );
@@ -205,19 +205,19 @@ export default function Navbar() {
         initial={{ x: -40, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: EASE, delay: 0.05 }}
-        className="hidden lg:flex fixed top-0 left-0 h-screen w-[220px] z-[100] flex-col border-r border-white/[0.06] bg-[#111318]/90 backdrop-blur-xl"
+        className="hidden lg:flex fixed top-0 left-0 h-screen w-[220px] z-[100] flex-col border-r border-white/[0.06] bg-[#0E0B1A]/90 backdrop-blur-xl"
       >
         {/* Logo */}
         <div className="px-5 py-5 border-b border-white/[0.06]">
           <Link href="/" className="group flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shrink-0">
-              <span className="text-[#111318] font-black text-[11px] leading-none tracking-tight">AK</span>
+              <span className="text-[#0E0B1A] font-black text-[11px] leading-none tracking-tight">AK</span>
             </div>
             <div className="flex flex-col">
               <span className="text-[12px] font-bold text-white/80 group-hover:text-white transition-colors leading-tight">
                 Anish Kumar
               </span>
-              <span className="text-[9px] font-mono text-white/25 tracking-wider">
+              <span className="text-[9px] font-mono text-white/68 tracking-wider">
                 @portfolio
               </span>
             </div>
@@ -230,11 +230,11 @@ export default function Navbar() {
             onClick={() => setPaletteOpen(true)}
             className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg border border-white/[0.07] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.12] transition-all group"
           >
-            <Search className="w-3.5 h-3.5 text-white/25 group-hover:text-white/45" />
-            <span className="flex-1 text-left text-[11px] font-mono text-white/22 group-hover:text-white/40 tracking-wide">
+            <Search className="w-3.5 h-3.5 text-white/68 group-hover:text-white/68" />
+            <span className="flex-1 text-left text-[11px] font-mono text-white/78 group-hover:text-white/65 tracking-wide">
               Search...
             </span>
-            <kbd className="text-[9px] font-mono text-white/18 border border-white/[0.07] rounded px-1.5 py-0.5 tracking-wider">
+            <kbd className="text-[9px] font-mono text-white/52 border border-white/[0.07] rounded px-1.5 py-0.5 tracking-wider">
               ⌘K
             </kbd>
           </button>
@@ -242,7 +242,7 @@ export default function Navbar() {
 
         {/* Nav links */}
         <div className="flex-1 overflow-y-auto py-3">
-          <p className="px-5 text-[9px] font-mono text-white/18 tracking-[0.25em] uppercase mb-2">
+          <p className="px-5 text-[9px] font-mono text-white/52 tracking-[0.25em] uppercase mb-2">
             Sections
           </p>
           <nav className="flex flex-col gap-0.5 px-2">
@@ -258,7 +258,7 @@ export default function Navbar() {
                   className={`group relative flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12.5px] font-medium transition-all duration-150 ${
                     isActive
                       ? "bg-white/[0.06] text-white"
-                      : "text-white/35 hover:text-white/70 hover:bg-white/[0.03]"
+                      : "text-white/58 hover:text-white/70 hover:bg-white/[0.03]"
                   }`}
                 >
                   {isActive && (
@@ -267,7 +267,7 @@ export default function Navbar() {
                       className="absolute left-0 top-1.5 bottom-1.5 w-[2px] bg-white rounded-full"
                     />
                   )}
-                  <span className="text-[9px] font-mono text-white/15 w-4 shrink-0">
+                  <span className="text-[9px] font-mono text-white/48 w-4 shrink-0">
                     {String(navItems.indexOf(item) + 1).padStart(2, "0")}
                   </span>
                   {item.label}
@@ -282,53 +282,42 @@ export default function Navbar() {
           {/* Clock */}
           <div className="flex items-center justify-between">
             <LiveClock />
-            <div className="flex items-center gap-1.5 px-2 py-1 border border-emerald-500/20 bg-emerald-500/[0.06] rounded-full">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
-              </span>
-              <span className="text-[8px] font-mono text-emerald-400/75 tracking-widest uppercase">
-                Open
-              </span>
-            </div>
           </div>
 
-        
-         {/* Links row: GitHub + Music + Resume Download */}
-<div className="flex items-center gap-2">
-  {/* GitHub */}
-  <a
-    href="https://github.com/anishsingh234"
-    target="_blank"
-    rel="noopener noreferrer"
-    title="GitHub"
-    className="flex items-center justify-center w-8 h-8 rounded-lg border border-white/[0.07] text-white/30 hover:text-white/65 hover:border-white/[0.18] transition-all"
-  >
-    <Github className="w-3.5 h-3.5" />
-  </a>
+          {/* Links row: GitHub + Resume + Music */}
+          <div className="flex items-center gap-2">
+            {/* GitHub */}
+            <a
+              href="https://github.com/anishsingh234"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="GitHub"
+              className="flex items-center justify-center w-8 h-8 rounded-lg border border-white/[0.07] text-white/52 hover:text-white/65 hover:border-white/[0.18] transition-all"
+            >
+              <Github className="w-3.5 h-3.5" />
+            </a>
 
-  {/* Music */}
-  <button
-    title="Now Playing"
-    className="flex items-center justify-center w-8 h-8 rounded-lg border border-white/[0.07] text-white/30 hover:text-white/65 hover:border-white/[0.18] transition-all"
-  >
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M9 18V5l12-2v13" />
-      <circle cx="6" cy="18" r="3" />
-      <circle cx="18" cy="16" r="3" />
-    </svg>
-  </button>
+            {/* Music (placeholder — wire up later) */}
+            <button
+              title="Now Playing"
+              className="flex items-center justify-center w-8 h-8 rounded-lg border border-white/[0.07] text-white/52 hover:text-white/65 hover:border-white/[0.18] transition-all"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 18V5l12-2v13" />
+                <circle cx="6" cy="18" r="3" />
+                <circle cx="18" cy="16" r="3" />
+              </svg>
+            </button>
 
-  {/* Resume Download */}
-  <a
-    href="/resume.pdf"
-    download="Anish_Kumar_Singh_Resume.pdf"
-    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 border border-white/[0.08] rounded-lg text-[10px] font-mono text-white/30 hover:text-white/65 hover:border-white/[0.18] transition-all tracking-widest uppercase"
-  >
-    <Download className="w-3 h-3" />
-    Resume
-  </a>
-</div>
+            {/* Resume → /resume page */}
+            <Link
+              href="/resume"
+              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 border border-white/[0.08] rounded-lg text-[10px] font-mono text-white/52 hover:text-white/65 hover:border-white/[0.18] transition-all tracking-widest uppercase"
+            >
+              <Download className="w-3 h-3" />
+              Resume
+            </Link>
+          </div>
         </div>
       </motion.aside>
 
@@ -337,12 +326,12 @@ export default function Navbar() {
         initial={{ y: -60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: EASE }}
-        className="lg:hidden fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-5 h-14 border-b border-white/[0.06] bg-[#111318]/90 backdrop-blur-xl"
+        className="lg:hidden fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-5 h-14 border-b border-white/[0.06] bg-[#0E0B1A]/90 backdrop-blur-xl"
       >
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center">
-            <span className="text-[#111318] font-black text-[10px]">AK</span>
+            <span className="text-[#0E0B1A] font-black text-[10px]">AK</span>
           </div>
           <span className="text-[13px] font-bold text-white/75">Anish Kumar</span>
         </Link>
@@ -351,14 +340,14 @@ export default function Navbar() {
         <div className="flex items-center gap-2.5">
           <button
             onClick={() => setPaletteOpen(true)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 border border-white/[0.08] rounded-lg text-white/30 hover:text-white/60 transition-all"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 border border-white/[0.08] rounded-lg text-white/52 hover:text-white/78 transition-all"
           >
             <Search className="w-3.5 h-3.5" />
             <kbd className="text-[9px] font-mono tracking-wider">⌘K</kbd>
           </button>
           <button
             onClick={() => setMobileOpen(true)}
-            className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/[0.08] text-white/45 hover:text-white/70 transition-all"
+            className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/[0.08] text-white/68 hover:text-white/70 transition-all"
           >
             <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
               <rect width="14" height="1.5" rx="0.75" fill="currentColor"/>
@@ -388,7 +377,7 @@ export default function Navbar() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ duration: 0.35, ease: EASE }}
-              className="lg:hidden fixed bottom-0 left-0 right-0 z-[160] bg-[#0D0F18] border-t border-white/[0.1] rounded-t-2xl overflow-hidden"
+              className="lg:hidden fixed bottom-0 left-0 right-0 z-[160] bg-[#120F20] border-t border-white/[0.1] rounded-t-2xl overflow-hidden"
             >
               {/* Handle */}
               <div className="flex justify-center pt-3 pb-1">
@@ -397,12 +386,12 @@ export default function Navbar() {
 
               {/* Header row */}
               <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.06]">
-                <p className="text-[9px] font-mono text-white/20 tracking-[0.3em] uppercase">
+                <p className="text-[9px] font-mono text-white/58 tracking-[0.3em] uppercase">
                   Navigation
                 </p>
                 <button
                   onClick={() => setMobileOpen(false)}
-                  className="w-7 h-7 flex items-center justify-center rounded-lg border border-white/[0.08] text-white/30 hover:text-white/60"
+                  className="w-7 h-7 flex items-center justify-center rounded-lg border border-white/[0.08] text-white/52 hover:text-white/78"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -423,10 +412,10 @@ export default function Navbar() {
                       className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-[12px] font-medium transition-all ${
                         isActive
                           ? "border-white/20 bg-white/[0.06] text-white"
-                          : "border-white/[0.06] bg-white/[0.02] text-white/40 hover:text-white/70"
+                          : "border-white/[0.06] bg-white/[0.02] text-white/65 hover:text-white/70"
                       }`}
                     >
-                      <span className="text-[9px] font-mono text-white/15">
+                      <span className="text-[9px] font-mono text-white/48">
                         {String(i + 1).padStart(2, "0")}.
                       </span>
                       {item.label}

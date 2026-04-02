@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import { Github, Linkedin, Mail } from "lucide-react";
 import Link from "next/link";
-import { EASE } from "@/components/home/SharedComponents";
+import { EASE } from "../home/SharedComponents";
 
 const navLinks = [
   { label: "Home",       href: "/"            },
@@ -24,7 +24,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative border-t border-white/[0.06] overflow-hidden bg-[#111318]">
+    <footer className="relative border-t border-white/[0.06] overflow-hidden bg-[#0E0B1A]">
 
       {/* ── Giant background name ── */}
       <div
@@ -62,11 +62,11 @@ export default function Footer() {
                 style={{ fontSize: "clamp(1.4rem, 2.5vw, 2rem)", letterSpacing: "-0.03em" }}>
                 Anish Kumar Singh
               </p>
-              <p className="text-[12px] font-mono text-white/25 tracking-widest uppercase">
+              <p className="text-[12px] font-mono text-white/68 tracking-widest uppercase">
                 Full Stack Developer · AI Engineer
               </p>
             </div>
-            <p className="text-[13px] text-white/35 leading-[1.75] max-w-[280px] font-light">
+            <p className="text-[13px] text-white/58 leading-[1.75] max-w-[280px] font-light">
               Building production-grade systems at the intersection of LLMs,
               RAG, and scalable full-stack architecture.
             </p>
@@ -84,7 +84,7 @@ export default function Footer() {
 
           {/* Navigate */}
           <div>
-            <p className="text-[9px] font-mono text-white/18 tracking-[0.25em] uppercase mb-5">
+            <p className="text-[9px] font-mono text-white/52 tracking-[0.25em] uppercase mb-5">
               Navigate
             </p>
             <ul className="flex flex-col gap-3">
@@ -92,7 +92,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="group flex items-center gap-2 text-[13px] text-white/28 hover:text-white/70 transition-colors duration-200"
+                    className="group flex items-center gap-2 text-[13px] text-white/48 hover:text-white/70 transition-colors duration-200"
                   >
                     <span className="w-0 h-px bg-white/40 transition-all duration-200 group-hover:w-3 opacity-0 group-hover:opacity-100" />
                     {link.label}
@@ -104,7 +104,7 @@ export default function Footer() {
 
           {/* Connect */}
           <div>
-            <p className="text-[9px] font-mono text-white/18 tracking-[0.25em] uppercase mb-5">
+            <p className="text-[9px] font-mono text-white/52 tracking-[0.25em] uppercase mb-5">
               Connect
             </p>
             <div className="flex flex-col gap-2.5">
@@ -116,7 +116,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   whileHover={{ x: 4 }}
                   transition={{ duration: 0.15 }}
-                  className="group inline-flex items-center gap-3 text-white/25 hover:text-white/65 transition-colors w-fit"
+                  className="group inline-flex items-center gap-3 text-white/68 hover:text-white/65 transition-colors w-fit"
                 >
                   <Icon className="w-[13px] h-[13px]" />
                   <span className="font-mono text-[12px] tracking-widest">{label}</span>
@@ -137,15 +137,15 @@ export default function Footer() {
           transition={{ duration: 0.6, delay: 0.2, ease: EASE }}
           className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6"
         >
-          <p className="font-mono text-[11px] text-white/18 tracking-wide">
+          <p className="font-mono text-[11px] text-white/52 tracking-wide">
             © {year} Anish Kumar Singh. All rights reserved.
           </p>
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-mono text-[10px] text-white/14 tracking-wide">built with</span>
+            <span className="font-mono text-[10px] text-white/68 tracking-wide">built with</span>
             {techStack.map((tech) => (
               <span
                 key={tech}
-                className="font-mono text-[9px] px-2 py-0.5 rounded-full border border-white/[0.07] text-white/20 tracking-widest"
+                className="font-mono text-[9px] px-2 py-0.5 rounded-full border border-white/[0.07] text-white/58 tracking-widest"
               >
                 {tech}
               </span>
@@ -163,7 +163,7 @@ export default function Footer() {
         suppressHydrationWarning
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="fixed bottom-8 right-8 w-9 h-9 rounded-full border border-white/[0.1] bg-[#111318]/80 hidden md:flex items-center justify-center text-white/25 hover:text-white/60 hover:border-white/25 transition-all backdrop-blur-sm"
+        className="fixed bottom-8 right-8 w-9 h-9 rounded-full border border-white/[0.1] bg-[#0E0B1A]/80 hidden md:flex items-center justify-center text-white/68 hover:text-white/78 hover:border-white/25 transition-all backdrop-blur-sm"
       >
         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />

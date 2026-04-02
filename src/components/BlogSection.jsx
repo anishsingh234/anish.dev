@@ -39,11 +39,11 @@ const BlogRow = ({ blog, index, onOpen }) => {
               _{String(index + 1).padStart(2, "0")}.
             </span>
             <div className="flex items-center gap-4">
-              <span className="flex items-center gap-1.5 font-mono text-[10px] text-white/20 tracking-widest">
+              <span className="flex items-center gap-1.5 font-mono text-[10px] text-white/58 tracking-widest">
                 <Clock className="w-3 h-3" />
                 {blog.readTime}
               </span>
-              <span className="font-mono text-[10px] text-white/15 tracking-widest">
+              <span className="font-mono text-[10px] text-white/48 tracking-widest">
                 {blog.date}
               </span>
             </div>
@@ -54,7 +54,7 @@ const BlogRow = ({ blog, index, onOpen }) => {
             {blog.tags.map((tag) => (
               <span
                 key={tag}
-                className="text-[9px] font-mono text-white/25 tracking-widest uppercase border border-white/[0.07] rounded-full px-3 py-1 group-hover:border-white/15 group-hover:text-white/40 transition-colors duration-300"
+                className="text-[9px] font-mono text-white/68 tracking-widest uppercase border border-white/[0.07] rounded-full px-3 py-1 group-hover:border-white/15 group-hover:text-white/65 transition-colors duration-300"
               >
                 {tag}
               </span>
@@ -70,12 +70,12 @@ const BlogRow = ({ blog, index, onOpen }) => {
           </h3>
 
           {/* Excerpt */}
-          <p className="text-sm text-white/35 leading-relaxed max-w-sm font-light line-clamp-3">
+          <p className="text-sm text-white/58 leading-relaxed max-w-sm font-light line-clamp-3">
             {blog.excerpt}
           </p>
 
           {/* Read CTA */}
-          <div className="flex items-center gap-2 text-white/25 group-hover:text-white/60 transition-colors duration-300">
+          <div className="flex items-center gap-2 text-white/68 group-hover:text-white/78 transition-colors duration-300">
             <span className="text-[11px] font-mono tracking-widest uppercase">
               Read writeup
             </span>
@@ -88,7 +88,7 @@ const BlogRow = ({ blog, index, onOpen }) => {
           <motion.div
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
-            className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden border border-white/[0.07] group-hover:border-white/[0.13] transition-colors duration-500 bg-[#0D0F18]"
+            className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden border border-white/[0.07] group-hover:border-white/[0.13] transition-colors duration-500 bg-[#120F20]"
           >
             <Image
               src={blog.cover}
@@ -101,7 +101,7 @@ const BlogRow = ({ blog, index, onOpen }) => {
             {/* Vignette */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(8,10,16,0.55)_100%)] pointer-events-none" />
             {/* Dark tint */}
-            <div className="absolute inset-0 bg-[#111318]/20 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
+            <div className="absolute inset-0 bg-[#0E0B1A]/20 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
           </motion.div>
         </div>
       </div>
@@ -128,7 +128,7 @@ const BlogSection = () => {
             className="flex items-end justify-between mb-16 flex-wrap gap-6"
           >
             <div>
-              <p className="text-[10px] font-mono text-white/20 tracking-[0.3em] uppercase mb-4">
+              <p className="text-[10px] font-mono text-white/58 tracking-[0.3em] uppercase mb-4">
                 ◆ &nbsp; Technical Writing
               </p>
               <h2
@@ -139,7 +139,7 @@ const BlogSection = () => {
                 <br />
                 <span
                   className="text-transparent"
-                  style={{ WebkitTextStroke: "1.5px rgba(255,255,255,0.2)" }}
+                  style={{ WebkitTextStroke: "1.5px rgba(167,139,250,0.45)" }}
                 >
                   Written
                 </span>
@@ -147,7 +147,7 @@ const BlogSection = () => {
             </div>
             <Link
               href="/blog"
-              className="group flex items-center gap-2 text-sm font-bold text-white/30 hover:text-white transition-colors"
+              className="group flex items-center gap-2 text-sm font-bold text-white/52 hover:text-white transition-colors"
             >
               View all posts
               <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />

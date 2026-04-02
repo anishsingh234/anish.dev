@@ -48,7 +48,7 @@ export default function Contact() {
           transition={{ duration: 0.7, ease: EASE }}
           className="mb-16"
         >
-          <p className="text-[10px] font-mono text-white/20 tracking-[0.3em] uppercase mb-4">
+          <p className="text-[10px] font-mono text-white/58 tracking-[0.3em] uppercase mb-4">
             ◆ &nbsp; Contact
           </p>
           <h2
@@ -59,7 +59,7 @@ export default function Contact() {
             <br />
             <span
               className="text-transparent"
-              style={{ WebkitTextStroke: "1.5px rgba(255,255,255,0.2)" }}
+              style={{ WebkitTextStroke: "1.5px rgba(167,139,250,0.45)" }}
             >
               Connect.
             </span>
@@ -77,7 +77,7 @@ export default function Contact() {
             transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
             className="flex flex-col gap-8"
           >
-            <p className="text-[15px] text-white/40 leading-[1.85] font-light max-w-md">
+            <p className="text-[15px] text-white/65 leading-[1.85] font-light max-w-md">
               I&apos;m actively looking for{" "}
               <span className="text-white/70 font-medium">Full-Stack / AI Engineering</span>{" "}
               opportunities. If you have an exciting role or project — let&apos;s talk.
@@ -85,7 +85,7 @@ export default function Contact() {
 
             {/* Email block */}
             <div className="flex flex-col gap-3">
-              <span className="text-[10px] font-mono text-white/20 tracking-[0.25em] uppercase">
+              <span className="text-[10px] font-mono text-white/58 tracking-[0.25em] uppercase">
                 Email
               </span>
               <div className="flex items-center gap-4">
@@ -96,7 +96,7 @@ export default function Contact() {
                   onClick={copyEmail}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.97 }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 border border-white/[0.1] rounded-full text-[10px] font-mono text-white/35 hover:text-white hover:border-white/25 transition-all tracking-widest uppercase"
+                  className="flex items-center gap-1.5 px-3 py-1.5 border border-white/[0.1] rounded-full text-[10px] font-mono text-white/58 hover:text-white hover:border-white/25 transition-all tracking-widest uppercase"
                 >
                   {copied ? (
                     <><CheckCircle2 className="w-3 h-3 text-emerald-400" /> Copied</>
@@ -122,19 +122,19 @@ export default function Contact() {
                   className="group flex items-center justify-between py-4 border-b border-white/[0.06] hover:border-white/[0.13] transition-colors"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-9 h-9 rounded-xl border border-white/[0.07] bg-white/[0.02] flex items-center justify-center text-white/40 group-hover:text-white/70 group-hover:border-white/[0.15] group-hover:bg-white/[0.04] transition-all">
+                    <div className="w-9 h-9 rounded-xl border border-white/[0.07] bg-white/[0.02] flex items-center justify-center text-white/65 group-hover:text-white/70 group-hover:border-white/[0.15] group-hover:bg-white/[0.04] transition-all">
                       {icon}
                     </div>
                     <div className="flex flex-col gap-0.5">
-                      <span className="text-[13px] font-semibold text-white/55 group-hover:text-white/85 transition-colors tracking-tight">
+                      <span className="text-[13px] font-semibold text-white/75 group-hover:text-white/85 transition-colors tracking-tight">
                         {label}
                       </span>
-                      <span className="text-[10px] font-mono text-white/22 tracking-wide">
+                      <span className="text-[10px] font-mono text-white/78 tracking-wide">
                         {sub}
                       </span>
                     </div>
                   </div>
-                  <ArrowUpRight className="w-4 h-4 text-white/15 group-hover:text-white/50 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                  <ArrowUpRight className="w-4 h-4 text-white/48 group-hover:text-white/72 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                 </motion.a>
               ))}
               <div className="h-px bg-white/[0.06]" />
@@ -146,7 +146,7 @@ export default function Contact() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
-              <span className="text-[11px] font-mono text-white/25 tracking-widest uppercase">
+              <span className="text-[11px] font-mono text-white/68 tracking-widest uppercase">
                 Available for full-time roles · Jun 2026
               </span>
             </div>
@@ -160,7 +160,7 @@ export default function Contact() {
             transition={{ duration: 0.7, ease: EASE, delay: 0.2 }}
             className="border border-white/[0.07] rounded-2xl p-7 sm:p-8 bg-white/[0.02]"
           >
-            <p className="text-[10px] font-mono text-white/20 tracking-[0.25em] uppercase mb-6">
+            <p className="text-[10px] font-mono text-white/58 tracking-[0.25em] uppercase mb-6">
               Send a message
             </p>
             <Form />

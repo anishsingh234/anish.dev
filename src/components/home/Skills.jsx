@@ -111,8 +111,8 @@ function GroupBlock({ group, show }) {
       {/* Command line */}
       <div className="flex items-center gap-2 mb-1 flex-wrap">
         <span className="font-mono text-[12px] text-purple-400/70">anish</span>
-        <span className="font-mono text-[12px] text-white/20">@portfolio</span>
-        <span className="font-mono text-[12px] text-white/55">{typedCmd}</span>
+        <span className="font-mono text-[12px] text-white/58">@portfolio</span>
+        <span className="font-mono text-[12px] text-white/75">{typedCmd}</span>
         {!cmdDone && show && (
           <span className="inline-block w-[7px] h-[13px] bg-purple-400/60 animate-pulse" />
         )}
@@ -126,7 +126,7 @@ function GroupBlock({ group, show }) {
           transition={{ duration: 0.25 }}
           className="pl-4 border-l border-white/[0.05] ml-1 mb-4"
         >
-          <p className="font-mono text-[10px] text-white/14 mb-2 leading-relaxed tracking-wide">
+          <p className="font-mono text-[10px] text-white/68 mb-2 leading-relaxed tracking-wide">
             {group.comment}
           </p>
           {group.rows.map((row, ri) => (
@@ -192,7 +192,7 @@ export default function Skills() {
           className="flex items-end justify-between mb-14 flex-wrap gap-6"
         >
           <div>
-            <p className="text-[10px] font-mono text-white/20 tracking-[0.3em] uppercase mb-4">
+            <p className="text-[10px] font-mono text-white/58 tracking-[0.3em] uppercase mb-4">
               ◆ &nbsp; Tech Stack
             </p>
             <h2
@@ -201,7 +201,7 @@ export default function Skills() {
             >
               Tools I
               <br />
-              <span className="text-transparent" style={{ WebkitTextStroke: "1.5px rgba(255,255,255,0.2)" }}>
+              <span className="text-transparent" style={{ WebkitTextStroke: "1.5px rgba(167,139,250,0.45)" }}>
                 Architect With
               </span>
             </h2>
@@ -214,7 +214,7 @@ export default function Skills() {
             ].map(({ val, label }) => (
               <div key={label} className="flex flex-col items-end">
                 <span className="text-2xl font-black text-white/75 leading-none tracking-tight">{val}</span>
-                <span className="text-[9px] font-mono text-white/20 tracking-widest uppercase mt-1">{label}</span>
+                <span className="text-[9px] font-mono text-white/58 tracking-widest uppercase mt-1">{label}</span>
               </div>
             ))}
           </div>
@@ -227,7 +227,7 @@ export default function Skills() {
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.15, ease: EASE }}
           className="rounded-2xl border border-white/[0.08] overflow-hidden"
-          style={{ background: "#090B13", boxShadow: "0 40px 80px rgba(0,0,0,0.55)" }}
+          style={{ background: "#0E0B1A", boxShadow: "0 40px 80px rgba(0,0,0,0.55)" }}
         >
           {/* Title bar */}
           <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.06]" style={{ background: "rgba(255,255,255,0.02)" }}>
@@ -236,7 +236,7 @@ export default function Skills() {
               <div className="w-3 h-3 rounded-full bg-yellow-500/55" />
               <div className="w-3 h-3 rounded-full bg-green-500/55" />
             </div>
-            <span className="font-mono text-[11px] text-white/18 tracking-widest">
+            <span className="font-mono text-[11px] text-white/52 tracking-widest">
               anish@portfolio — skills
             </span>
             <div className="w-16" />
@@ -251,12 +251,12 @@ export default function Skills() {
               transition={{ duration: 0.4 }}
               className="mb-5"
             >
-              <p className="font-mono text-[11px] text-white/18 leading-relaxed">
+              <p className="font-mono text-[11px] text-white/52 leading-relaxed">
                 Welcome. Type{" "}
                 <span className="text-purple-400/50">skills --help</span>{" "}
                 for all commands.
               </p>
-              <p className="font-mono text-[10px] text-white/[0.07] mt-1 tracking-wider">
+              <p className="font-mono text-[10px] text-white/[0.12] mt-1 tracking-wider">
                 ────────────────────────────────────────────────────
               </p>
             </motion.div>
@@ -266,10 +266,10 @@ export default function Skills() {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-5">
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-[12px] text-purple-400/70">anish</span>
-                  <span className="font-mono text-[12px] text-white/20">@portfolio</span>
-                  <span className="font-mono text-[12px] text-white/55">$ skills --list --all</span>
+                  <span className="font-mono text-[12px] text-white/58">@portfolio</span>
+                  <span className="font-mono text-[12px] text-white/75">$ skills --list --all</span>
                 </div>
-                <p className="font-mono text-[10px] text-white/18 pl-4 border-l border-white/[0.05] ml-1 mt-1 mb-4">
+                <p className="font-mono text-[10px] text-white/52 pl-4 border-l border-white/[0.05] ml-1 mt-1 mb-4">
                   Listing all skill categories...
                 </p>
               </motion.div>
@@ -293,7 +293,7 @@ export default function Skills() {
                 className="flex items-center gap-2 mt-2 pt-3 border-t border-white/[0.05]"
               >
                 <span className="font-mono text-[12px] text-purple-400/70">anish</span>
-                <span className="font-mono text-[12px] text-white/20">@portfolio</span>
+                <span className="font-mono text-[12px] text-white/58">@portfolio</span>
                 <span className="inline-block w-[7px] h-[13px] bg-purple-400/55 animate-pulse ml-0.5" />
               </motion.div>
             )}

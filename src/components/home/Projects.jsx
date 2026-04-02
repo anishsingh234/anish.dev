@@ -67,13 +67,13 @@ function ProjectRow({ project, index }) {
           {/* Index + tag row */}
           <div className="flex items-center justify-between">
             <span
-              className="font-black text-white/[0.06] leading-none select-none"
+              className="font-black text-white/[0.1] leading-none select-none"
               style={{ fontSize: "clamp(3.5rem, 7vw, 6rem)", letterSpacing: "-0.04em" }}
             >
               _{project.index}.
             </span>
             <div className="flex items-center gap-3">
-              <span className="text-[10px] font-mono text-white/25 tracking-[0.2em] uppercase">
+              <span className="text-[10px] font-mono text-white/68 tracking-[0.2em] uppercase">
                 {project.tag}
               </span>
               <div className="flex items-center gap-1.5">
@@ -94,7 +94,7 @@ function ProjectRow({ project, index }) {
             >
               {project.name}
             </h3>
-            <p className="text-sm text-white/40 leading-relaxed max-w-sm font-light">
+            <p className="text-sm text-white/65 leading-relaxed max-w-sm font-light">
               {project.oneLiner}
             </p>
           </div>
@@ -104,7 +104,7 @@ function ProjectRow({ project, index }) {
             {project.tech.map((t) => (
               <span
                 key={t}
-                className="text-[10px] font-mono text-white/30 tracking-widest uppercase border border-white/[0.07] rounded-full px-3 py-1 hover:border-white/20 hover:text-white/50 transition-colors"
+                className="text-[10px] font-mono text-white/52 tracking-widest uppercase border border-white/[0.07] rounded-full px-3 py-1 hover:border-white/20 hover:text-white/72 transition-colors"
               >
                 {t}
               </span>
@@ -120,7 +120,7 @@ function ProjectRow({ project, index }) {
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="group/btn flex items-center gap-2 px-5 py-2.5 bg-white text-[#111318] text-xs font-bold rounded-full transition-all"
+                className="group/btn flex items-center gap-2 px-5 py-2.5 bg-white text-[#0E0B1A] text-xs font-bold rounded-full transition-all"
               >
                 View Live
                 <ArrowUpRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
@@ -133,7 +133,7 @@ function ProjectRow({ project, index }) {
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="flex items-center gap-2 px-5 py-2.5 border border-white/[0.1] text-white/50 hover:text-white hover:border-white/25 text-xs font-bold rounded-full transition-all"
+                className="flex items-center gap-2 px-5 py-2.5 border border-white/[0.1] text-white/72 hover:text-white hover:border-white/25 text-xs font-bold rounded-full transition-all"
               >
                 <Github className="w-3.5 h-3.5" />
                 GitHub
@@ -147,7 +147,7 @@ function ProjectRow({ project, index }) {
           <motion.div
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
-            className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden border border-white/[0.07] group-hover:border-white/[0.12] transition-colors duration-500 bg-[#0D0F18]"
+            className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden border border-white/[0.07] group-hover:border-white/[0.12] transition-colors duration-500 bg-[#120F20]"
           >
             {/* Blurred bg */}
             <div className="absolute inset-0">
@@ -193,7 +193,7 @@ export default function Projects() {
           className="flex items-end justify-between mb-16 flex-wrap gap-6"
         >
           <div>
-            <p className="text-[10px] font-mono text-white/20 tracking-[0.3em] uppercase mb-4">
+            <p className="text-[10px] font-mono text-white/58 tracking-[0.3em] uppercase mb-4">
               ◆ &nbsp; Selected Work
             </p>
             <h2
@@ -204,7 +204,7 @@ export default function Projects() {
               <br />
               <span
                 className="text-transparent"
-                style={{ WebkitTextStroke: "1.5px rgba(255,255,255,0.2)" }}
+                style={{ WebkitTextStroke: "1.5px rgba(167,139,250,0.45)" }}
               >
                 Built
               </span>
@@ -212,7 +212,7 @@ export default function Projects() {
           </div>
           <Link
             href="/projects"
-            className="group flex items-center gap-2 text-sm font-bold text-white/30 hover:text-white transition-colors"
+            className="group flex items-center gap-2 text-sm font-bold text-white/52 hover:text-white transition-colors"
           >
             View all
             <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />

@@ -27,7 +27,7 @@ export default function AboutSection() {
           transition={{ duration: 0.7, ease: EASE }}
           className="mb-16"
         >
-          <p className="text-[10px] font-mono text-white/20 tracking-[0.3em] uppercase mb-4">
+          <p className="text-[10px] font-mono text-white/58 tracking-[0.3em] uppercase mb-4">
             ◆ &nbsp; About
           </p>
           <h2
@@ -38,7 +38,7 @@ export default function AboutSection() {
             <br />
             <span
               className="text-transparent"
-              style={{ WebkitTextStroke: "1.5px rgba(255,255,255,0.2)" }}
+              style={{ WebkitTextStroke: "1.5px rgba(167,139,250,0.45)" }}
             >
               Actually Am
             </span>
@@ -57,7 +57,7 @@ export default function AboutSection() {
             className="flex flex-col gap-8"
           >
             {/* Paragraphs */}
-            <div className="space-y-5 text-[15px] text-white/40 leading-[1.85] font-light max-w-lg">
+            <div className="space-y-5 text-[15px] text-white/65 leading-[1.85] font-light max-w-lg">
               <p>
                 I&apos;m a{" "}
                 <span className="text-white/80 font-semibold">Full-Stack Developer</span>{" "}
@@ -90,7 +90,7 @@ export default function AboutSection() {
                 href="mailto:anishsingh210204@gmail.com"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="group flex items-center gap-2 px-6 py-3 bg-white text-[#111318] text-sm font-bold rounded-full transition-all hover:bg-white/90"
+                className="group flex items-center gap-2 px-6 py-3 bg-white text-[#0E0B1A] text-sm font-bold rounded-full transition-all hover:bg-white/90"
               >
                 <Mail className="w-4 h-4" />
                 Get in Touch
@@ -101,7 +101,7 @@ export default function AboutSection() {
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.03, backgroundColor: "rgba(255,255,255,0.05)" }}
                 whileTap={{ scale: 0.97 }}
-                className="group flex items-center gap-2 px-6 py-3 border border-white/[0.1] text-white/55 hover:text-white text-sm font-bold rounded-full transition-all"
+                className="group flex items-center gap-2 px-6 py-3 border border-white/[0.1] text-white/75 hover:text-white text-sm font-bold rounded-full transition-all"
               >
                 LinkedIn
                 <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -129,10 +129,10 @@ export default function AboutSection() {
                 >
                   {/* Left: label + sub */}
                   <div className="flex flex-col gap-0.5">
-                    <span className="text-[13px] font-semibold text-white/55 tracking-tight group-hover:text-white/75 transition-colors">
+                    <span className="text-[13px] font-semibold text-white/75 tracking-tight group-hover:text-white/75 transition-colors">
                       {label}
                     </span>
-                    <span className="text-[10px] font-mono text-white/20 tracking-widest uppercase">
+                    <span className="text-[10px] font-mono text-white/58 tracking-widest uppercase">
                       {sub}
                     </span>
                   </div>
@@ -153,7 +153,7 @@ export default function AboutSection() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                 </span>
-                <span className="text-[11px] font-mono text-white/25 tracking-widest uppercase">
+                <span className="text-[11px] font-mono text-white/68 tracking-widest uppercase">
                   Open to full-time roles & exciting opportunities
                 </span>
               </div>
