@@ -111,7 +111,7 @@ const Preloader = () => {
 
       // ── Phase 3: Exit ──
       tl.to(".pl-text", {
-        delay: 0.6,
+        delay: 0.3,
         autoAlpha: 0,
         y: "-10%",
         scale: 0.96,
