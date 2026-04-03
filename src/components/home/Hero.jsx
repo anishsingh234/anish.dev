@@ -4,10 +4,22 @@ import { motion } from "framer-motion";
 import { Github, Mail, ArrowUpRight, MapPin } from "lucide-react";
 import { EASE } from "./SharedComponents";
 import ArrowAnimation from "./ArrowAnimation";
+import Link from "next/link";
 const MARQUEE_ITEMS = [
-  "NEXT.JS","REACT","NODE.JS","PYTHON","FASTAPI",
-  "LANGCHAIN","CREWAI","RAG","PINECONE","TYPESCRIPT",
-  "MONGODB","SUPABASE","FRAMER MOTION","TAILWIND CSS",
+  "NEXT.JS",
+  "REACT",
+  "NODE.JS",
+  "PYTHON",
+  "FASTAPI",
+  "LANGCHAIN",
+  "CREWAI",
+  "RAG",
+  "PINECONE",
+  "TYPESCRIPT",
+  "MONGODB",
+  "SUPABASE",
+  "FRAMER MOTION",
+  "TAILWIND CSS",
 ];
 
 function Marquee() {
@@ -39,9 +51,11 @@ function LocalTime() {
       setTime(
         new Date().toLocaleTimeString("en-IN", {
           timeZone: "Asia/Kolkata",
-          hour: "2-digit", minute: "2-digit", second: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
           hour12: false,
-        })
+        }),
       );
     fmt();
     const t = setInterval(fmt, 1000);
@@ -72,7 +86,10 @@ function CursorGlow() {
   return (
     <motion.div
       className="absolute top-0 left-0 w-[700px] h-[700px] rounded-full pointer-events-none z-0"
-      style={{ background: "radial-gradient(circle, rgba(139,92,246,0.09) 0%, transparent 65%)" }}
+      style={{
+        background:
+          "radial-gradient(circle, rgba(139,92,246,0.09) 0%, transparent 65%)",
+      }}
       animate={{ x: pos.x - 350, y: pos.y - 350 }}
       transition={{ type: "tween", ease: "backOut", duration: 0.6 }}
     />
@@ -82,7 +99,8 @@ function CursorGlow() {
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (delay = 0) => ({
-    opacity: 1, y: 0,
+    opacity: 1,
+    y: 0,
     transition: { duration: 0.7, ease: EASE, delay },
   }),
 };
@@ -93,12 +111,27 @@ export default function Hero() {
       <CursorGlow />
 
       {/* Ambient orbs */}
-      <div className="absolute top-[-15%] right-[-5%] w-[600px] h-[600px] rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 65%)" }} />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(99,55,200,0.1) 0%, transparent 65%)" }} />
-      <div className="absolute top-[40%] left-[40%] w-[400px] h-[400px] rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(167,139,250,0.04) 0%, transparent 65%)" }} />
+      <div
+        className="absolute top-[-15%] right-[-5%] w-[600px] h-[600px] rounded-full pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 65%)",
+        }}
+      />
+      <div
+        className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(99,55,200,0.1) 0%, transparent 65%)",
+        }}
+      />
+      <div
+        className="absolute top-[40%] left-[40%] w-[400px] h-[400px] rounded-full pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(167,139,250,0.04) 0%, transparent 65%)",
+        }}
+      />
 
       {/* ── Top bar ── */}
       <motion.div
@@ -118,23 +151,43 @@ export default function Hero() {
           <LocalTime />
 
           {/* GitHub */}
-          <a href="https://github.com/anishsingh234" target="_blank" rel="noopener noreferrer"
-            className="flex items-center justify-center w-8 h-8 rounded-lg border border-purple-400/[0.15] bg-purple-400/[0.05] text-white/50 hover:text-white hover:border-purple-400/[0.4] hover:bg-purple-400/[0.12] transition-all">
+          <a
+            href="https://github.com/anishsingh234"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center w-8 h-8 rounded-lg border border-purple-400/[0.15] bg-purple-400/[0.05] text-white/50 hover:text-white hover:border-purple-400/[0.4] hover:bg-purple-400/[0.12] transition-all"
+          >
             <Github className="w-3.5 h-3.5" />
           </a>
 
           {/* Music */}
-          <button
-            className="flex items-center justify-center w-8 h-8 rounded-lg border border-purple-400/[0.15] bg-purple-400/[0.05] text-white/50 hover:text-white hover:border-purple-400/[0.4] hover:bg-purple-400/[0.12] transition-all">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
+          <Link
+            href="https://linkedin.com/in/anish-ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="LinkedIn"
+            className="flex items-center justify-center w-8 h-8 rounded-lg border border-purple-400/[0.15] bg-purple-400/[0.05] text-white/50 hover:text-white hover:border-purple-400/[0.4] hover:bg-purple-400/[0.12] transition-all"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
             </svg>
-          </button>
+          </Link>
 
           {/* Resume */}
-          <a href="/resume"
-            className="flex items-center gap-1.5 px-3.5 py-1.5 border border-purple-400/[0.2] rounded-lg text-[9px] font-mono text-white/55 hover:text-white hover:border-purple-400/[0.45] hover:bg-purple-400/[0.08] transition-all tracking-widest uppercase">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <a
+            href="/resume"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 border border-purple-400/[0.2] rounded-lg text-[9px] font-mono text-white/55 hover:text-white hover:border-purple-400/[0.45] hover:bg-purple-400/[0.08] transition-all tracking-widest uppercase"
+          >
+            <svg
+              width="11"
+              height="11"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
             </svg>
             Resume
@@ -144,7 +197,6 @@ export default function Hero() {
 
       {/* ── Hero body ── */}
       <div className="relative z-10 flex-1 flex flex-col justify-center px-6 sm:px-10 pt-8 pb-0">
-
         {/* Availability badge */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -179,7 +231,10 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
             className="font-black leading-[0.88] tracking-tight text-white select-none"
-            style={{ fontSize: "clamp(4rem, 13vw, 11rem)", letterSpacing: "-0.03em" }}
+            style={{
+              fontSize: "clamp(4rem, 13vw, 11rem)",
+              letterSpacing: "-0.03em",
+            }}
           >
             ANISH
           </motion.h1>
@@ -222,7 +277,10 @@ export default function Hero() {
           animate={{ scaleX: 1 }}
           transition={{ delay: 0.55, duration: 0.8, ease: EASE }}
           className="origin-left h-px mt-8 mb-8"
-          style={{ background: "linear-gradient(90deg, rgba(167,139,250,0.35) 0%, rgba(255,255,255,0.06) 60%, transparent 100%)" }}
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(167,139,250,0.35) 0%, rgba(255,255,255,0.06) 60%, transparent 100%)",
+          }}
         />
 
         {/* Bottom grid */}
@@ -236,18 +294,23 @@ export default function Hero() {
           <div className="space-y-6">
             <p className="text-[14px] text-white/50 leading-[1.85] max-w-md font-light">
               I build production-grade web apps with{" "}
-              <span className="text-white/80 font-semibold">Next.js, Node.js, React</span>{" "}
+              <span className="text-white/80 font-semibold">
+                Next.js, Node.js, React
+              </span>{" "}
               — supercharged with{" "}
-              <span className="text-purple-300/85 font-medium">AI systems</span>:
-              LLMs, RAG pipelines, and multi-agent workflows.
-              Currently interning at{" "}
-              <span className="text-white/80 font-semibold">Exponent Solutions</span>.
+              <span className="text-purple-300/85 font-medium">AI systems</span>
+              : LLMs, RAG pipelines, and multi-agent workflows. Currently
+              interning at{" "}
+              <span className="text-white/80 font-semibold">
+                Exponent Solutions
+              </span>
+              .
             </p>
             <div className="flex items-center gap-8">
               {[
-                { val: "5+",     label: "AI SaaS Shipped" },
-                { val: "350+",   label: "DSA Problems"    },
-                { val: "B.Tech", label: "CS · AI/ML '26"  },
+                { val: "5+", label: "AI SaaS Shipped" },
+                { val: "350+", label: "DSA Problems" },
+                { val: "B.Tech", label: "CS · AI/ML '26" },
               ].map(({ val, label }) => (
                 <div key={label} className="flex flex-col gap-1">
                   <span className="text-xl font-black text-white/85 leading-none tracking-tight">

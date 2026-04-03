@@ -37,7 +37,7 @@ export default function Footer() {
             fontSize: "clamp(6rem, 22vw, 22rem)",
             letterSpacing: "-0.04em",
             color: "transparent",
-            WebkitTextStroke: "1px rgba(255,255,255,0.04)",
+           WebkitTextStroke: "1px rgba(167,139,250,0.15)",
             lineHeight: 0.82,
           }}
         >

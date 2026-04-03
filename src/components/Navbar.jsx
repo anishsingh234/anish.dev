@@ -4,26 +4,26 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Download, Search, X, Github, ArrowUpRight } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const EASE = [0.16, 1, 0.3, 1];
 
 const navItems = [
-  { label: "Home",        href: "/",             id: null        },
-  { label: "Projects",    href: "/#projects",    id: "projects"  },
-  { label: "Blog",        href: "/#blog",        id: "blog"      },
-  { label: "Skills",      href: "/#skills",      id: "skills"    },
-  { label: "Experience",  href: "/#experience",  id: "experience"},
-  { label: "About",       href: "/#about",       id: "about"     },
-  { label: "Why Hire Me", href: "/#why-hire-me", id: "why-hire-me"},
-  { label: "Contact",     href: "/#contact",     id: "contact"   },
+  { label: "Home", href: "/", id: null },
+  { label: "Projects", href: "/#projects", id: "projects" },
+  { label: "Blog", href: "/#blog", id: "blog" },
+  { label: "Skills", href: "/#skills", id: "skills" },
+  { label: "Experience", href: "/#experience", id: "experience" },
+  { label: "About", href: "/#about", id: "about" },
+  { label: "Why Hire Me", href: "/#why-hire-me", id: "why-hire-me" },
+  { label: "Contact", href: "/#contact", id: "contact" },
 ];
 
 // ── Command Palette ───────────────────────────────────────────
 function CommandPalette({ open, onClose, onNavigate }) {
   const [query, setQuery] = useState("");
   const filtered = navItems.filter((n) =>
-    n.label.toLowerCase().includes(query.toLowerCase())
+    n.label.toLowerCase().includes(query.toLowerCase()),
   );
 
   useEffect(() => {
@@ -90,7 +90,10 @@ function CommandPalette({ open, onClose, onNavigate }) {
               filtered.map((item, i) => (
                 <button
                   key={item.label}
-                  onClick={() => { onNavigate(item); onClose(); }}
+                  onClick={() => {
+                    onNavigate(item);
+                    onClose();
+                  }}
                   className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/[0.04] transition-colors text-left group"
                 >
                   <span className="text-[10px] font-mono text-white/58 w-5 shrink-0">
@@ -122,7 +125,7 @@ function LiveClock() {
           minute: "2-digit",
           second: "2-digit",
           hour12: false,
-        })
+        }),
       );
     fmt();
     const t = setInterval(fmt, 1000);
@@ -141,6 +144,7 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const pathname = usePathname();
+  const router = useRouter();
   const isHome = pathname === "/";
 
   // ⌘K shortcut
@@ -163,8 +167,10 @@ export default function Navbar() {
       const el = document.getElementById(id);
       if (!el) return null;
       const ob = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
-        { threshold: 0.3 }
+        ([entry]) => {
+          if (entry.isIntersecting) setActiveSection(id);
+        },
+        { threshold: 0.3 },
       );
       ob.observe(el);
       return ob;
@@ -175,27 +181,17 @@ export default function Navbar() {
   // Lock scroll on mobile menu
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [mobileOpen]);
 
   const handleNavigate = (item) => {
-    if (isHome && item.id) {
-      const el = document.getElementById(item.id);
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }
+    router.push(item.href);
   };
 
   const handleNavClick = (e, item) => {
-    if (isHome && item.id) {
-      e.preventDefault();
-      setMobileOpen(false);
-      setTimeout(() => {
-        const el = document.getElementById(item.id);
-        if (el) el.scrollIntoView({ behavior: "smooth" });
-      }, 50);
-    } else {
-      setMobileOpen(false);
-    }
+    setMobileOpen(false);
   };
 
   return (
@@ -211,7 +207,9 @@ export default function Navbar() {
         <div className="px-5 py-5 border-b border-white/[0.06]">
           <Link href="/" className="group flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shrink-0">
-              <span className="text-[#0E0B1A] font-black text-[11px] leading-none tracking-tight">AK</span>
+              <span className="text-[#0E0B1A] font-black text-[11px] leading-none tracking-tight">
+                AK
+              </span>
             </div>
             <div className="flex flex-col">
               <span className="text-[12px] font-bold text-white/80 group-hover:text-white transition-colors leading-tight">
@@ -251,9 +249,9 @@ export default function Navbar() {
                 ? activeSection === item.id
                 : pathname === "/" && !activeSection;
               return (
-                <a
+                <Link
                   key={item.label}
-                  href={isHome && item.id ? `#${item.id}` : item.href}
+                  href={item.href}
                   onClick={(e) => handleNavClick(e, item)}
                   className={`group relative flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12.5px] font-medium transition-all duration-150 ${
                     isActive
@@ -271,7 +269,7 @@ export default function Navbar() {
                     {String(navItems.indexOf(item) + 1).padStart(2, "0")}
                   </span>
                   {item.label}
-                </a>
+                </Link>
               );
             })}
           </nav>
@@ -287,7 +285,7 @@ export default function Navbar() {
           {/* Links row: GitHub + Resume + Music */}
           <div className="flex items-center gap-2">
             {/* GitHub */}
-            <a
+            <Link
               href="https://github.com/anishsingh234"
               target="_blank"
               rel="noopener noreferrer"
@@ -295,19 +293,25 @@ export default function Navbar() {
               className="flex items-center justify-center w-8 h-8 rounded-lg border border-white/[0.07] text-white/52 hover:text-white/65 hover:border-white/[0.18] transition-all"
             >
               <Github className="w-3.5 h-3.5" />
-            </a>
+            </Link>
 
             {/* Music (placeholder — wire up later) */}
-            <button
-              title="Now Playing"
-              className="flex items-center justify-center w-8 h-8 rounded-lg border border-white/[0.07] text-white/52 hover:text-white/65 hover:border-white/[0.18] transition-all"
+            <Link
+              href="https://linkedin.com/in/anish-ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="LinkedIn"
+              className="flex items-center justify-center w-8 h-8 rounded-lg border border-white/[0.07] text-white/30 hover:text-white/65 hover:border-white/[0.18] transition-all"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 18V5l12-2v13" />
-                <circle cx="6" cy="18" r="3" />
-                <circle cx="18" cy="16" r="3" />
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
               </svg>
-            </button>
+            </Link>
 
             {/* Resume Download */}
             <a
@@ -334,7 +338,9 @@ export default function Navbar() {
           <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center">
             <span className="text-[#0E0B1A] font-black text-[10px]">AK</span>
           </div>
-          <span className="text-[13px] font-bold text-white/75">Anish Kumar</span>
+          <span className="text-[13px] font-bold text-white/75">
+            Anish Kumar
+          </span>
         </Link>
 
         {/* Right */}
@@ -351,9 +357,21 @@ export default function Navbar() {
             className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/[0.08] text-white/68 hover:text-white/70 transition-all"
           >
             <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
-              <rect width="14" height="1.5" rx="0.75" fill="currentColor"/>
-              <rect y="4.25" width="10" height="1.5" rx="0.75" fill="currentColor"/>
-              <rect y="8.5" width="14" height="1.5" rx="0.75" fill="currentColor"/>
+              <rect width="14" height="1.5" rx="0.75" fill="currentColor" />
+              <rect
+                y="4.25"
+                width="10"
+                height="1.5"
+                rx="0.75"
+                fill="currentColor"
+              />
+              <rect
+                y="8.5"
+                width="14"
+                height="1.5"
+                rx="0.75"
+                fill="currentColor"
+              />
             </svg>
           </button>
         </div>
@@ -403,24 +421,27 @@ export default function Navbar() {
                 {navItems.map((item, i) => {
                   const isActive = item.id ? activeSection === item.id : false;
                   return (
-                    <motion.a
+                    <motion.div
                       key={item.label}
-                      href={isHome && item.id ? `#${item.id}` : item.href}
-                      onClick={(e) => handleNavClick(e, item)}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.03, duration: 0.25 }}
-                      className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-[12px] font-medium transition-all ${
-                        isActive
-                          ? "border-white/20 bg-white/[0.06] text-white"
-                          : "border-white/[0.06] bg-white/[0.02] text-white/65 hover:text-white/70"
-                      }`}
                     >
-                      <span className="text-[9px] font-mono text-white/48">
-                        {String(i + 1).padStart(2, "0")}.
-                      </span>
-                      {item.label}
-                    </motion.a>
+                      <Link
+                        href={item.href}
+                        onClick={(e) => handleNavClick(e, item)}
+                        className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-[12px] font-medium transition-all ${
+                          isActive
+                            ? "border-white/20 bg-white/[0.06] text-white"
+                            : "border-white/[0.06] bg-white/[0.02] text-white/65 hover:text-white/70"
+                        }`}
+                      >
+                        <span className="text-[9px] font-mono text-white/48">
+                          {String(i + 1).padStart(2, "0")}.
+                        </span>
+                        {item.label}
+                      </Link>
+                    </motion.div>
                   );
                 })}
               </div>
@@ -456,7 +477,8 @@ export default function Navbar() {
       {/* Desktop content offset */}
       <style jsx global>{`
         @media (min-width: 1024px) {
-          main, #__next > div > main {
+          main,
+          #__next > div > main {
             margin-left: 220px;
           }
         }

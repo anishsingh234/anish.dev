@@ -6,10 +6,11 @@ const TOKENS = [
   "RAG", "LLM", "AGENT", "NEXT", "NODE", "VEC", "EMBED", "CHAIN",
   "ATTN", "SOFTMAX", "LOGIT", "CTX", "TOKEN", "PIPE", "SaaS",
   "∇", "∞", "λ", "∑", "→", "fn()", "API", "DB", "AI", "<>",
-  "0.97", "stream", "kv-cache", "multi-agent"
+  "0.97", "stream", "kv-cache", "multi-agent",
+  "ANISH", "DEV", "✦",
 ];
 
-const COLORS = ["#a855f7", "#8b5cf6", "#3b82f6", "#22d3ee"]; // purple → blue → cyan
+const COLORS = ["#a855f7", "#8b5cf6", "#7c3aed", "#c084fc"];
 
 class Particle {
   constructor(x, y, isBurst = false) {
@@ -29,7 +30,7 @@ class Particle {
   update() {
     this.x += this.vx;
     this.y += this.vy;
-    this.vy += 0.018; // gentle gravity
+    this.vy += 0.018;
     this.vx *= 0.985;
     this.vy *= 0.985;
     this.alpha -= 0.012;
@@ -74,8 +75,6 @@ export default function CustomCursor() {
     canvas.style.height = "100vh";
     canvas.style.pointerEvents = "none";
     canvas.style.zIndex = "9997";
-    canvas.style.mixBlendMode = "screen";
-    document.body.appendChild(canvas);
     canvasRef.current = canvas;
 
     const ctx = canvas.getContext("2d", { alpha: true });
@@ -90,19 +89,20 @@ export default function CustomCursor() {
     };
     resize();
     window.addEventListener("resize", resize);
+    document.body.appendChild(canvas);
 
     // === PARTICLE SYSTEM ===
     const particles = particlesRef.current;
 
     function createParticle(x, y, isBurst = false) {
       particles.push(new Particle(x, y, isBurst));
-      if (particles.length > 110) particles.shift(); // max 110 for performance
+      if (particles.length > 110) particles.shift();
     }
 
     function draw() {
       ctx.clearRect(0, 0, width, height);
 
-      // Draw neural connections first
+      // Neural connections
       ctx.lineWidth = 0.8;
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
@@ -132,7 +132,6 @@ export default function CustomCursor() {
         ctx.translate(p.x, p.y);
         ctx.rotate((p.rotation * Math.PI) / 180);
 
-        // Glow
         ctx.shadowColor = p.color;
         ctx.shadowBlur = 18;
 
@@ -151,21 +150,14 @@ export default function CustomCursor() {
     }
 
     // === MAIN RAF LOOP ===
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
     function tick() {
-      // Smooth ring lag
       targetRef.current.x = lerp(targetRef.current.x, mouseRef.current.x, 0.14);
       targetRef.current.y = lerp(targetRef.current.y, mouseRef.current.y, 0.14);
-
       ring.style.transform = `translate(${targetRef.current.x}px, ${targetRef.current.y}px) translate(-50%, -50%)`;
-
-      // Particle animation + neural net
       draw();
-
       rafRef.current = requestAnimationFrame(tick);
-    }
-
-    function lerp(a, b, t) {
-      return a + (b - a) * t;
     }
 
     rafRef.current = requestAnimationFrame(tick);
@@ -183,18 +175,21 @@ export default function CustomCursor() {
       if (now - lastEmitRef.current > (isHoverRef.current ? 55 : 85)) {
         lastEmitRef.current = now;
         createParticle(e.clientX, e.clientY);
-        // occasional extra trail
-        if (Math.random() > 0.6) createParticle(e.clientX + (Math.random() - 0.5) * 18, e.clientY + (Math.random() - 0.5) * 18);
+        if (Math.random() > 0.6)
+          createParticle(
+            e.clientX + (Math.random() - 0.5) * 18,
+            e.clientY + (Math.random() - 0.5) * 18
+          );
       }
     };
 
     const onDown = (e) => {
       ring.style.width = "22px";
       ring.style.height = "22px";
-      dot.style.boxShadow = "0 0 28px #a855f7, 0 0 48px #3b82f6";
+      dot.style.boxShadow = "0 0 28px #a855f7, 0 0 48px #7c3aed";
 
-      // Big neural explosion
-      for (let i = 0; i < 18; i++) {
+      // Burst — reduced to 10 for performance
+      for (let i = 0; i < 10; i++) {
         setTimeout(() => {
           createParticle(e.clientX, e.clientY, true);
         }, i * 14);
@@ -204,7 +199,7 @@ export default function CustomCursor() {
     const onUp = () => {
       ring.style.width = "34px";
       ring.style.height = "34px";
-      dot.style.boxShadow = "0 0 12px rgba(168,85,247,0.9)";
+      dot.style.boxShadow = "0 0 12px rgba(168,85,247,0.9), 0 0 28px rgba(124,58,237,0.6)";
     };
 
     const isInteractive = (el) =>
@@ -215,9 +210,9 @@ export default function CustomCursor() {
         isHoverRef.current = true;
         ring.style.width = "56px";
         ring.style.height = "56px";
-        ring.style.borderColor = "rgba(59,130,246,0.85)";
+        ring.style.borderColor = "rgba(167,139,250,0.85)";
         ring.style.background = "rgba(139,92,246,0.08)";
-        ring.style.boxShadow = "0 0 30px rgba(59,130,246,0.6)";
+        ring.style.boxShadow = "0 0 30px rgba(139,92,246,0.5)";
       }
     };
 
@@ -249,7 +244,6 @@ export default function CustomCursor() {
       cancelAnimationFrame(rafRef.current);
       if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
       window.removeEventListener("resize", resize);
-
       document.removeEventListener("mousemove", onMove);
       document.removeEventListener("mousedown", onDown);
       document.removeEventListener("mouseup", onUp);
@@ -263,16 +257,16 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Core Dot – instant follow, AI core glow */}
+      {/* Core Dot */}
       <div
         ref={dotRef}
         style={{
           position: "fixed",
-          width: "8px",
-          height: "8px",
+          width: "10px",
+          height: "10px",
           borderRadius: "50%",
           background: "#a855f7",
-          boxShadow: "0 0 12px rgba(168,85,247,0.95), 0 0 28px rgba(59,130,246,0.6)",
+          boxShadow: "0 0 12px rgba(168,85,247,0.95), 0 0 28px rgba(124,58,237,0.6)",
           pointerEvents: "none",
           zIndex: 9999,
           opacity: 0,
@@ -281,7 +275,7 @@ export default function CustomCursor() {
         }}
       />
 
-      {/* Magnetic Ring – bigger, gradient border, hover magic */}
+      {/* Magnetic Ring */}
       <div
         ref={ringRef}
         style={{
