@@ -8,14 +8,14 @@ import Image from "next/image";
 gsap.registerPlugin(useGSAP);
 
 const words = [
-  { text: "Hello",        lang: "English" },
-  { text: "你好",          lang: "Chinese" },
-  { text: "こんにちは",     lang: "Japanese" },
-  { text: "Bonjour",      lang: "French" },
-  { text: "안녕하세요",     lang: "Korean" },
-  { text: "Здравствуйте", lang: "Russian" },
-  { text: "नमस्ते",        lang: "Hindi" },
-  
+  { text: "Hello",        lang: "Code. Create. Scale." }, // English
+  { text: "你好",          lang: "编写 · 创造 · 扩展" },     // Chinese
+  { text: "こんにちは",     lang: "コード · 創造 · 拡張" }, // Japanese
+  { text: "Bonjour",      lang: "Coder · Créer · Déployer" }, // French
+  { text: "안녕하세요",     lang: "코드 · 창조 · 확장" },     // Korean
+   { text: "Здравствуйте", lang: "Код · Создание · Масштаб" }, // Russian
+  { text: "नमस्ते",        lang: "कोड · निर्माण · विस्तार" }, // Hindi
+ 
 ];
 
 const FLASH_WORDS = words.slice(0, -1);
