@@ -309,14 +309,15 @@ export default function Navbar() {
               </svg>
             </button>
 
-            {/* Resume → /resume page */}
-            <Link
-              href="/resume"
+            {/* Resume Download */}
+            <a
+              href="/resume.pdf"
+              download="Anish_Kumar_Resume.pdf"
               className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 border border-white/[0.08] rounded-lg text-[10px] font-mono text-white/52 hover:text-white/65 hover:border-white/[0.18] transition-all tracking-widest uppercase"
             >
               <Download className="w-3 h-3" />
               Resume
-            </Link>
+            </a>
           </div>
         </div>
       </motion.aside>
