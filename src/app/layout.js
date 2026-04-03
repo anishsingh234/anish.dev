@@ -4,6 +4,8 @@ import clsx from "clsx";
 import Footer from "@/components/footer";
 import CustomCursor from "@/components/home/CustomCursor";
 import StarBackground from "@/components/StarBackground";
+
+import { Dancing_Script, Great_Vibes } from "next/font/google";
 import Preloader from "@/components/home/Preloader";
 import { Bebas_Neue } from 'next/font/google';
 
@@ -12,6 +14,20 @@ const bebas = Bebas_Neue({
   subsets: ['latin'],
   display: 'swap',
 });
+
+const dancingScript = Dancing_Script({
+  subsets: ["latin"],
+  variable: "--font-dancing-script",
+  display: "swap",
+});
+
+const greatVibes = Great_Vibes({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-great-vibes",
+  display: "swap",
+});
+
 // Configure Space Grotesk font
 
 const spaceGrotesk = Space_Grotesk({
@@ -36,6 +52,8 @@ export default function RootLayout({ children }) {
         suppressHydrationWarning
         className={clsx(
           spaceGrotesk.variable,
+          dancingScript.variable,
+          greatVibes.variable,
           "bg-background text-foreground font-sans"
         )}
       >
