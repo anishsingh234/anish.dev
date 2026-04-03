@@ -1,108 +1,90 @@
 "use client";
-
 import { motion } from "framer-motion";
 import { Github, Linkedin, Mail } from "lucide-react";
 import Link from "next/link";
+import { EASE } from "../home/SharedComponents";
 
-const Footer = () => {
-  const currentYear = new Date().getFullYear();
+const navLinks = [
+  { label: "Home",       href: "/"            },
+  { label: "Projects",   href: "/projects"    },
+  { label: "Experience", href: "/#experience" },
+  { label: "About",      href: "/#about"      },
+  { label: "Contact",    href: "/#contact"    },
+];
 
-  const navLinks = [
-    { label: "Home", href: "/" },
-    { label: "Projects", href: "/projects" },
-    { label: "Experience", href: "/#experience" },
-    { label: "About", href: "/#about" },
-    { label: "Contact", href: "/#contact" },
-  ];
+const socialLinks = [
+  { icon: Github,   href: "https://github.com/anishsingh234",          label: "github"   },
+  { icon: Linkedin, href: "https://linkedin.com/in/anish-ai",           label: "linkedin" },
+  { icon: Mail,     href: "mailto:anishsingh210204@gmail.com",          label: "email"    },
+];
 
-  const socialLinks = [
-    {
-      icon: Github,
-      href: "https://github.com/anishsingh234",
-      label: "github",
-    },
-    {
-      icon: Linkedin,
-      href: "https://linkedin.com/in/anish-ai",
-      label: "linkedin",
-    },
-    {
-      icon: Mail,
-      href: "mailto:anishsingh210204@gmail.com",
-      label: "email",
-    },
-  ];
+const techStack = ["next.js", "tailwind", "framer", "vercel"];
 
-  const techStack = ["next.js", "tailwind", "framer", "vercel"];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.08, delayChildren: 0.2 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 16 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: "easeOut" },
-    },
-  };
+export default function Footer() {
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="relative border-t border-white/[0.04] bg-background overflow-hidden">
-      {/* Top accent line */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/40 to-transparent" />
+    <footer className="relative border-t border-white/[0.06] overflow-hidden bg-[#0E0B1A]">
 
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={containerVariants}
-        className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-8"
+      {/* ── Giant background name ── */}
+      <div
+        className="absolute bottom-0 left-0 right-0 flex items-end justify-center pointer-events-none select-none overflow-hidden"
+        aria-hidden
       >
-        {/* Main Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-10 md:gap-14 mb-12">
+        <span
+          className="font-black text-white leading-none tracking-tight"
+          style={{
+            fontSize: "clamp(6rem, 22vw, 22rem)",
+            letterSpacing: "-0.04em",
+            color: "transparent",
+           WebkitTextStroke: "1px rgba(167,139,250,0.15)",
+            lineHeight: 0.82,
+          }}
+        >
+          ANISH
+        </span>
+      </div>
 
-          {/* Branding Column */}
-          <motion.div variants={itemVariants} className="flex flex-col gap-5">
-            {/* Logo + Name */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-[10px] bg-gradient-to-br from-blue-500 to-sky-400 flex items-center justify-center flex-shrink-0">
-                <span className="font-mono text-[11px] font-medium text-white tracking-wider">
-                  AK
-                </span>
-              </div>
-              <span className="text-[15px] font-semibold text-foreground tracking-[-0.3px]">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-16 pb-0">
+
+        {/* ── Top row ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: EASE }}
+          className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-12 mb-16"
+        >
+          {/* Branding */}
+          <div className="flex flex-col gap-5">
+            <div>
+              <p className="font-black text-white leading-none tracking-tight mb-2"
+                style={{ fontSize: "clamp(1.4rem, 2.5vw, 2rem)", letterSpacing: "-0.03em" }}>
                 Anish Kumar Singh
-              </span>
+              </p>
+              <p className="text-[12px] font-mono text-white/68 tracking-widest uppercase">
+                Full Stack Developer · AI Engineer
+              </p>
             </div>
-
-            {/* Tagline */}
-            <p className="text-[13px] text-foreground/35 leading-[1.75] max-w-[280px] font-light">
-              Full-Stack Developer &amp; AI Engineer. Building production-grade
-              systems at the intersection of LLMs, RAG, and scalable
-              architecture.
+            <p className="text-[13px] text-white/58 leading-[1.75] max-w-[280px] font-light">
+              Building production-grade systems at the intersection of LLMs,
+              RAG, and scalable full-stack architecture.
             </p>
-
-            {/* Open to Work Status */}
-            <div className="inline-flex items-center gap-2 bg-emerald-500/[0.07] border border-emerald-500/20 rounded-full px-3 py-[5px] w-fit">
-              <span className="relative flex h-[6px] w-[6px] flex-shrink-0">
+            {/* Availability */}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 border border-emerald-500/20 bg-emerald-500/[0.05] rounded-full w-fit">
+              <span className="relative flex h-[6px] w-[6px]">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
                 <span className="relative inline-flex rounded-full h-[6px] w-[6px] bg-emerald-400" />
               </span>
-              <span className="font-mono text-[11px] text-emerald-400 tracking-[0.3px]">
+              <span className="font-mono text-[10px] text-emerald-400/80 tracking-widest uppercase">
                 open_to_work · full-time roles
               </span>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Navigate Column */}
-          <motion.div variants={itemVariants} className="md:col-start-2">
-            <p className="font-mono text-[10px] tracking-[1.5px] uppercase text-foreground/20 mb-5 font-medium">
+          {/* Navigate */}
+          <div>
+            <p className="text-[9px] font-mono text-white/52 tracking-[0.25em] uppercase mb-5">
               Navigate
             </p>
             <ul className="flex flex-col gap-3">
@@ -110,104 +92,83 @@ const Footer = () => {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="group flex items-center gap-2 text-[13.5px] text-foreground/30 hover:text-foreground/80 transition-colors duration-200"
+                    className="group flex items-center gap-2 text-[13px] text-white/48 hover:text-white/70 transition-colors duration-200"
                   >
-                    <span className="w-0 h-px bg-blue-500 transition-all duration-200 group-hover:w-3 opacity-0 group-hover:opacity-100" />
+                    <span className="w-0 h-px bg-white/40 transition-all duration-200 group-hover:w-3 opacity-0 group-hover:opacity-100" />
                     {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
-          {/* Connect Column */}
-          <motion.div variants={itemVariants}>
-            <p className="font-mono text-[10px] tracking-[1.5px] uppercase text-foreground/20 mb-5 font-medium">
+          {/* Connect */}
+          <div>
+            <p className="text-[9px] font-mono text-white/52 tracking-[0.25em] uppercase mb-5">
               Connect
             </p>
-            <div className="flex flex-col gap-[10px]">
-              {socialLinks.map((social) => {
-                const Icon = social.icon;
-                return (
-                  <motion.a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ x: 3 }}
-                    transition={{ duration: 0.15 }}
-                    className="group inline-flex items-center gap-[10px] px-3 py-2 rounded-lg border border-white/[0.05] bg-transparent hover:border-blue-500/20 hover:bg-blue-500/[0.04] transition-all duration-200 w-fit"
-                  >
-                    <Icon className="w-[14px] h-[14px] text-foreground/25 group-hover:text-foreground/60 transition-colors duration-200" />
-                    <span className="font-mono text-[12.5px] text-foreground/25 group-hover:text-foreground/60 transition-colors duration-200 tracking-[0.2px]">
-                      {social.label}
-                    </span>
-                  </motion.a>
-                );
-              })}
+            <div className="flex flex-col gap-2.5">
+              {socialLinks.map(({ icon: Icon, href, label }) => (
+                <motion.a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ x: 4 }}
+                  transition={{ duration: 0.15 }}
+                  className="group inline-flex items-center gap-3 text-white/68 hover:text-white/65 transition-colors w-fit"
+                >
+                  <Icon className="w-[13px] h-[13px]" />
+                  <span className="font-mono text-[12px] tracking-widest">{label}</span>
+                </motion.a>
+              ))}
             </div>
-          </motion.div>
-        </div>
-
-        {/* Divider */}
-        <motion.div variants={itemVariants} className="relative mb-7">
-          <div className="h-px bg-white/[0.05]" />
-          <div className="absolute left-0 top-0 w-20 h-px bg-gradient-to-r from-blue-500/60 to-transparent" />
+          </div>
         </motion.div>
 
-        {/* Bottom Bar */}
-        <motion.div
-          variants={itemVariants}
-          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-        >
-          {/* Copyright */}
-          <p className="font-mono text-[11.5px] text-foreground/20 tracking-[0.2px]">
-            © {currentYear}{" "}
-            <span className="text-foreground/30">Anish Kumar Singh.</span>{" "}
-            All rights reserved.
-          </p>
+        {/* ── Divider ── */}
+        <div className="h-px bg-white/[0.06] mb-6" />
 
-          {/* Built With Tags */}
+        {/* ── Bottom bar ── */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2, ease: EASE }}
+          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6"
+        >
+          <p className="font-mono text-[11px] text-white/52 tracking-wide">
+            © {year} Anish Kumar Singh. All rights reserved.
+          </p>
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-mono text-[11px] text-foreground/15 tracking-[0.3px]">
-              built with
-            </span>
+            <span className="font-mono text-[10px] text-white/68 tracking-wide">built with</span>
             {techStack.map((tech) => (
               <span
                 key={tech}
-                className="font-mono text-[10px] px-[7px] py-[2px] rounded border border-white/[0.06] bg-white/[0.02] text-foreground/20 tracking-[0.3px]"
+                className="font-mono text-[9px] px-2 py-0.5 rounded-full border border-white/[0.07] text-white/58 tracking-widest"
               >
                 {tech}
               </span>
             ))}
           </div>
         </motion.div>
-      </motion.div>
 
-      {/* Scroll to Top */}
+        {/* ── Giant name spacer (keeps layout room) ── */}
+        <div style={{ height: "clamp(5rem, 16vw, 16rem)" }} />
+      </div>
+
+      {/* ── Scroll to top ── */}
       <motion.button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         suppressHydrationWarning
-        whileHover={{ scale: 1.05, borderColor: "rgba(59,130,246,0.25)" }}
+        whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="fixed bottom-8 right-8 w-9 h-9 rounded-lg bg-background/80 border border-white/[0.07] hidden md:flex items-center justify-center text-foreground/25 hover:text-foreground/60 transition-colors duration-200 backdrop-blur-sm"
+        className="fixed bottom-8 right-8 w-9 h-9 rounded-full border border-white/[0.1] bg-[#0E0B1A]/80 hidden md:flex items-center justify-center text-white/68 hover:text-white/78 hover:border-white/25 transition-all backdrop-blur-sm"
       >
-        <svg
-          className="w-[14px] h-[14px]"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M5 10l7-7m0 0l7 7m-7-7v18"
-          />
+        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
         </svg>
       </motion.button>
     </footer>
   );
-};
-
-export default Footer;
+}

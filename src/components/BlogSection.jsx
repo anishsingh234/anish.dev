@@ -4,134 +4,173 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Clock, BookOpen } from "lucide-react";
+import { ArrowUpRight, Clock } from "lucide-react";
 import { blogs } from "@/data/blogs";
 import PDFModal from "@/components/PDFModal";
+import { EASE } from "./home/SharedComponents";
 
-const BlogCard = ({ blog, index, onOpen }) => {
+// ── Blog row ──────────────────────────────────────────────────
+const BlogRow = ({ blog, index, onOpen }) => {
+  const isEven = index % 2 === 0;
+
   return (
     <motion.article
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 32 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.7, ease: EASE, delay: index * 0.06 }}
       onClick={() => onOpen(blog)}
-      className="group relative flex flex-col rounded-2xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300 overflow-hidden cursor-pointer"
+      className="group cursor-pointer"
     >
-      {/* Cover Image */}
-      <div className="relative w-full aspect-[16/9] overflow-hidden bg-white/[0.03]">
-        <Image
-          src={blog.cover}
-          alt={blog.title}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-          sizes="(max-width: 768px) 100vw, 50vw"
-          loading="eager"
-        />
-        {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+      {/* Top border */}
+      <div className="h-px bg-white/[0.07] group-hover:bg-white/[0.14] transition-colors duration-500" />
 
-        {/* Tags on image */}
-        <div className="absolute bottom-3 left-3 flex gap-1.5">
-          {blog.tags.map((tag) => (
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 py-10 lg:py-12">
+
+        {/* ── Text col ── */}
+        <div className={`flex flex-col justify-between gap-6 ${isEven ? "order-1 pr-0 lg:pr-16" : "order-1 lg:order-2 lg:pl-16"}`}>
+
+          {/* Index + meta */}
+          <div className="flex items-center justify-between">
             <span
-              key={tag}
-              className="font-mono text-[10px] px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-sm border border-white/[0.1] text-white/60 tracking-[0.3px]"
+              className="font-black text-white/[0.05] leading-none select-none"
+              style={{ fontSize: "clamp(3rem, 6vw, 5.5rem)", letterSpacing: "-0.04em" }}
             >
-              {tag}
+              _{String(index + 1).padStart(2, "0")}.
             </span>
-          ))}
+            <div className="flex items-center gap-4">
+              <span className="flex items-center gap-1.5 font-mono text-[10px] text-white/58 tracking-widest">
+                <Clock className="w-3 h-3" />
+                {blog.readTime}
+              </span>
+              <span className="font-mono text-[10px] text-white/48 tracking-widest">
+                {blog.date}
+              </span>
+            </div>
+          </div>
+
+          {/* Tags */}
+          <div className="flex flex-wrap gap-2">
+            {blog.tags.map((tag) => (
+              <span
+                key={tag}
+                className="text-[9px] font-mono text-white/68 tracking-widest uppercase border border-white/[0.07] rounded-full px-3 py-1 group-hover:border-white/15 group-hover:text-white/65 transition-colors duration-300"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* Title */}
+          <h3
+            className="font-black text-white leading-[0.95] tracking-tight group-hover:text-white/90 transition-colors"
+            style={{ fontSize: "clamp(1.6rem, 3vw, 2.6rem)", letterSpacing: "-0.03em" }}
+          >
+            {blog.title}
+          </h3>
+
+          {/* Excerpt */}
+          <p className="text-sm text-white/58 leading-relaxed max-w-sm font-light line-clamp-3">
+            {blog.excerpt}
+          </p>
+
+          {/* Read CTA */}
+          <div className="flex items-center gap-2 text-white/68 group-hover:text-white/78 transition-colors duration-300">
+            <span className="text-[11px] font-mono tracking-widest uppercase">
+              Read writeup
+            </span>
+            <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
+          </div>
         </div>
-      </div>
 
-      {/* Content */}
-      <div className="flex flex-col gap-3 p-5 flex-1">
-        {/* Meta */}
-        <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1.5 font-mono text-[11px] text-foreground/25 tracking-[0.2px]">
-            <Clock className="w-3 h-3" />
-            {blog.readTime}
-          </span>
-          <span className="text-foreground/15">·</span>
-          <span className="font-mono text-[11px] text-foreground/25 tracking-[0.2px]">
-            {blog.date}
-          </span>
-        </div>
-
-        {/* Title */}
-        <h3 className="text-[15px] font-semibold text-foreground/80 leading-[1.4] tracking-[-0.2px] group-hover:text-foreground transition-colors duration-200">
-          {blog.title}
-        </h3>
-
-        {/* Excerpt */}
-        <p className="text-[13px] text-foreground/35 leading-[1.7] font-light line-clamp-2">
-          {blog.excerpt}
-        </p>
-
-        {/* Read CTA */}
-        <div className="flex items-center gap-1.5 mt-auto pt-2">
-          <span className="flex items-center gap-1.5 font-mono text-[11.5px] text-blue-400/60 group-hover:text-blue-400 transition-colors duration-200 tracking-[0.2px]">
-            <BookOpen className="w-3 h-3" />
-            Read writeup
-          </span>
-          <ArrowUpRight className="w-3 h-3 text-blue-400/40 group-hover:text-blue-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
+        {/* ── Image col ── */}
+        <div className={`${isEven ? "order-2" : "order-2 lg:order-1"}`}>
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden border border-white/[0.07] group-hover:border-white/[0.13] transition-colors duration-500 bg-[#120F20]"
+          >
+            <Image
+              src={blog.cover}
+              alt={blog.title}
+              fill
+              className="object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
+              sizes="(max-width: 768px) 100vw, 50vw"
+              loading="eager"
+            />
+            {/* Vignette */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(8,10,16,0.55)_100%)] pointer-events-none" />
+            {/* Dark tint */}
+            <div className="absolute inset-0 bg-[#0E0B1A]/20 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
+          </motion.div>
         </div>
       </div>
     </motion.article>
   );
 };
 
+// ── Main export ───────────────────────────────────────────────
 const BlogSection = () => {
   const [activeBlog, setActiveBlog] = useState(null);
   const featuredBlogs = blogs.filter((b) => b.featured);
 
   return (
     <>
-      <section id="blog" className="py-20 md:py-28">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Section Header */}
+      <section id="blog" className="py-14 sm:py-18 lg:py-22 scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+
+          {/* ── Section header ── */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="mb-12"
+            transition={{ duration: 0.7, ease: EASE }}
+            className="flex items-end justify-between mb-10 sm:mb-14 flex-wrap gap-5"
           >
-            <p className="font-mono text-[11px] tracking-[2px] uppercase text-blue-400/60 mb-3">
-              Technical Writing
-            </p>
-            <div className="flex items-end justify-between gap-4 flex-wrap">
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-[-0.5px]">
-                What I&apos;ve written
-              </h2>
-              <Link
-                href="/blog"
-                className="group flex items-center gap-1.5 font-mono text-[12px] text-foreground/35 hover:text-foreground/70 transition-colors duration-200 tracking-[0.3px]"
+            <div>
+              <p className="text-[10px] font-mono text-white/58 tracking-[0.3em] uppercase mb-4">
+                ◆ &nbsp; Technical Writing
+              </p>
+              <h2
+                className="font-black text-white leading-none tracking-tight"
+                style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", letterSpacing: "-0.03em" }}
               >
-                view all posts
-                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
-              </Link>
+                What I've
+                <br />
+                <span
+                  className="text-transparent"
+                  style={{ WebkitTextStroke: "1.5px rgba(167,139,250,0.45)" }}
+                >
+                  Written
+                </span>
+              </h2>
             </div>
-            <p className="mt-3 text-[14px] text-foreground/35 font-light max-w-xl leading-relaxed">
-              Deep dives into AI systems, architecture decisions, and things I learned building in production.
-            </p>
+            <Link
+              href="/blog"
+              className="group flex items-center gap-2 text-sm font-bold text-white/52 hover:text-white transition-colors"
+            >
+              View all posts
+              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </Link>
           </motion.div>
 
-          {/* Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* ── Blog rows ── */}
+          <div>
             {featuredBlogs.map((blog, i) => (
-              <BlogCard
+              <BlogRow
                 key={blog.id}
                 blog={blog}
                 index={i}
                 onOpen={setActiveBlog}
               />
             ))}
+            {/* Bottom border */}
+            <div className="h-px bg-white/[0.07]" />
           </div>
+
         </div>
       </section>
 
-      {/* PDF Modal */}
       {activeBlog && (
         <PDFModal blog={activeBlog} onClose={() => setActiveBlog(null)} />
       )}

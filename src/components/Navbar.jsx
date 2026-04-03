@@ -3,184 +3,453 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Download, Menu, X } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { Download, Search, X, Github, ArrowUpRight } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 
 const EASE = [0.16, 1, 0.3, 1];
+const COLLAPSED_W = 64;
+const EXPANDED_W  = 220;
 
-export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const pathname = usePathname();
-  const isHome = pathname === "/";
+const navItems = [
+  { label: "Home",        href: "/",            id: null         },
+  { label: "Projects",    href: "/#projects",   id: "projects"   },
+  { label: "Blog",        href: "/#blog",       id: "blog"       },
+  { label: "Skills",      href: "/#skills",     id: "skills"     },
+  { label: "Experience",  href: "/#experience", id: "experience" },
+  { label: "About",       href: "/#about",      id: "about"      },
+  { label: "Why Hire Me", href: "/#why-hire-me",id: "why-hire-me"},
+  { label: "Contact",     href: "/#contact",    id: "contact"    },
+];
 
-  const navItems = ["Projects","Blog", "Skills", "Experience", "About", "Why Hire Me", "Contact"];
+// ── Command Palette ───────────────────────────────────
+function CommandPalette({ open, onClose, onNavigate }) {
+  const [query, setQuery] = useState("");
+  const filtered = navItems.filter((n) =>
+    n.label.toLowerCase().includes(query.toLowerCase())
+  );
 
-  // Helper to construct link depending on if we are home or on a subpage
-  const getHref = (item) => {
-    const id = item.toLowerCase();
-    return isHome ? `#${id}` : `/#${id}`;
-  };
-
-  const handleNavClick = (e, item) => {
-    const id = item.toLowerCase();
-    if (isHome) {
-      e.preventDefault();
-      // Close menu first, then scroll after animation settles
-      setMobileOpen(false);
-      setTimeout(() => {
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth" });
-        }
-      }, 50);
-    } else {
-      setMobileOpen(false);
-    }
-  };
-
+  useEffect(() => { if (!open) setQuery(""); }, [open]);
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Close menu on desktop resize
-  useEffect(() => {
-    const onResize = () => {
-      if (window.innerWidth >= 768) setMobileOpen(false);
+    const h = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); if (open) onClose(); }
+      if (e.key === "Escape") onClose();
     };
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[200] flex items-start justify-center pt-[20vh] px-4"
+        onClick={onClose}
+      >
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96, y: -10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.96, y: -10 }}
+          transition={{ duration: 0.2, ease: EASE }}
+          onClick={(e) => e.stopPropagation()}
+          className="relative w-full max-w-md rounded-2xl border border-white/[0.1] bg-[#120F20] shadow-2xl overflow-hidden"
+        >
+          <div className="flex items-center gap-3 px-4 py-3.5 border-b border-white/[0.07]">
+            <Search className="w-4 h-4 text-white/40 shrink-0" />
+            <input
+              autoFocus value={query} onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search sections..."
+              className="flex-1 bg-transparent text-sm text-white/70 placeholder:text-white/35 outline-none font-mono tracking-wide"
+            />
+            <kbd className="text-[10px] font-mono text-white/35 border border-white/[0.08] rounded px-1.5 py-0.5">ESC</kbd>
+          </div>
+          <div className="py-2 max-h-64 overflow-y-auto">
+            {filtered.length === 0 ? (
+              <p className="text-center text-sm text-white/40 py-6 font-mono">No results found</p>
+            ) : (
+              filtered.map((item, i) => (
+                <button
+                  key={item.label}
+                  onClick={() => { onNavigate(item); onClose(); }}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/[0.04] transition-colors text-left group"
+                >
+                  <span className="text-[10px] font-mono text-white/35 w-5 shrink-0">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="text-sm text-white/70 group-hover:text-white/85 transition-colors font-medium">{item.label}</span>
+                  <ArrowUpRight className="w-3 h-3 text-white/35 ml-auto group-hover:text-white/55" />
+                </button>
+              ))
+            )}
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+// ── Clock ─────────────────────────────────────────────
+function LiveClock() {
+  const [time, setTime] = useState("");
+  useEffect(() => {
+    const fmt = () => setTime(new Date().toLocaleTimeString("en-IN", {
+      timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit",
+      second: "2-digit", hour12: false,
+    }));
+    fmt();
+    const t = setInterval(fmt, 1000);
+    return () => clearInterval(t);
+  }, []);
+  return <span className="font-mono text-[10px] text-white/40 tracking-widest tabular-nums">{time}</span>;
+}
+
+// ── Hamburger icon ────────────────────────────────────
+function HamburgerIcon({ open }) {
+  return (
+    <div className="flex flex-col gap-[5px]">
+      <motion.span
+        animate={{ width: open ? 18 : 18 }}
+        className="block h-[1.5px] bg-current rounded-full"
+      />
+      <motion.span
+        animate={{ width: open ? 18 : 13 }}
+        transition={{ duration: 0.28, ease: EASE }}
+        className="block h-[1.5px] bg-current rounded-full"
+      />
+      <motion.span
+        animate={{ width: open ? 18 : 18 }}
+        className="block h-[1.5px] bg-current rounded-full"
+      />
+    </div>
+  );
+}
+
+// ── Main Navbar ───────────────────────────────────────
+export default function Navbar() {
+  const [expanded,     setExpanded]     = useState(false);
+  const [paletteOpen,  setPaletteOpen]  = useState(false);
+  const [mobileOpen,   setMobileOpen]   = useState(false);
+  const [activeSection, setActiveSection] = useState("");
+  const pathname = usePathname();
+  const router   = useRouter();
+  const isHome   = pathname === "/";
+
+  // ⌘K
+  useEffect(() => {
+    const h = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault(); setPaletteOpen((v) => !v);
+      }
+    };
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
   }, []);
 
-  // Close menu on route change
+  // Active section
   useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
+    if (!isHome) return;
+    const ids = navItems.map((n) => n.id).filter(Boolean);
+    const obs = ids.map((id) => {
+      const el = document.getElementById(id);
+      if (!el) return null;
+      const ob = new IntersectionObserver(
+        ([e]) => { if (e.isIntersecting) setActiveSection(id); },
+        { threshold: 0.3 }
+      );
+      ob.observe(el);
+      return ob;
+    });
+    return () => obs.forEach((ob) => ob?.disconnect());
+  }, [isHome]);
 
-  // Lock body scroll when menu is open
+  // Lock scroll on mobile
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
+  const sidebarW = expanded ? EXPANDED_W : COLLAPSED_W;
+
   return (
-    <motion.header
-      initial={{ y: -80, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: EASE, delay: 0.05 }}
-      className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
-        scrolled || mobileOpen
-          ? "bg-[#05050A]/85 backdrop-blur-md sm:backdrop-blur-2xl border-b border-white/[0.05] shadow-[inset_0_-1px_0_rgba(255,255,255,0.02),0_8px_32px_rgba(0,0,0,0.3)]"
-          : "bg-[#05050A]/40 backdrop-blur-sm sm:backdrop-blur-lg border-b border-white/[0.02]"
-      }`}
-    >
-      <nav
-        className={`max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-all duration-300 ${
-          scrolled ? "h-14" : "h-16"
-        }`}
+    <>
+      {/* ════════════════════════════════════════════════
+          DESKTOP SIDEBAR
+      ════════════════════════════════════════════════ */}
+      <motion.aside
+        animate={{ width: sidebarW }}
+        transition={{ duration: 0.28, ease: EASE }}
+        className="hidden lg:flex fixed top-0 left-0 h-screen z-[100] flex-col border-r border-white/[0.06] bg-[#0E0B1A]/90 backdrop-blur-xl overflow-hidden"
       >
-        {/* Logo */}
-        <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-2.5 group">
-          <motion.div
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.94 }}
-            transition={{ duration: 0.2, ease: EASE }}
-            className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center shrink-0"
-          >
-            <span className="text-background font-bold text-sm leading-none">AK</span>
-          </motion.div>
-          <span className="font-semibold text-foreground/80 group-hover:text-foreground transition-colors text-sm hidden sm:block">
-            Anish Kumar Singh
-          </span>
-        </Link>
 
-        {/* Desktop Nav links */}
-        <div className="hidden md:flex items-center">
-          {navItems.map((item) => (
-            <motion.a
-              key={item}
-              href={getHref(item)}
-              onClick={(e) => handleNavClick(e, item)}
-              whileHover={{ y: -1 }}
-              transition={{ duration: 0.15, ease: EASE }}
-              className="px-3 py-2 text-sm text-foreground/50 hover:text-foreground/90 rounded-md transition-colors duration-150"
-            >
-              {item}
-            </motion.a>
-          ))}
-        </div>
-
-        {/* Right side */}
-        <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
-            <motion.span
-              animate={{ opacity: [1, 0.35, 1] }}
-              transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
-              className="w-1.5 h-1.5 bg-emerald-400 rounded-full shrink-0"
-            />
-            <span className="text-[10px] font-medium text-emerald-400 whitespace-nowrap">Open to work</span>
-          </div>
-
-          <motion.a
-            href="/resume.pdf"
-            download
-            whileHover={{ scale: 1.04, y: -1 }}
-            whileTap={{ scale: 0.96 }}
-            transition={{ duration: 0.2, ease: EASE }}
-            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-accent/10 hover:bg-accent/20 text-accent border border-accent/25 rounded-lg transition-colors duration-200"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Resume</span>
-          </motion.a>
-
-          {/* Mobile hamburger */}
+        {/* ── Toggle button + Logo ── */}
+        <div className="relative flex items-center h-16 border-b border-white/[0.06] flex-shrink-0">
           <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg bg-white/[0.05] border border-white/[0.08] text-foreground/70 hover:text-foreground hover:bg-white/[0.1] transition-colors"
-            aria-label="Toggle menu"
+            onClick={() => setExpanded((v) => !v)}
+            className="w-16 h-16 flex items-center justify-center text-white/55 hover:text-white/85 transition-colors flex-shrink-0"
           >
-            {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            <HamburgerIcon open={expanded} />
           </button>
-        </div>
-      </nav>
 
-      {/* Mobile Menu Panel */}
-      <AnimatePresence>
-        {mobileOpen && (
+          {/* Logo — fades in when expanded */}
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: EASE }}
-            className="md:hidden overflow-hidden bg-[#05050A]/95 backdrop-blur-2xl border-b border-white/[0.05]"
+            animate={{ opacity: expanded ? 1 : 0, x: expanded ? 0 : -8 }}
+            transition={{ duration: 0.22, ease: EASE }}
+            className="flex items-center gap-2.5 pointer-events-none"
+            style={{ whiteSpace: "nowrap" }}
           >
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-col gap-1">
-              {navItems.map((item, i) => (
-                <motion.a
-                  key={item}
-                  href={getHref(item)}
-                  onClick={(e) => handleNavClick(e, item)}
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05, duration: 0.3 }}
-                  className="px-4 py-3 text-sm font-medium text-foreground/60 hover:text-foreground hover:bg-white/[0.04] rounded-xl transition-colors"
-                >
-                  {item}
-                </motion.a>
-              ))}
-              <div className="flex items-center gap-2 mt-3 pt-3 border-t border-white/[0.06] px-4">
-                <span className="relative flex h-2 w-2 shrink-0">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                </span>
-                <span className="text-xs font-medium text-emerald-400">Open to Work</span>
-              </div>
+            <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center shrink-0">
+              <span className="text-[#0E0B1A] font-black text-[10px]">AK</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[12px] font-bold text-white/80 leading-tight">Anish Kumar</span>
+              <span className="text-[9px] font-mono text-white/40 tracking-wider">@portfolio</span>
             </div>
           </motion.div>
+        </div>
+
+        {/* ── Search ── */}
+        <div className="px-3 py-2.5 border-b border-white/[0.06] flex-shrink-0">
+          <button
+            onClick={() => setPaletteOpen(true)}
+            className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg border border-white/[0.07] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.12] transition-all"
+          >
+            <Search className="w-3.5 h-3.5 text-white/40 flex-shrink-0" />
+            <motion.span
+              animate={{ opacity: expanded ? 1 : 0, width: expanded ? "auto" : 0 }}
+              transition={{ duration: 0.22, ease: EASE }}
+              className="text-[11px] font-mono text-white/50 overflow-hidden whitespace-nowrap"
+            >
+              Search...
+            </motion.span>
+            <motion.kbd
+              animate={{ opacity: expanded ? 1 : 0, width: expanded ? "auto" : 0 }}
+              transition={{ duration: 0.22, ease: EASE }}
+              className="text-[9px] font-mono text-white/30 border border-white/[0.07] rounded px-1.5 py-0.5 overflow-hidden whitespace-nowrap ml-auto"
+            >
+              ⌘K
+            </motion.kbd>
+          </button>
+        </div>
+
+        {/* ── Section label ── */}
+        <motion.p
+          animate={{ opacity: expanded ? 1 : 0, height: expanded ? "auto" : 0 }}
+          transition={{ duration: 0.22, ease: EASE }}
+          className="px-5 text-[9px] font-mono text-white/35 tracking-[0.25em] uppercase overflow-hidden pt-3 pb-1"
+        >
+          Sections
+        </motion.p>
+
+        {/* ── Nav links ── */}
+        <nav className="flex-1 overflow-y-auto overflow-x-hidden py-1 px-2">
+          {navItems.map((item, i) => {
+            const isActive = item.id
+              ? activeSection === item.id
+              : pathname === "/" && !activeSection;
+
+            return (
+              <div key={item.label} className="relative group/item">
+                <Link
+                  href={item.href}
+                  className={`relative flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[12.5px] font-medium transition-all duration-150 mb-0.5 ${
+                    isActive
+                      ? "bg-white/[0.06] text-white/90"
+                      : "text-white/45 hover:text-white/70 hover:bg-white/[0.03]"
+                  }`}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeNav"
+                      className="absolute left-0 top-1.5 bottom-1.5 w-[2px] bg-white rounded-full"
+                    />
+                  )}
+                  <span className="text-[9px] font-mono text-white/30 w-4 shrink-0 text-center">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <motion.span
+                    animate={{ opacity: expanded ? 1 : 0, width: expanded ? "auto" : 0 }}
+                    transition={{ duration: 0.2, ease: EASE }}
+                    className="overflow-hidden whitespace-nowrap"
+                  >
+                    {item.label}
+                  </motion.span>
+                </Link>
+
+                {/* Tooltip — only shows when collapsed */}
+                {!expanded && (
+                  <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1.5 bg-[#1a1626] border border-white/[0.1] rounded-lg text-[11px] text-white/80 font-medium whitespace-nowrap pointer-events-none opacity-0 group-hover/item:opacity-100 transition-opacity duration-150 z-50">
+                    {item.label}
+                    <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#1a1626]" />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </nav>
+
+        {/* ── Bottom ── */}
+        <div className="border-t border-white/[0.06] px-3 py-3 flex-shrink-0">
+          {/* Clock */}
+          <motion.div
+            animate={{ opacity: expanded ? 1 : 0, height: expanded ? "auto" : 0 }}
+            transition={{ duration: 0.22, ease: EASE }}
+            className="overflow-hidden pb-2 flex justify-center"
+          >
+            <LiveClock />
+          </motion.div>
+
+          {/* Icon links */}
+          <div className="flex items-center gap-1.5">
+            <Link
+              href="https://github.com/anishsingh234"
+              target="_blank" rel="noopener noreferrer"
+              className="flex items-center justify-center w-8 h-8 rounded-lg border border-white/[0.07] text-white/40 hover:text-white/65 hover:border-white/[0.18] transition-all flex-shrink-0"
+            >
+              <Github className="w-3.5 h-3.5" />
+            </Link>
+
+            <Link
+              href="https://linkedin.com/in/anish-ai"
+              target="_blank" rel="noopener noreferrer"
+              className="flex items-center justify-center w-8 h-8 rounded-lg border border-white/[0.07] text-white/40 hover:text-white/65 hover:border-white/[0.18] transition-all flex-shrink-0"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+            </Link>
+
+            {/* Resume — only visible when expanded */}
+            <motion.a
+              href="/resume.pdf"
+              download="Anish_Kumar_Resume.pdf"
+              animate={{ opacity: expanded ? 1 : 0, flex: expanded ? 1 : 0, padding: expanded ? "0 10px" : "0" }}
+              transition={{ duration: 0.22, ease: EASE }}
+              className="flex items-center justify-center gap-1.5 h-8 rounded-lg border border-white/[0.07] text-[10px] font-mono text-white/40 hover:text-white/65 hover:border-white/[0.18] transition-colors overflow-hidden whitespace-nowrap"
+            >
+              <Download className="w-3 h-3 flex-shrink-0" />
+              Resume
+            </motion.a>
+          </div>
+        </div>
+      </motion.aside>
+
+      {/* Click outside to close */}
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="hidden lg:block fixed inset-0 z-[99]"
+            onClick={() => setExpanded(false)}
+          />
         )}
       </AnimatePresence>
-    </motion.header>
+
+      {/* ════════════════════════════════════════════════
+          MOBILE: Top bar (unchanged)
+      ════════════════════════════════════════════════ */}
+      <motion.header
+        initial={{ y: -60, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: EASE }}
+        className="lg:hidden fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-5 h-14 border-b border-white/[0.06] bg-[#0E0B1A]/90 backdrop-blur-xl"
+      >
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center">
+            <span className="text-[#0E0B1A] font-black text-[10px]">AK</span>
+          </div>
+          <span className="text-[13px] font-bold text-white/75">Anish Kumar</span>
+        </Link>
+
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={() => setPaletteOpen(true)}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 border border-white/[0.08] rounded-lg text-white/40 hover:text-white/65 transition-all"
+          >
+            <Search className="w-3.5 h-3.5" />
+            <kbd className="text-[9px] font-mono tracking-wider">⌘K</kbd>
+          </button>
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/[0.08] text-white/55 hover:text-white/70 transition-all"
+          >
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+              <rect width="14" height="1.5" rx="0.75" fill="currentColor" />
+              <rect y="4.25" width="10" height="1.5" rx="0.75" fill="currentColor" />
+              <rect y="8.5" width="14" height="1.5" rx="0.75" fill="currentColor" />
+            </svg>
+          </button>
+        </div>
+      </motion.header>
+
+      {/* MOBILE: Bottom drawer (unchanged) */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setMobileOpen(false)}
+              className="lg:hidden fixed inset-0 z-[150] bg-black/50 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
+              transition={{ duration: 0.35, ease: EASE }}
+              className="lg:hidden fixed bottom-0 left-0 right-0 z-[160] bg-[#120F20] border-t border-white/[0.1] rounded-t-2xl overflow-hidden"
+            >
+              <div className="flex justify-center pt-3 pb-1">
+                <div className="w-10 h-1 rounded-full bg-white/[0.12]" />
+              </div>
+              <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.06]">
+                <p className="text-[9px] font-mono text-white/40 tracking-[0.3em] uppercase">Navigation</p>
+                <button onClick={() => setMobileOpen(false)} className="w-7 h-7 flex items-center justify-center rounded-lg border border-white/[0.08] text-white/40 hover:text-white/65">
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+              <div className="px-4 py-3 grid grid-cols-2 gap-1.5">
+                {navItems.map((item, i) => {
+                  const isActive = item.id ? activeSection === item.id : false;
+                  return (
+                    <motion.div key={item.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}>
+                      <Link
+                        href={item.href}
+                        onClick={() => setMobileOpen(false)}
+                        className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-[12px] font-medium transition-all ${
+                          isActive
+                            ? "border-white/20 bg-white/[0.06] text-white"
+                            : "border-white/[0.06] bg-white/[0.02] text-white/55 hover:text-white/70"
+                        }`}
+                      >
+                        <span className="text-[9px] font-mono text-white/30">{String(i + 1).padStart(2, "0")}.</span>
+                        {item.label}
+                      </Link>
+                    </motion.div>
+                  );
+                })}
+              </div>
+              <div className="px-5 py-4 border-t border-white/[0.06] flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                  </span>
+                  <span className="text-[10px] font-mono text-emerald-400/70 tracking-widest uppercase">Open to work</span>
+                </div>
+                <LiveClock />
+              </div>
+              <div className="h-6" />
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Command Palette */}
+      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} onNavigate={(item) => router.push(item.href)} />
+
+      {/* Content offset */}
+      <style jsx global>{`
+        @media (min-width: 1024px) {
+          main { margin-left: ${sidebarW}px; transition: margin-left 0.28s cubic-bezier(0.16,1,0.3,1); }
+        }
+      `}</style>
+    </>
   );
 }

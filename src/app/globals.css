@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Great+Vibes&family=Dancing+Script:wght@700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -19,6 +21,8 @@
     background-attachment: fixed;
     color: rgb(var(--foreground));
   }
+/* globals.css mein add karo */
+
 
   @media (min-width: 1024px) {
     body {
@@ -179,3 +183,5 @@
 @media (max-width: 768px) {
   .line-clamp-4 { -webkit-line-clamp: 3; }
 }
+/* globals.css mein add karo */
+

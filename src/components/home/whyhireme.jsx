@@ -1,156 +1,188 @@
 "use client";
-
 import { motion } from "framer-motion";
-import { Monitor, Layers, Github, Zap } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
+import { EASE } from "./SharedComponents";
 
-const cards = [
+const proof = [
   {
-    icon: Monitor,
-    title: "Full-Stack + AI Developer",
-    bullets: [
-      "MERN + Next.js + TypeScript",
-      "Experience with LLMs and RAG systems",
-      "Production-ready, scalable code",
-    ],
+    emoji: "🚀",
+    title: "Products Shipped",
+    sub: "ChatSathi · HopeBridge · HealSync",
+    stat: "12+",
   },
   {
-    icon: Layers,
-    title: "Built Real Products",
-    bullets: [
-      "ChatSathi — AI SaaS chatbot platform",
-      "HopeBridge — RAG-based medical advisor",
-      "HealSync — healthcare booking platform",
-    ],
+    emoji: "🧠",
+    title: "AI Systems Built",
+    sub: "LLMs · RAG · Agents · Multi-Agent",
+    stat: "5+",
   },
   {
-    icon: Github,
-    title: "Strong Problem Solver",
-    bullets: [
-      "Solved 350+ DSA problems on LeetCode",
-      "Strong in algorithms & data structures",
-      "Performance-focused, optimized solutions",
-    ],
+    emoji: "⚡",
+    title: "DSA Problems Solved",
+    sub: "LeetCode · Algorithms · Data Structures",
+    stat: "350+",
   },
   {
-    icon: Zap,
-    title: "Startup Mindset",
-    bullets: [
-      "Fast learner & self-driven builder",
-      "Can build and ship independently",
-      "Comfortable in fast-paced environments",
-    ],
+    emoji: "🏗️",
+    title: "Production Experience",
+    sub: "Exponent Solutions · 3,000+ users",
+    stat: "6mo+",
   },
-];
-
-const stats = [
-  { value: "12+",     label: "Projects"            },
-  { value: "350+",    label: "DSA Problems"         },
-  { value: "AI + FS", label: "Stack"                },
-  { value: "Prod",    label: "Experience"           },
+  {
+    emoji: "🎓",
+    title: "Graduating 2026",
+    sub: "B.Tech CS — AI & ML · UTU Dehradun",
+    stat: "'26",
+  },
 ];
 
 export default function WhyHireMe() {
   return (
     <section
-      id="why hire me"
-      className="py-24 sm:py-32 border-t border-white/[0.06] scroll-mt-20 overflow-hidden relative"
+      id="why-hire-me"
+      className="py-14 sm:py-18 lg:py-22 border-t border-white/[0.06] scroll-mt-20"
     >
-      {/* Ambient glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-indigo-600/[0.05] rounded-full blur-[120px] pointer-events-none" />
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-
-        {/* Header */}
+        {/* ── Section header ── */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-14"
+          transition={{ duration: 0.7, ease: EASE }}
+          className="mb-10 sm:mb-14"
         >
-          <p className="font-mono text-[11px] tracking-[2.5px] uppercase text-blue-400/60 mb-4">
-            Why Hire Me
+          <p className="text-[10px] font-mono text-white/58 tracking-[0.3em] uppercase mb-4">
+            ◆ &nbsp; Why Hire Me
           </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-bold text-foreground tracking-tight leading-[1.2] max-w-2xl">
-            I don&apos;t just build apps —{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-violet-400">
-              I build scalable, AI-powered products
-            </span>{" "}
-            that solve real problems.
+          <h2
+            className="font-black text-white leading-none tracking-tight"
+            style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", letterSpacing: "-0.03em" }}
+          >
+            The case
+            <br />
+            <span
+              className="text-transparent"
+              style={{ WebkitTextStroke: "1.5px rgba(167,139,250,0.45)" }}
+            >
+              for hiring me.
+            </span>
           </h2>
         </motion.div>
 
-        {/* 2×2 Card grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-          {cards.map((card, i) => {
-            const Icon = card.icon;
-            return (
-              <motion.div
-                key={card.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: 0.5,
-                  delay: i * 0.08,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
-                whileHover={{ y: -4, scale: 1.01 }}
-                className="group relative p-7 rounded-2xl border border-white/[0.07] bg-white/[0.025] backdrop-blur-md overflow-hidden cursor-default transition-shadow duration-300 hover:shadow-[0_20px_60px_rgba(99,120,255,0.08),0_0_0_1px_rgba(99,120,255,0.1)] hover:border-blue-500/[0.22]"
-              >
-                {/* Hover gradient overlay */}
-                <div className="absolute inset-0 rounded-2xl bg-[radial-gradient(ellipse_at_top_left,rgba(107,138,255,0.07)_0%,transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+        {/* ── Two column body ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
 
-                {/* Icon */}
-                <div className="relative w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/[0.15] flex items-center justify-center mb-5">
-                  <Icon className="w-[18px] h-[18px] text-blue-400/90" strokeWidth={1.75} />
-                </div>
-
-                {/* Title */}
-                <h3 className="relative text-[15px] font-semibold text-foreground/90 mb-4 tracking-[-0.2px]">
-                  {card.title}
-                </h3>
-
-                {/* Bullets */}
-                <ul className="relative flex flex-col gap-2.5">
-                  {card.bullets.map((b) => (
-                    <li
-                      key={b}
-                      className="flex items-start gap-2.5 text-[13px] text-foreground/45 leading-relaxed"
-                    >
-                      <span className="w-[5px] h-[5px] rounded-full bg-blue-500/45 flex-shrink-0 mt-[7px]" />
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* Stats row */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-white/[0.05] border border-white/[0.06] rounded-2xl overflow-hidden"
-        >
-          {stats.map((s) => (
-            <div
-              key={s.label}
-              className="flex flex-col items-center justify-center py-6 px-4 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-200"
-            >
-              <span className="text-[22px] font-bold text-foreground tracking-[-0.5px] mb-1">
-                {s.value}
-              </span>
-              <span className="font-mono text-[10px] text-foreground/25 tracking-[0.5px] uppercase">
-                {s.label}
-              </span>
+          {/* ── Left: pitch copy ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
+            className="flex flex-col gap-7"
+          >
+            <div className="space-y-5 text-[15px] text-white/65 leading-[1.85] font-light max-w-lg">
+              <p>
+                I&apos;m not just another dev who can build a CRUD app. I combine{" "}
+                <span className="text-white/75 font-semibold">solid full-stack engineering</span>{" "}
+                with real{" "}
+                <span className="text-purple-300/80 font-medium">AI system experience</span>{" "}
+                — shipped to production, used by real users.
+              </p>
+              <p>
+                I&apos;ve built RAG pipelines, multi-agent systems, and AI-powered SaaS{" "}
+                <span className="text-white/65 font-medium">from scratch</span>. I think in
+                systems, ship fast, and care deeply about code quality and user experience.
+              </p>
+              <p>
+                Whether it&apos;s architecting a scalable backend, designing a beautiful UI,
+                or integrating an LLM into a product — I can{" "}
+                <span className="text-white/65 font-medium">own the entire stack</span>{" "}
+                and deliver.
+              </p>
             </div>
-          ))}
-        </motion.div>
 
+            {/* Divider */}
+            <div className="h-px bg-white/[0.07]" />
+
+            {/* Key differentiators — inline tags */}
+            <div className="flex flex-col gap-3">
+              {[
+                { label: "Full-Stack",        detail: "Next.js · Node.js · MongoDB · TypeScript" },
+                { label: "AI / ML",           detail: "LLMs · RAG · CrewAI · LangChain · Agents" },
+                { label: "Startup Mindset",   detail: "Ships fast · Self-driven · Thinks in systems" },
+              ].map(({ label, detail }) => (
+                <div key={label} className="flex items-center gap-4">
+                  <span className="text-[10px] font-mono text-white/68 tracking-widest uppercase w-28 shrink-0">
+                    {label}
+                  </span>
+                  <span className="text-[11px] font-mono text-white/58 tracking-wide">
+                    {detail}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* CTA */}
+            <motion.a
+              href="#contact"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="group inline-flex items-center gap-2 px-6 py-3 bg-white text-[#0E0B1A] text-sm font-bold rounded-full w-fit transition-all hover:bg-white/90"
+            >
+              Let&apos;s work together
+              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </motion.a>
+          </motion.div>
+
+          {/* ── Right: proof list ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: EASE, delay: 0.2 }}
+          >
+            <div className="flex flex-col">
+              {proof.map(({ emoji, title, sub, stat }, i) => (
+                <motion.div
+                  key={title}
+                  initial={{ opacity: 0, x: 16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, ease: EASE, delay: 0.2 + i * 0.07 }}
+                  className="group flex items-center gap-5 py-5 border-b border-white/[0.06] hover:border-white/[0.13] cursor-default transition-all duration-300"
+                >
+                  {/* Emoji icon */}
+                  <div className="w-10 h-10 rounded-xl border border-white/[0.07] bg-white/[0.02] flex items-center justify-center text-[16px] shrink-0 group-hover:border-white/[0.15] group-hover:bg-white/[0.04] transition-all">
+                    {emoji}
+                  </div>
+
+                  {/* Text */}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-semibold text-white/78 group-hover:text-white/85 transition-colors tracking-tight">
+                      {title}
+                    </p>
+                    <p className="text-[10px] font-mono text-white/78 mt-0.5 tracking-wide truncate">
+                      {sub}
+                    </p>
+                  </div>
+
+                  {/* Stat */}
+                  <span
+                    className="font-black text-white/52 group-hover:text-white/75 transition-colors leading-none tracking-tight shrink-0"
+                    style={{ fontSize: "clamp(1.4rem, 2.5vw, 2rem)", letterSpacing: "-0.03em" }}
+                  >
+                    {stat}
+                  </span>
+                </motion.div>
+              ))}
+
+              {/* Bottom border */}
+              <div className="h-px bg-white/[0.06]" />
+            </div>
+          </motion.div>
+
+        </div>
       </div>
     </section>
   );
