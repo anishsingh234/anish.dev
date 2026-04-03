@@ -14,7 +14,7 @@ const words = [
   { text: "Bonjour",      lang: "Coder · Créer · Déployer" }, // French
   { text: "안녕하세요",     lang: "코드 · 창조 · 확장" },     // Korean
    { text: "Здравствуйте", lang: "Код · Создание · Масштаб" }, // Russian
-  { text: "नमस्ते",        lang: "कोड · निर्माण · विस्तार" }, // Hindi
+ { text: "नमस्ते", lang: "आपका स्वागत है" } // Hindi
  
 ];
 
@@ -179,7 +179,10 @@ const Preloader = () => {
           style={{
             fontFamily: "var(--font-great-vibes), 'Great Vibes', 'Amita', 'Samarkan', serif",
             fontSize: "clamp(48px, 13vw, 155px)",
-            color: "#f2ede4",
+            backgroundImage: "linear-gradient(to right, #ffffff, rgba(216,180,254,0.9))",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            color: "transparent",
             opacity: 0,
             whiteSpace: "nowrap",
           }}
