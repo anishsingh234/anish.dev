@@ -4,6 +4,7 @@ import clsx from "clsx";
 import Footer from "@/components/footer";
 import CustomCursor from "@/components/home/CustomCursor";
 import StarBackground from "@/components/StarBackground";
+import { Analytics } from '@vercel/analytics/react';
 
 import { Dancing_Script, Great_Vibes } from "next/font/google";
 import Preloader from "@/components/home/Preloader";
@@ -59,6 +60,7 @@ export default function RootLayout({ children }) {
       >
         <Preloader />
         {children}
+        <Analytics />
         <CustomCursor />
         <StarBackground />
       </body>
