@@ -12,7 +12,7 @@ import WhyHireMe from "@/components/home/whyhireme";
 import Footer from "@/components/footer";
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between bg-[#05050A] text-foreground selection:bg-purple-500/30">
+    <main className="flex min-h-screen flex-col items-center justify-start bg-[#05050A] text-foreground selection:bg-purple-500/30">
       <Navbar />
 
       <div className="w-full">

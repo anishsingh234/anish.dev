@@ -15,7 +15,7 @@ export default function AboutSection() {
   return (
     <section
       id="about"
-      className="py-24 sm:py-32 border-t border-white/[0.06] scroll-mt-20"
+      className="py-14 sm:py-18 lg:py-22 border-t border-white/[0.06] scroll-mt-20"
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
 
@@ -25,7 +25,7 @@ export default function AboutSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, ease: EASE }}
-          className="mb-16"
+          className="mb-10 sm:mb-14"
         >
           <p className="text-[10px] font-mono text-white/58 tracking-[0.3em] uppercase mb-4">
             ◆ &nbsp; About
@@ -46,7 +46,7 @@ export default function AboutSection() {
         </motion.div>
 
         {/* ── Body grid ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
 
           {/* ── Left: text ── */}
           <motion.div
