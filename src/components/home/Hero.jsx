@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Github, Mail, ArrowUpRight, MapPin } from "lucide-react";
 import { EASE } from "./SharedComponents";
 import BlobCursor from "./BlobCursor";
+import BubbleSkills from "./BubbleSkills";
 import Link from "next/link";
 const MARQUEE_ITEMS = [
   "NEXT.JS",
@@ -108,6 +109,7 @@ const fadeUp = {
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden bg-[#0E0B1A]">
+      <BubbleSkills />
       <CursorGlow />
      
       {/* Ambient orbs */}
