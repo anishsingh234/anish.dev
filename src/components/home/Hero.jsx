@@ -109,7 +109,7 @@ const fadeUp = {
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden bg-[#0E0B1A]">
-      <BubbleSkills />
+   
       <CursorGlow />
      
       {/* Ambient orbs */}
