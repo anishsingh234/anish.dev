@@ -102,7 +102,7 @@ const Preloader = () => {
     >
       {/* 10 vertical strips — match portfolio bg */}
       {Array.from({ length: 10 }).map((_, i) => (
-        <div key={i} className="preloader-strip h-full flex-1 bg-[#0E0B1A]" />
+        <div key={i} className="preloader-strip h-full flex-1 bg-[#0E0B1A] scale-x-105" />
       ))}
 
       {/* ── Centered content ── */}

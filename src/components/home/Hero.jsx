@@ -3,9 +3,9 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Github, Mail, ArrowUpRight, MapPin } from "lucide-react";
 import { EASE } from "./SharedComponents";
-import BlobCursor from "./BlobCursor";
-import BubbleSkills from "./BubbleSkills";
+import RecruiterNudge from "./Recruiternudge";
 import Link from "next/link";
+import StudioPeek from "./StudioPeek";
 const MARQUEE_ITEMS = [
   "NEXT.JS",
   "REACT",
@@ -162,7 +162,6 @@ export default function Hero() {
             <Github className="w-3.5 h-3.5" />
           </a>
 
-          {/* Music */}
           <Link
             href="https://linkedin.com/in/anish-ai"
             target="_blank"
@@ -200,6 +199,8 @@ export default function Hero() {
       {/* ── Hero body ── */}
       <div className="relative z-10 flex-1 flex flex-col justify-center px-6 sm:px-10 pt-8 pb-0">
         {/* Availability badge */}
+        <RecruiterNudge />
+        <StudioPeek/>
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -372,6 +373,7 @@ export default function Hero() {
       >
         <Marquee />
       </motion.div>
+      
 
       {/* ── Scroll cue ── */}
       <motion.div

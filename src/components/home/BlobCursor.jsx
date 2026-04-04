@@ -7,7 +7,7 @@ const IDLE_SIZES   = [520, 300, 110];
 const ACTIVE_SIZES = [400, 200, 75];
 
 export default function BlobCursor({
-  fillColor       = '#e8b84b',
+  fillColor       = '#683387',
   initialXPercent = 0.72,
   initialYPercent = 0.5,
 }) {
@@ -128,7 +128,7 @@ export default function BlobCursor({
             className="blob-circle"
             style={{
               backgroundColor: fillColor,
-              opacity: i === 0 ? 1 : i === 1 ? 0.2: 0.32,
+              opacity: i === 0 ? 1 : i === 1 ? 0.8: 0.93,
             }}
           />
         ))}

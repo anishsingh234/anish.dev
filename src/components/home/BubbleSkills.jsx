@@ -211,8 +211,8 @@ export default function BubbleSkills() {
   return (
     <div
       ref={sceneRef}
-      className="absolute inset-y-0 right-0 z-0 overflow-hidden"
-      style={{ left: '52%', pointerEvents: 'none' }}
+      className="absolute inset-0 z-0 overflow-hidden"
+      style={{ pointerEvents: 'none' }}
     >
       <canvas
         ref={cvRef}
