@@ -128,7 +128,7 @@ export default function BlobCursor({
             className="blob-circle"
             style={{
               backgroundColor: fillColor,
-              opacity: i === 0 ? 1 : i === 1 ? 0.93 : 0.82,
+              opacity: i === 0 ? 1 : i === 1 ? 0.2: 0.32,
             }}
           />
         ))}
