@@ -1,7 +1,7 @@
 // app/not-found.tsx
 
 import Link from 'next/link'
-import BlobCursor from '@/components/home/BlobCursor'
+import BlobCursor from '@/components/animations/BlobCursor'
 
 export default function NotFound() {
   return (

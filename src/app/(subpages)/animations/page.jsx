@@ -2,38 +2,173 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 
-import BlobCursor from '@/components/home/BlobCursor';
-import BubbleSkills from '@/components/home/BubbleSkills';
+import BlobCursor from '@/components/animations/BlobCursor';
+import BubbleSkills from '@/components/animations/BubbleSkills';
 import SkillFlow from '@/components/animations/FlipUp';
 
-const Earth3D = dynamic(() => import("@/components/animations/Earth3D"), {
-  ssr: false,
-  loading: () => (
-    <div className="flex items-center justify-center w-full h-full bg-[#050505]">
-      <div className="flex flex-col items-center gap-4">
-        <div className="relative w-8 h-8">
-          <div className="absolute inset-0 border border-[#fbbf24]/20 rounded-full" />
-          <div className="absolute inset-0 border border-transparent border-t-[#fbbf24]/60 rounded-full animate-spin" />
+/* ── Enhanced Earth3D loading screen ─────────────────────────────────────── */
+function Earth3DLoader() {
+  const [progress, setProgress] = useState(0);
+  const [phase, setPhase] = useState(0);
+
+  const PHASES = ['Initialising renderer', 'Loading geometry', 'Mapping textures', 'Building orbit'];
+
+  useEffect(() => {
+    // Simulate progress ticking up
+    const interval = setInterval(() => {
+      setProgress((p) => {
+        const next = p + Math.random() * 6;
+        return next >= 100 ? 100 : next;
+      });
+    }, 80);
+
+    // Cycle through phases
+    const phaseInterval = setInterval(() => {
+      setPhase((ph) => (ph + 1) % PHASES.length);
+    }, 900);
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(phaseInterval);
+    };
+  }, []);
+
+  return (
+    <div className="flex items-center justify-center w-full h-full bg-[#050505] relative overflow-hidden">
+
+      {/* Ambient rings */}
+      {[160, 220, 280].map((size, i) => (
+        <div
+          key={i}
+          className="absolute rounded-full border"
+          style={{
+            width: size,
+            height: size,
+            borderColor: `rgba(251,191,36,${0.06 - i * 0.015})`,
+            animation: `loaderPulse ${2.5 + i * 0.6}s ease-in-out infinite`,
+            animationDelay: `${i * 0.3}s`,
+          }}
+        />
+      ))}
+
+      {/* Central spinner cluster */}
+      <div className="relative flex items-center justify-center" style={{ width: 80, height: 80 }}>
+
+        {/* Outermost slow ring */}
+        <div
+          className="absolute inset-0 rounded-full border"
+          style={{
+            borderColor: 'rgba(251,191,36,0.08)',
+            borderTopColor: 'rgba(251,191,36,0.5)',
+            animation: 'loaderSpin 3s linear infinite',
+          }}
+        />
+
+        {/* Middle counter-spin */}
+        <div
+          className="absolute rounded-full border"
+          style={{
+            inset: 10,
+            borderColor: 'rgba(251,191,36,0.05)',
+            borderBottomColor: 'rgba(251,191,36,0.35)',
+            animation: 'loaderSpinReverse 2s linear infinite',
+          }}
+        />
+
+        {/* Inner fast ring */}
+        <div
+          className="absolute rounded-full border"
+          style={{
+            inset: 22,
+            borderColor: 'transparent',
+            borderTopColor: '#fbbf24',
+            animation: 'loaderSpin 0.9s linear infinite',
+          }}
+        />
+
+        {/* Core dot */}
+        <div
+          className="w-2 h-2 rounded-full"
+          style={{
+            background: '#fbbf24',
+            boxShadow: '0 0 12px rgba(251,191,36,0.8), 0 0 24px rgba(251,191,36,0.3)',
+            animation: 'loaderCorePulse 1.4s ease-in-out infinite',
+          }}
+        />
+      </div>
+
+      {/* Info block — positioned below spinner */}
+      <div
+        className="absolute flex flex-col items-center gap-3"
+        style={{ top: '50%', marginTop: 56 }}
+      >
+        {/* Phase label */}
+        <span
+          className="text-[9px] tracking-[0.35em] font-mono uppercase"
+          style={{ color: '#fbbf24', opacity: 0.7 }}
+        >
+          {PHASES[phase]}
+        </span>
+
+        {/* Progress bar */}
+        <div
+          className="relative overflow-hidden"
+          style={{ width: 120, height: 1, background: 'rgba(251,191,36,0.1)' }}
+        >
+          <div
+            className="absolute left-0 top-0 h-full transition-all duration-150"
+            style={{
+              width: `${progress}%`,
+              background: 'linear-gradient(90deg, rgba(251,191,36,0.3), #fbbf24)',
+              boxShadow: '0 0 6px rgba(251,191,36,0.6)',
+            }}
+          />
         </div>
-        <span className="text-[9px] tracking-[0.35em] text-[#3a3a3a] font-mono uppercase">
-          Loading Orbit
+
+        {/* Numeric readout */}
+        <span
+          className="text-[8px] tracking-[0.3em] font-mono"
+          style={{ color: '#3a3a3a' }}
+        >
+          {Math.floor(progress).toString().padStart(3, '0')} / 100
         </span>
       </div>
+
+      {/* Keyframes injected locally */}
+      <style>{`
+        @keyframes loaderSpin        { to { transform: rotate(360deg); } }
+        @keyframes loaderSpinReverse { to { transform: rotate(-360deg); } }
+        @keyframes loaderPulse {
+          0%, 100% { transform: scale(1);    opacity: 0.4; }
+          50%       { transform: scale(1.08); opacity: 1;   }
+        }
+        @keyframes loaderCorePulse {
+          0%, 100% { box-shadow: 0 0 12px rgba(251,191,36,0.8), 0 0 24px rgba(251,191,36,0.3); }
+          50%       { box-shadow: 0 0 18px rgba(251,191,36,1),   0 0 36px rgba(251,191,36,0.5); }
+        }
+      `}</style>
     </div>
-  ),
+  );
+}
+
+/* ── Dynamic Earth3D with the new loader ─────────────────────────────────── */
+const Earth3D = dynamic(() => import('@/components/animations/Earth3D'), {
+  ssr: false,
+  loading: () => <Earth3DLoader />,
 });
 
 const ANIMATIONS = [
-  { id: 'blob',      label: 'Blob',       index: '01', sub: 'Organic cursor motion',   accentColor: '#a78bfa', Component: BlobCursor   },
-  { id: 'bubbles',   label: 'Bubbles',    index: '02', sub: 'Floating skill particles', accentColor: '#38bdf8', Component: BubbleSkills },
-  { id: 'orbit',     label: 'Orbit',      index: '03', sub: '3D Earth renderer',        accentColor: '#fbbf24', Component: Earth3D      },
+  { id: 'orbit',     label: 'Orbit',      index: '01', sub: '3D Earth renderer',        accentColor: '#fbbf24', Component: Earth3D      },
+  { id: 'blob',      label: 'Blob',       index: '02', sub: 'Organic cursor motion',   accentColor: '#a78bfa', Component: BlobCursor   },
+  { id: 'bubbles',   label: 'Bubbles',    index: '03', sub: 'Floating skill particles', accentColor: '#38bdf8', Component: BubbleSkills },
   { id: 'skillflow', label: 'Skill Flow', index: '04', sub: 'Logic flip sequence',      accentColor: '#6366f1', Component: SkillFlow    },
 ];
 
 const TICKER = 'ANIMATION STUDIO ◆ INTERACTIVE CANVAS ◆ LIVE PREVIEW ◆ NEXT.JS ◆ REACT ◆ FRAMER MOTION ◆ TAILWIND CSS ◆ ';
 
 export default function AnimationStudio() {
-  const [active, setActive] = useState('blob');
+  // ✅ Default changed to 'orbit'
+  const [active, setActive] = useState('orbit');
 
   const current = ANIMATIONS.find((a) => a.id === active) || ANIMATIONS[0];
   const { Component } = current;
