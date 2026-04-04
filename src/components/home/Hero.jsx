@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Github, Mail, ArrowUpRight, MapPin } from "lucide-react";
 import { EASE } from "./SharedComponents";
-import ArrowAnimation from "./ArrowAnimation";
+import BlobCursor from "./BlobCursor";
 import Link from "next/link";
 const MARQUEE_ITEMS = [
   "NEXT.JS",
@@ -109,7 +109,11 @@ export default function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden bg-[#0E0B1A]">
       <CursorGlow />
-
+     <BlobCursor
+        fillColor="#683387"
+        initialXPercent={0.75}  
+        initialYPercent={0.5}   
+      />
       {/* Ambient orbs */}
       <div
         className="absolute top-[-15%] right-[-5%] w-[600px] h-[600px] rounded-full pointer-events-none"
