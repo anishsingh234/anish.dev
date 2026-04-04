@@ -13,6 +13,7 @@ const EXPANDED_W  = 220;
 const navItems = [
   { label: "Home",        href: "/",            id: null         },
   { label: "Projects",    href: "/#projects",   id: "projects"   },
+  { label: "Animations",  href: "/animations",  id: "animations" },
   { label: "Blog",        href: "/#blog",       id: "blog"       },
   { label: "Skills",      href: "/#skills",     id: "skills"     },
   { label: "Experience",  href: "/#experience", id: "experience" },
