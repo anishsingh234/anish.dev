@@ -1,10 +1,19 @@
 'use client';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 import './BlobCursor.css';
 
-const SPEEDS       = [0.03, 0.07, 0.16];
-const IDLE_SIZES   = [520, 300, 110];
-const ACTIVE_SIZES = [400, 200, 75];
+// Base sizes designed for ~1440px wide screens
+const IDLE_SIZES_BASE   = [300, 100, 100];
+const ACTIVE_SIZES_BASE =  [300, 100, 100];
+const SPEEDS            = [0.03, 0.07, 0.16];
+
+// Clamp blob sizes relative to the container's shortest side
+function getResponsiveSizes(container, baseSizes) {
+  const shortSide = Math.min(container.offsetWidth, container.offsetHeight);
+  // Scale factor: 1.0 at 800px short-side, clamped between 0.35 and 1.0
+  const scale = Math.min(1, Math.max(0.35, shortSide / 800));
+  return baseSizes.map((s) => Math.round(s * scale));
+}
 
 export default function BlobCursor({
   fillColor       = '#683387',
@@ -13,41 +22,46 @@ export default function BlobCursor({
 }) {
   const containerRef = useRef(null);
   const blobsRef     = useRef([]);
-  const posRef       = useRef([{ x:0,y:0 },{ x:0,y:0 },{ x:0,y:0 }]);
-  const targetRef    = useRef({ x:0, y:0 });
+  const posRef       = useRef([{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }]);
+  const targetRef    = useRef({ x: 0, y: 0 });
   const isIdleRef    = useRef(true);
   const idleTimer    = useRef(null);
   const rafRef       = useRef(null);
+
+  // Memoised helpers so resize handler can call them without stale closures
+  const setSize = useCallback((i, px) => {
+    const b = blobsRef.current[i];
+    if (!b) return;
+    b.style.width  = px + 'px';
+    b.style.height = px + 'px';
+  }, []);
+
+  const goIdle = useCallback(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    isIdleRef.current = true;
+    getResponsiveSizes(container, IDLE_SIZES_BASE).forEach((s, i) => setSize(i, s));
+  }, [setSize]);
+
+  const goActive = useCallback(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    isIdleRef.current = false;
+    getResponsiveSizes(container, ACTIVE_SIZES_BASE).forEach((s, i) => setSize(i, s));
+  }, [setSize]);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const setSize = (i, px) => {
-      const b = blobsRef.current[i];
-      if (!b) return;
-      b.style.width  = px + 'px';
-      b.style.height = px + 'px';
-    };
-
-    const goIdle = () => {
-      isIdleRef.current = true;
-      IDLE_SIZES.forEach((s, i) => setSize(i, s));
-    };
-
-    const goActive = () => {
-      isIdleRef.current = false;
-      ACTIVE_SIZES.forEach((s, i) => setSize(i, s));
-    };
-
-    /* init */
+    /* ── init ── */
     const initX = container.offsetWidth  * initialXPercent;
     const initY = container.offsetHeight * initialYPercent;
-    posRef.current.forEach(p => { p.x = initX; p.y = initY; });
+    posRef.current.forEach((p) => { p.x = initX; p.y = initY; });
     targetRef.current = { x: initX, y: initY };
     goIdle();
 
-    /* RAF loop */
+    /* ── RAF loop ── */
     const tick = () => {
       const pos    = posRef.current;
       const target = targetRef.current;
@@ -63,9 +77,6 @@ export default function BlobCursor({
         });
       } else {
         pos.forEach((p, i) => {
-          /* blob[2] = smallest = leads cursor
-             blob[1] = medium   = follows blob[2]
-             blob[0] = biggest  = follows blob[1]   */
           const src = i === 2 ? target : pos[i + 1];
           p.x += (src.x - p.x) * SPEEDS[i];
           p.y += (src.y - p.y) * SPEEDS[i];
@@ -77,7 +88,7 @@ export default function BlobCursor({
     };
     rafRef.current = requestAnimationFrame(tick);
 
-    /* events — window level so custom cursor doesn't block */
+    /* ── pointer events (window-level so cursor doesn't self-block) ── */
     const onMove = (e) => {
       const rect    = container.getBoundingClientRect();
       const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
@@ -87,7 +98,11 @@ export default function BlobCursor({
         clientX >= rect.left && clientX <= rect.right &&
         clientY >= rect.top  && clientY <= rect.bottom;
 
-      if (!inside) { clearTimeout(idleTimer.current); goIdle(); return; }
+      if (!inside) {
+        clearTimeout(idleTimer.current);
+        goIdle();
+        return;
+      }
 
       targetRef.current = { x: clientX - rect.left, y: clientY - rect.top };
       if (isIdleRef.current) goActive();
@@ -95,20 +110,38 @@ export default function BlobCursor({
       idleTimer.current = setTimeout(goIdle, 1800);
     };
 
+    /* ── resize: recalculate blob sizes & snap idle position ── */
+    const onResize = () => {
+      if (isIdleRef.current) {
+        goIdle();
+        // Snap blobs to new idle centre instantly so they don't drift from an
+        // old off-screen position after a dramatic resize
+        const cx = container.offsetWidth  * initialXPercent;
+        const cy = container.offsetHeight * initialYPercent;
+        posRef.current.forEach((p) => { p.x = cx; p.y = cy; });
+        targetRef.current = { x: cx, y: cy };
+      } else {
+        goActive();
+      }
+    };
+
     window.addEventListener('mousemove', onMove);
     window.addEventListener('touchmove', onMove, { passive: true });
+    window.addEventListener('resize',    onResize);
 
     return () => {
       cancelAnimationFrame(rafRef.current);
       clearTimeout(idleTimer.current);
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('touchmove', onMove);
+      window.removeEventListener('resize',    onResize);
     };
-  }, [initialXPercent, initialYPercent]);
+  }, [initialXPercent, initialYPercent, goIdle, goActive]);
 
   return (
     <div ref={containerRef} className="blob-cursor-container">
-      <svg style={{ position:'absolute', width:0, height:0 }}>
+      {/* Hidden SVG filter — zero layout cost */}
+      <svg style={{ position: 'absolute', width: 0, height: 0 }} aria-hidden="true">
         <defs>
           <filter id="blob-goo">
             <feGaussianBlur in="SourceGraphic" stdDeviation="18" result="blur" />
@@ -128,7 +161,7 @@ export default function BlobCursor({
             className="blob-circle"
             style={{
               backgroundColor: fillColor,
-              opacity: i === 0 ? 1 : i === 1 ? 0.8: 0.93,
+              opacity: i === 0 ? 1 : i === 1 ? 0.8 : 0.93,
             }}
           />
         ))}

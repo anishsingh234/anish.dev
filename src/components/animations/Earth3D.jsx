@@ -34,11 +34,39 @@ function KeepAlive() {
   return null;
 }
 
+/* ────────────── Responsive camera adjuster ────────────── */
+
+function ResponsiveCamera() {
+  const { camera, size } = useThree();
+
+  useEffect(() => {
+    // On narrow screens, pull camera back so globe fits without clipping
+    const isMobile = size.width < 480;
+    const isTablet = size.width < 768;
+
+    if (isMobile) {
+      camera.position.set(0, 0, 6.5);
+      camera.fov = 45;
+    } else if (isTablet) {
+      camera.position.set(0, 0, 5.5);
+      camera.fov = 42;
+    } else {
+      camera.position.set(0, 0, 5);
+      camera.fov = 40;
+    }
+
+    camera.updateProjectionMatrix();
+  }, [camera, size.width]);
+
+  return null;
+}
+
 /* ────────────────── Floating particles ────────────────── */
 
-function FloatingParticles() {
+function FloatingParticles({ isMobile }) {
   const pointsRef = useRef();
-  const count = 120;
+  // Fewer particles on mobile for performance
+  const count = isMobile ? 60 : 120;
 
   const { positions, sizes } = useMemo(() => {
     const pos = new Float32Array(count * 3);
@@ -57,7 +85,7 @@ function FloatingParticles() {
     }
 
     return { positions: pos, sizes: sz };
-  }, []);
+  }, [count]);
 
   useFrame(() => {
     if (pointsRef.current) {
@@ -88,7 +116,7 @@ function FloatingParticles() {
 
 /* ──────────────────── Globe mesh ───────────────────────── */
 
-function Globe() {
+function Globe({ isMobile }) {
   const meshRef = useRef();
   const cloudsRef = useRef();
 
@@ -98,7 +126,8 @@ function Globe() {
   ]);
 
   earthMap.colorSpace = THREE.SRGBColorSpace;
-  earthMap.anisotropy = 4;
+  // Lower anisotropy on mobile saves GPU memory
+  earthMap.anisotropy = isMobile ? 2 : 4;
 
   useEffect(() => {
     return () => {
@@ -112,10 +141,13 @@ function Globe() {
     if (cloudsRef.current) cloudsRef.current.rotation.y += 0.00058;
   });
 
+  // Slightly fewer segments on mobile for performance
+  const segments = isMobile ? 36 : 48;
+
   return (
     <group rotation={[0.35, 4.92, 0.05]}>
       <mesh ref={meshRef}>
-        <sphereGeometry args={[1.5, 48, 48]} />
+        <sphereGeometry args={[1.5, segments, segments]} />
         <meshStandardMaterial
           map={earthMap}
           roughness={0.45}
@@ -127,7 +159,7 @@ function Globe() {
       </mesh>
 
       <mesh ref={cloudsRef} scale={[1.007, 1.007, 1.007]}>
-        <sphereGeometry args={[1.5, 48, 48]} />
+        <sphereGeometry args={[1.5, segments, segments]} />
         <meshStandardMaterial
           map={cloudMap}
           alphaMap={cloudMap}
@@ -146,14 +178,36 @@ function Globe() {
 
 export default function Earth3D() {
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     setMounted(true);
+
+    const checkBreakpoint = () => {
+      setIsMobile(window.innerWidth < 480);
+      setIsTablet(window.innerWidth >= 480 && window.innerWidth < 768);
+    };
+
+    checkBreakpoint();
+
+    window.addEventListener("resize", checkBreakpoint);
+    return () => window.removeEventListener("resize", checkBreakpoint);
   }, []);
 
   if (!mounted) {
     return (
-      <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          minHeight: "300px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <div
           style={{
             width: "60px",
@@ -169,15 +223,53 @@ export default function Earth3D() {
   }
 
   return (
-    <div style={{ width: "100%", height: "100%", position: "relative", cursor: "grab" }}>
+    /*
+     * IMPORTANT: the parent must have an explicit height.
+     * On mobile, "height: 100%" collapses if the parent has no height set.
+     * We use minHeight as a safe fallback so the canvas never renders
+     * into a zero-height box (which causes the "blank globe" bug on mobile).
+     */
+    <div
+      ref={containerRef}
+      style={{
+        width: "100%",
+        height: "100%",
+        minHeight: isMobile ? "320px" : isTablet ? "420px" : "500px",
+        position: "relative",
+        // Show pointer on desktop, default touch cursor on mobile
+        cursor: isMobile ? "default" : "grab",
+        // Prevent touch scroll from fighting with OrbitControls
+        touchAction: "none",
+        WebkitTapHighlightColor: "transparent",
+      }}
+    >
       <Canvas
-        camera={{ position: [0, 0, 5], fov: 40 }}
-        style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
-        gl={{ alpha: true, antialias: true }}
-        dpr={[1, 2]}
+        /*
+         * Don't set a fixed camera here — ResponsiveCamera() handles it
+         * reactively. We still set a sensible default for the first render.
+         */
+        camera={{ position: [0, 0, 5], fov: 40, near: 0.1, far: 1000 }}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          display: "block", // Eliminates the 4px inline gap on mobile
+        }}
+        gl={{ alpha: true, antialias: !isMobile }} // antialias off on mobile = big perf win
+        /*
+         * Cap DPR at 2 on desktop, 1.5 on mobile.
+         * High-DPR mobile screens (3×) would otherwise render 3× the pixels
+         * for no visible gain at globe size.
+         */
+        dpr={isMobile ? [1, 1.5] : [1, 2]}
         onCreated={({ gl }) => gl.setClearColor(0x000000, 0)}
+        // Throttle frame rate on mobile to save battery
+        frameloop={isMobile ? "demand" : "always"}
       >
         <KeepAlive />
+        <ResponsiveCamera />
 
         <ambientLight intensity={0.8} />
         <hemisphereLight args={["#b1e1ff", "#112244", 0.6]} />
@@ -186,12 +278,26 @@ export default function Earth3D() {
         <pointLight position={[4, 0, -4]} intensity={1.2} />
 
         <Suspense fallback={null}>
-          <Globe />
-          <FloatingParticles />
+          <Globe isMobile={isMobile} />
+          <FloatingParticles isMobile={isMobile} />
           <Preload all />
         </Suspense>
 
-        <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.4} />
+        <OrbitControls
+          enableZoom={false}
+          enablePan={false}
+          autoRotate
+          autoRotateSpeed={0.4}
+          /*
+           * These touch multipliers control how sensitive drag/rotate feels
+           * on a finger vs. a mouse. Lower = less jerky on mobile.
+           */
+          rotateSpeed={isMobile ? 0.5 : 1.0}
+          touches={{
+            ONE: THREE.TOUCH.ROTATE,
+            TWO: THREE.TOUCH.DOLLY_ROTATE,
+          }}
+        />
       </Canvas>
     </div>
   );
