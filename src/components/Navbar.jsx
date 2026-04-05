@@ -22,7 +22,6 @@ const navItems = [
   { label: "Contact",     href: "/#contact",    id: "contact"    },
 ];
 
-// ── Command Palette ───────────────────────────────────
 function CommandPalette({ open, onClose, onNavigate }) {
   const [query, setQuery] = useState("");
   const filtered = navItems.filter((n) =>
@@ -89,7 +88,6 @@ function CommandPalette({ open, onClose, onNavigate }) {
   );
 }
 
-// ── Clock ─────────────────────────────────────────────
 function LiveClock() {
   const [time, setTime] = useState("");
   useEffect(() => {
@@ -104,49 +102,33 @@ function LiveClock() {
   return <span className="font-mono text-[10px] text-white/40 tracking-widest tabular-nums">{time}</span>;
 }
 
-// ── Hamburger icon ────────────────────────────────────
 function HamburgerIcon({ open }) {
   return (
     <div className="flex flex-col gap-[5px]">
-      <motion.span
-        animate={{ width: open ? 18 : 18 }}
-        className="block h-[1.5px] bg-current rounded-full"
-      />
-      <motion.span
-        animate={{ width: open ? 18 : 13 }}
-        transition={{ duration: 0.28, ease: EASE }}
-        className="block h-[1.5px] bg-current rounded-full"
-      />
-      <motion.span
-        animate={{ width: open ? 18 : 18 }}
-        className="block h-[1.5px] bg-current rounded-full"
-      />
+      <motion.span animate={{ width: open ? 18 : 18 }} className="block h-[1.5px] bg-current rounded-full" />
+      <motion.span animate={{ width: open ? 18 : 13 }} transition={{ duration: 0.28, ease: EASE }} className="block h-[1.5px] bg-current rounded-full" />
+      <motion.span animate={{ width: open ? 18 : 18 }} className="block h-[1.5px] bg-current rounded-full" />
     </div>
   );
 }
 
-// ── Main Navbar ───────────────────────────────────────
 export default function Navbar() {
-  const [expanded,     setExpanded]     = useState(false);
-  const [paletteOpen,  setPaletteOpen]  = useState(false);
-  const [mobileOpen,   setMobileOpen]   = useState(false);
+  const [expanded,      setExpanded]      = useState(false);
+  const [paletteOpen,   setPaletteOpen]   = useState(false);
+  const [mobileOpen,    setMobileOpen]    = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const pathname = usePathname();
   const router   = useRouter();
   const isHome   = pathname === "/";
 
-  // ⌘K
   useEffect(() => {
     const h = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault(); setPaletteOpen((v) => !v);
-      }
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); setPaletteOpen((v) => !v); }
     };
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
   }, []);
 
-  // Active section
   useEffect(() => {
     if (!isHome) return;
     const ids = navItems.map((n) => n.id).filter(Boolean);
@@ -163,7 +145,6 @@ export default function Navbar() {
     return () => obs.forEach((ob) => ob?.disconnect());
   }, [isHome]);
 
-  // Lock scroll on mobile
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -173,16 +154,13 @@ export default function Navbar() {
 
   return (
     <>
-      {/* ════════════════════════════════════════════════
-          DESKTOP SIDEBAR
-      ════════════════════════════════════════════════ */}
+      {/* DESKTOP SIDEBAR */}
       <motion.aside
         animate={{ width: sidebarW }}
         transition={{ duration: 0.28, ease: EASE }}
         className="hidden lg:flex fixed top-0 left-0 h-screen z-[100] flex-col border-r border-white/[0.06] bg-[#0E0B1A]/90 backdrop-blur-xl overflow-hidden"
       >
-
-        {/* ── Toggle button + Logo ── */}
+        {/* Toggle + Logo */}
         <div className="relative flex items-center h-16 border-b border-white/[0.06] flex-shrink-0">
           <button
             onClick={() => setExpanded((v) => !v)}
@@ -190,8 +168,6 @@ export default function Navbar() {
           >
             <HamburgerIcon open={expanded} />
           </button>
-
-          {/* Logo — fades in when expanded */}
           <motion.div
             animate={{ opacity: expanded ? 1 : 0, x: expanded ? 0 : -8 }}
             transition={{ duration: 0.22, ease: EASE }}
@@ -208,7 +184,7 @@ export default function Navbar() {
           </motion.div>
         </div>
 
-        {/* ── Search ── */}
+        {/* Search */}
         <div className="px-3 py-2.5 border-b border-white/[0.06] flex-shrink-0">
           <button
             onClick={() => setPaletteOpen(true)}
@@ -232,7 +208,7 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* ── Section label ── */}
+        {/* Section label */}
         <motion.p
           animate={{ opacity: expanded ? 1 : 0, height: expanded ? "auto" : 0 }}
           transition={{ duration: 0.22, ease: EASE }}
@@ -241,12 +217,13 @@ export default function Navbar() {
           Sections
         </motion.p>
 
-        {/* ── Nav links ── */}
+        {/* Nav links */}
         <nav className="flex-1 overflow-y-auto overflow-x-hidden py-1 px-2">
           {navItems.map((item, i) => {
             const isActive = item.id
               ? activeSection === item.id
               : pathname === "/" && !activeSection;
+            const isAnimations = item.id === "animations";
 
             return (
               <div key={item.label} className="relative group/item">
@@ -270,16 +247,20 @@ export default function Navbar() {
                   <motion.span
                     animate={{ opacity: expanded ? 1 : 0, width: expanded ? "auto" : 0 }}
                     transition={{ duration: 0.2, ease: EASE }}
-                    className="overflow-hidden whitespace-nowrap"
+                    className="overflow-hidden whitespace-nowrap flex items-center gap-1.5"
                   >
                     {item.label}
+                    {/* one quiet dot signals this is a studio product */}
+                    {isAnimations && (
+                      <span className="w-1 h-1 rounded-full bg-white/20 flex-shrink-0" />
+                    )}
                   </motion.span>
                 </Link>
 
-                {/* Tooltip — only shows when collapsed */}
+                {/* Tooltip when collapsed — appends "· studio" for Animations */}
                 {!expanded && (
                   <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1.5 bg-[#1a1626] border border-white/[0.1] rounded-lg text-[11px] text-white/80 font-medium whitespace-nowrap pointer-events-none opacity-0 group-hover/item:opacity-100 transition-opacity duration-150 z-50">
-                    {item.label}
+                    {item.label}{isAnimations && <span className="text-white/35"> · studio</span>}
                     <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#1a1626]" />
                   </div>
                 )}
@@ -288,9 +269,32 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* ── Bottom ── */}
+        {/* Protary — quiet bottom label above the icon row */}
+        <motion.div
+          animate={{ opacity: expanded ? 1 : 0, height: expanded ? "auto" : 0 }}
+          transition={{ duration: 0.22, ease: EASE }}
+          className="overflow-hidden"
+        >
+          <Link href="/animations">
+            <div className="mx-3 mb-2 px-3 py-2 rounded-lg flex items-center gap-2.5 group transition-colors hover:bg-white/[0.03]">
+              {/* slow-spinning reel ring */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+                className="w-4 h-4 rounded-full border border-white/[0.15] flex items-center justify-center flex-shrink-0"
+              >
+                <div className="w-1 h-1 rounded-full bg-white/25" />
+              </motion.div>
+              <div className="flex flex-col leading-none">
+                <span className="text-[10px] font-mono text-white/45 tracking-[0.12em] group-hover:text-white/65 transition-colors">PROTARY</span>
+                <span className="text-[8px] font-mono text-white/20 tracking-widest mt-0.5">animation studio</span>
+              </div>
+            </div>
+          </Link>
+        </motion.div>
+
+        {/* Bottom icons */}
         <div className="border-t border-white/[0.06] px-3 py-3 flex-shrink-0">
-          {/* Clock */}
           <motion.div
             animate={{ opacity: expanded ? 1 : 0, height: expanded ? "auto" : 0 }}
             transition={{ duration: 0.22, ease: EASE }}
@@ -299,7 +303,6 @@ export default function Navbar() {
             <LiveClock />
           </motion.div>
 
-          {/* Icon links */}
           <div className="flex items-center gap-1.5">
             <Link
               href="https://github.com/anishsingh234"
@@ -308,7 +311,6 @@ export default function Navbar() {
             >
               <Github className="w-3.5 h-3.5" />
             </Link>
-
             <Link
               href="https://linkedin.com/in/anish-ai"
               target="_blank" rel="noopener noreferrer"
@@ -318,8 +320,6 @@ export default function Navbar() {
                 <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
               </svg>
             </Link>
-
-            {/* Resume — only visible when expanded */}
             <motion.a
               href="/resume.pdf"
               download="Anish_Kumar_Resume.pdf"
@@ -334,7 +334,6 @@ export default function Navbar() {
         </div>
       </motion.aside>
 
-      {/* Click outside to close */}
       <AnimatePresence>
         {expanded && (
           <motion.div
@@ -345,9 +344,7 @@ export default function Navbar() {
         )}
       </AnimatePresence>
 
-      {/* ════════════════════════════════════════════════
-          MOBILE: Top bar (unchanged)
-      ════════════════════════════════════════════════ */}
+      {/* MOBILE: Top bar */}
       <motion.header
         initial={{ y: -60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -360,7 +357,6 @@ export default function Navbar() {
           </div>
           <span className="text-[13px] font-bold text-white/75">Anish Kumar</span>
         </Link>
-
         <div className="flex items-center gap-2.5">
           <button
             onClick={() => setPaletteOpen(true)}
@@ -382,7 +378,7 @@ export default function Navbar() {
         </div>
       </motion.header>
 
-      {/* MOBILE: Bottom drawer (unchanged) */}
+      {/* MOBILE: Bottom drawer */}
       <AnimatePresence>
         {mobileOpen && (
           <>
@@ -408,6 +404,7 @@ export default function Navbar() {
               <div className="px-4 py-3 grid grid-cols-2 gap-1.5">
                 {navItems.map((item, i) => {
                   const isActive = item.id ? activeSection === item.id : false;
+                  const isAnimations = item.id === "animations";
                   return (
                     <motion.div key={item.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}>
                       <Link
@@ -421,6 +418,7 @@ export default function Navbar() {
                       >
                         <span className="text-[9px] font-mono text-white/30">{String(i + 1).padStart(2, "0")}.</span>
                         {item.label}
+                        {isAnimations && <span className="w-1 h-1 rounded-full bg-white/20 ml-auto flex-shrink-0" />}
                       </Link>
                     </motion.div>
                   );
@@ -442,10 +440,8 @@ export default function Navbar() {
         )}
       </AnimatePresence>
 
-      {/* Command Palette */}
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} onNavigate={(item) => router.push(item.href)} />
 
-      {/* Content offset */}
       <style jsx global>{`
         @media (min-width: 1024px) {
           main { margin-left: ${sidebarW}px; transition: margin-left 0.28s cubic-bezier(0.16,1,0.3,1); }
