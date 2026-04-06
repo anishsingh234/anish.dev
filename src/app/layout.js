@@ -38,6 +38,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata = {
+  metadataBase: new URL("https://anish-ai.vercel.app"),
   title: "Anish Singh | Full Stack Developer & AI Engineer",
   description:
     "Full stack developer specializing in React, Next.js, Node.js, and AI/ML integration. Building modern web applications with clean code and great user experience.",
