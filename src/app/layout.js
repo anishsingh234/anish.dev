@@ -81,6 +81,10 @@ export default function RootLayout({ children }) {
           "bg-background text-foreground font-sans"
         )}
       >
+
+
+
+      
         <Preloader />
         {children}
         <Analytics />
