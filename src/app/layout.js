@@ -39,14 +39,14 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata = {
   metadataBase: new URL("https://anish-ai.vercel.app"),
-  title: "Anish Singh | Full Stack Developer & AI Engineer",
+  title: "Who I Actually Am",
   description:
     "Full stack developer specializing in React, Next.js, Node.js, and AI/ML integration. Building modern web applications with clean code and great user experience.",
   icons: {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "Anish Singh | Full Stack Developer & AI Engineer",
+    title: "Who I Actually Am",
     description: "Full stack developer specializing in React, Next.js, Node.js, and AI/ML integration. Building modern web applications with clean code and great user experience.",
     url: "https://anish-ai.vercel.app/", // Replace with your actual portfolio URL
     siteName: "Anish Singh",
@@ -63,7 +63,7 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Anish Singh | Full Stack Developer & AI Engineer",
+    title: "Who I Actually Am",
     description: "Full stack developer specializing in React, Next.js, Node.js, and AI/ML integration.",
     images: ["/namaste-og.png"], 
   },
