@@ -44,6 +44,28 @@ export const metadata = {
   icons: {
     icon: "/favicon.ico",
   },
+  openGraph: {
+    title: "Anish Singh | Full Stack Developer & AI Engineer",
+    description: "Full stack developer specializing in React, Next.js, Node.js, and AI/ML integration. Building modern web applications with clean code and great user experience.",
+    url: "https://anish-ai.vercel.app/", // Replace with your actual portfolio URL
+    siteName: "Anish Singh",
+    images: [
+      {
+        url: "/namaste-og.png", // Make sure you save the image you attached in the public folder as namaste-og.png
+        width: 1200,
+        height: 630,
+        alt: "Anish Singh Portfolio Greeting",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Anish Singh | Full Stack Developer & AI Engineer",
+    description: "Full stack developer specializing in React, Next.js, Node.js, and AI/ML integration.",
+    images: ["/namaste-og.png"], 
+  },
 };
 
 export default function RootLayout({ children }) {
