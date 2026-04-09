@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { JetBrains_Mono } from 'next/font/google';
+import Link from 'next/link';
 
 import BlobCursor from '@/components/animations/BlobCursor';
 import BubbleSkills from '@/components/animations/BubbleSkills';
@@ -120,8 +121,11 @@ export default function AnimationStudio() {
       >
         <div className="flex items-center w-full">
 
-          {/* Brand */}
-          <div className="flex items-center gap-3 px-5 py-3 border-r flex-shrink-0" style={{ borderColor: '#1a1a1a' }}>
+          {/* Brand — clickable, links home */}
+          <Link href="/" className="flex items-center gap-3 px-5 py-3 border-r flex-shrink-0 group transition-all duration-200 hover:bg-white/[0.03]" style={{ borderColor: '#1a1a1a' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-white/40 group-hover:text-white transition-colors duration-200 flex-shrink-0">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
             <span className="text-[11px] transition-colors duration-500" style={{ color: current.accentColor }}>◆</span>
             <div>
               <p style={{ fontSize: 8, letterSpacing: '0.3em', color: '#999', textTransform: 'uppercase', lineHeight: 1, marginBottom: 3 }}>
@@ -131,7 +135,7 @@ export default function AnimationStudio() {
                 Animation Studio
               </p>
             </div>
-          </div>
+          </Link>
 
           {/* Desktop scene tabs — hidden on mobile */}
           <div className="hidden sm:flex items-center overflow-x-auto flex-1 hide-scrollbar">
@@ -166,6 +170,25 @@ export default function AnimationStudio() {
               {current.label}
             </span>
           </div>
+
+          {/* Home button — prominent */}
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 px-5 py-2 mx-2 my-1.5 flex-shrink-0 rounded-lg transition-all duration-200 group"
+            style={{
+              border: `1px solid ${current.accentColor}50`,
+              background: `${current.accentColor}12`,
+              boxShadow: `0 0 12px ${current.accentColor}15`,
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: current.accentColor }}>
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+            <span style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: current.accentColor, fontWeight: 600 }}>
+              Home
+            </span>
+          </Link>
 
           {/* Live dot */}
           <div className="flex items-center gap-2 px-5 py-3 flex-shrink-0 border-l" style={{ borderColor: '#1a1a1a' }}>
