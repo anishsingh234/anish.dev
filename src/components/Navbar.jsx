@@ -542,15 +542,15 @@ function MobileNav({
     tl.fromTo(
       overlayRef.current,
       { opacity: 0 },
-      { opacity: 1, duration: 0.4, ease: "power2.out" }
+      { opacity: 1, duration: 0.14, ease: "power2.out" }
     );
 
     // Panel slide up
     tl.fromTo(
       panelRef.current,
       { y: "100%", borderRadius: "32px 32px 0 0" },
-      { y: "0%", borderRadius: "0px", duration: 0.6, ease: "power4.out" },
-      "-=0.2"
+      { y: "0%", borderRadius: "0px", duration: 0.25, ease: "power4.out" },
+      "-=0.06"
     );
 
     // Header fade
@@ -558,8 +558,8 @@ function MobileNav({
       tl.fromTo(
         headerRef.current,
         { opacity: 0, y: -20 },
-        { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" },
-        "-=0.3"
+        { opacity: 1, y: 0, duration: 0.16, ease: "power3.out" },
+        "-=0.12"
       );
     }
 
@@ -568,8 +568,8 @@ function MobileNav({
     tl.fromTo(
       lines,
       { scaleX: 0 },
-      { scaleX: 1, duration: 0.5, stagger: 0.06, ease: "power3.out" },
-      "-=0.3"
+      { scaleX: 1, duration: 0.18, stagger: 0.025, ease: "power3.out" },
+      "-=0.1"
     );
 
     // Nav items — cinematic stagger
@@ -581,11 +581,11 @@ function MobileNav({
         opacity: 1,
         x: 0,
         skewX: 0,
-        duration: 0.5,
-        stagger: 0.06,
+        duration: 0.22,
+        stagger: 0.025,
         ease: "power3.out",
       },
-      "-=0.5"
+      "-=0.12"
     );
 
     // Footer
@@ -593,8 +593,8 @@ function MobileNav({
       tl.fromTo(
         footerRef.current,
         { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" },
-        "-=0.2"
+        { opacity: 1, y: 0, duration: 0.16, ease: "power3.out" },
+        "-=0.1"
       );
     }
 
@@ -608,18 +608,18 @@ function MobileNav({
     tl.to(items, {
       opacity: 0,
       x: 30,
-      duration: 0.25,
-      stagger: 0.03,
+      duration: 0.12,
+      stagger: 0.015,
       ease: "power2.in",
     });
 
     tl.to(
       panelRef.current,
-      { y: "100%", duration: 0.45, ease: "power3.in" },
-      "-=0.1"
+      { y: "100%", duration: 0.2, ease: "power3.in" },
+      "-=0.06"
     );
 
-    tl.to(overlayRef.current, { opacity: 0, duration: 0.3 }, "-=0.2");
+    tl.to(overlayRef.current, { opacity: 0, duration: 0.12 }, "-=0.06");
   }, [onClose]);
 
   if (!open) return null;
@@ -669,7 +669,7 @@ function MobileNav({
           <button
             onClick={() => {
               handleClose();
-              setTimeout(onSearchOpen, 500);
+              setTimeout(onSearchOpen, 40);
             }}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-purple-400/[0.08] bg-purple-400/[0.03] text-white/30 hover:border-purple-400/[0.15] transition-all"
           >
@@ -807,7 +807,7 @@ function MobileTopBar({ onMenuOpen, onSearchOpen }) {
     gsap.fromTo(
       barRef.current,
       { y: -60, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.7, delay: 0.2, ease: "power4.out" }
+      { y: 0, opacity: 1, duration: 0.3, delay: 0, ease: "power4.out" }
     );
   }, []);
 
