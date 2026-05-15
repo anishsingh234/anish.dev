@@ -37,7 +37,7 @@
     "**/*.mts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "src/app/(subpages)/yield/privacy-policy/page.jsx"  ],
   "exclude": [
     "node_modules"
   ]
