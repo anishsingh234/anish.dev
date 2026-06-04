@@ -6,6 +6,18 @@ import gsap from "gsap";
 /* ─── NUDGE DATA ──────────────────────────────────────────────────────────── */
 const NUDGES = [
   {
+    tag: "00 / STATUS",
+    msg: "Currently",
+    highlight: "Open to Work",
+    sub: "Full-time roles · AI / Full Stack",
+    href: "#contact",
+    color: "#6ee7b7",           // emerald-300
+    borderColor: "rgba(52,211,153,0.30)",
+    glowColor: "rgba(52,211,153,0.06)",
+    dotColor: "#34d399",
+    accentText: "rgba(52,211,153,0.55)",
+  },
+  {
     tag: "01 / BLOG",
     msg: "Did you visit",
     highlight: "the Blog?",
@@ -200,36 +212,26 @@ function DesktopNudge({
     : { href: n.href };
 
   return (
-    <div className="absolute right-10 xl:right-16 top-1/2 -translate-y-[52%] z-20 hidden lg:block pointer-events-none select-none">
-      {/* Depth shadow cards */}
-      <div
-        className="absolute inset-0 translate-x-2.5 translate-y-3.5 rounded-2xl"
-        style={{
-          border: "1px solid rgba(167,139,250,0.05)",
-          background: "rgba(14,11,26,0.55)",
-        }}
-      />
-      <div
-        className="absolute inset-0 translate-x-1 translate-y-1.5 rounded-2xl"
-        style={{
-          border: "1px solid rgba(167,139,250,0.09)",
-          background: "rgba(14,11,26,0.72)",
-        }}
-      />
-
-      {/* Main card */}
+    <div className="absolute right-10 xl:right-16 top-[30%] -translate-y-1/2 z-20 hidden lg:block pointer-events-none select-none">
+      {/* Sleek Glass Card */}
       <div
         ref={cardRef}
-        className="relative w-[280px] rounded-2xl overflow-hidden pointer-events-auto will-change-transform"
+        className="relative w-[280px] rounded-2xl overflow-hidden pointer-events-auto will-change-transform backdrop-blur-md"
         style={{
           opacity: 0,
-          border: `1px solid ${n.borderColor}`,
-          background: `linear-gradient(145deg, ${n.glowColor} 0%, rgba(14,11,26,0.97) 65%)`,
+          border: "1px solid rgba(255,255,255,0.08)",
+          background: "linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)",
+          boxShadow: `0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1), 0 0 40px ${n.glowColor}`,
           transformStyle: "preserve-3d",
         }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
+        {/* Inner ambient colored glow */}
+        <div 
+          className="absolute top-[-20%] right-[-10%] w-[150px] h-[150px] rounded-full mix-blend-screen pointer-events-none filter blur-[50px] opacity-30 transition-colors duration-700"
+          style={{ background: n.color }}
+        />
         {/* Accent sweep line */}
         <div
           ref={accentRef}

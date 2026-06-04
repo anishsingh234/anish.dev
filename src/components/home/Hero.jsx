@@ -6,6 +6,7 @@ import { EASE } from "./SharedComponents";
 import RecruiterNudge from "./Recruiternudge";
 import Link from "next/link";
 import StudioPeek from "./StudioPeek";
+
 const MARQUEE_ITEMS = [
   "NEXT.JS",
   "REACT",
@@ -106,12 +107,243 @@ const fadeUp = {
   }),
 };
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   ORBIT RING — Desktop-only animated tech icon constellation
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+const ORBIT_TECH = [
+  { label: "React",      color: "#61DAFB" },
+  { label: "Next.js",    color: "#ffffff" },
+  { label: "Node.js",    color: "#68A063" },
+  { label: "Python",     color: "#3776AB" },
+  { label: "TypeScript", color: "#3178C6" },
+  { label: "MongoDB",    color: "#47A248" },
+  { label: "AI / ML",    color: "#a78bfa" },
+  { label: "Tailwind",   color: "#38BDF8" },
+];
+
+/* Deterministic particle positions — no Math.random() to avoid hydration mismatch */
+const PARTICLES = [
+  { x: 12, y: 18, s: 2,   d: 3.2 },
+  { x: 85, y: 12, s: 1.5, d: 4.1 },
+  { x: 8,  y: 72, s: 1,   d: 2.8 },
+  { x: 92, y: 65, s: 2.5, d: 3.5 },
+  { x: 45, y: 8,  s: 1,   d: 4.5 },
+  { x: 55, y: 92, s: 1.5, d: 3.0 },
+  { x: 20, y: 45, s: 1,   d: 3.8 },
+  { x: 80, y: 50, s: 1,   d: 4.2 },
+  { x: 35, y: 85, s: 2,   d: 2.5 },
+  { x: 65, y: 15, s: 1.5, d: 3.6 },
+  { x: 15, y: 58, s: 1,   d: 4.0 },
+  { x: 88, y: 40, s: 1.5, d: 3.3 },
+];
+
+function OrbitRing() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1.2, ease: EASE, delay: 0.35 }}
+      className="hidden lg:flex items-center justify-center relative aspect-square w-full max-w-[520px] mx-auto"
+    >
+      {/* ── Large background glow ── */}
+      <div
+        className="absolute w-[80%] h-[80%] rounded-full pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(139,92,246,0.10) 0%, rgba(59,130,246,0.05) 40%, transparent 70%)",
+        }}
+      />
+
+      {/* ── Outer orbit path ── */}
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: "84%",
+          height: "84%",
+          border: "1px dashed rgba(167,139,250,0.12)",
+        }}
+      />
+
+      {/* ── Inner orbit path ── */}
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: "48%",
+          height: "48%",
+          border: "1px solid rgba(167,139,250,0.07)",
+        }}
+      />
+
+      {/* ── Crosshair lines through center ── */}
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          width: "70%",
+          height: "1px",
+          background:
+            "linear-gradient(90deg, transparent 0%, rgba(167,139,250,0.06) 30%, rgba(167,139,250,0.06) 70%, transparent 100%)",
+        }}
+      />
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          width: "1px",
+          height: "70%",
+          background:
+            "linear-gradient(180deg, transparent 0%, rgba(167,139,250,0.06) 30%, rgba(167,139,250,0.06) 70%, transparent 100%)",
+        }}
+      />
+
+      {/* ── Rotating outer icons ── */}
+      <div
+        className="absolute animate-spin-slow"
+        style={{ width: "84%", height: "84%" }}
+      >
+        {ORBIT_TECH.map((tech, i) => {
+          const angle =
+            (i / ORBIT_TECH.length) * Math.PI * 2 - Math.PI / 2;
+          const x = 50 + 50 * Math.cos(angle);
+          const y = 50 + 50 * Math.sin(angle);
+          return (
+            <div
+              key={tech.label}
+              className="absolute -translate-x-1/2 -translate-y-1/2"
+              style={{ left: `${x}%`, top: `${y}%` }}
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  delay: 0.6 + i * 0.09,
+                  duration: 0.5,
+                  ease: [0.34, 1.56, 0.64, 1],
+                }}
+                className="animate-spin-slow-reverse"
+              >
+                <div
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl backdrop-blur-sm"
+                  style={{
+                    background: "rgba(255,255,255,0.03)",
+                    border: `1px solid ${tech.color}20`,
+                    boxShadow: `0 0 24px ${tech.color}0a, 0 2px 8px rgba(0,0,0,0.2)`,
+                  }}
+                >
+                  <div
+                    className="w-2 h-2 rounded-full flex-shrink-0"
+                    style={{
+                      background: tech.color,
+                      boxShadow: `0 0 8px ${tech.color}55`,
+                    }}
+                  />
+                  <span className="text-[10px] font-mono text-white/55 whitespace-nowrap">
+                    {tech.label}
+                  </span>
+                </div>
+              </motion.div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ── Rotating inner dots (counter-clockwise) ── */}
+      <div
+        className="absolute animate-spin-slow-reverse"
+        style={{ width: "48%", height: "48%" }}
+      >
+        {Array.from({ length: 8 }).map((_, i) => {
+          const angle = (i / 8) * Math.PI * 2;
+          const x = 50 + 50 * Math.cos(angle);
+          const y = 50 + 50 * Math.sin(angle);
+          return (
+            <div
+              key={i}
+              className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
+              style={{
+                left: `${x}%`,
+                top: `${y}%`,
+                width: i % 2 === 0 ? 4 : 3,
+                height: i % 2 === 0 ? 4 : 3,
+                background:
+                  i % 2 === 0
+                    ? "rgba(167,139,250,0.3)"
+                    : "rgba(139,92,246,0.18)",
+              }}
+            />
+          );
+        })}
+      </div>
+
+      {/* ── Floating particles ── */}
+      {PARTICLES.map((p, i) => (
+        <motion.div
+          key={i}
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            width: p.s,
+            height: p.s,
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            background: "rgba(167,139,250,0.25)",
+          }}
+          animate={{ opacity: [0.12, 0.5, 0.12] }}
+          transition={{
+            duration: p.d,
+            repeat: Infinity,
+            delay: i * 0.15,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+
+      {/* ── Center monogram ── */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.4 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.25, duration: 0.9, ease: [0.34, 1.56, 0.64, 1] }}
+        className="relative z-10 flex items-center justify-center"
+      >
+        {/* Outer pulse glow */}
+        <motion.div
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            width: 160,
+            height: 160,
+            background:
+              "radial-gradient(circle, rgba(139,92,246,0.18) 0%, rgba(139,92,246,0.04) 50%, transparent 70%)",
+          }}
+          animate={{ scale: [1, 1.15, 1], opacity: [0.6, 1, 0.6] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        />
+        {/* Monogram circle */}
+        <div
+          className="relative w-[76px] h-[76px] rounded-full flex items-center justify-center backdrop-blur-sm"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(139,92,246,0.14) 0%, rgba(59,130,246,0.14) 100%)",
+            border: "1.5px solid rgba(167,139,250,0.28)",
+            boxShadow:
+              "0 0 50px rgba(139,92,246,0.18), 0 0 100px rgba(139,92,246,0.06), inset 0 1px 0 rgba(255,255,255,0.06)",
+          }}
+        >
+          <span className="text-[22px] font-black text-white/85 tracking-tight select-none">
+            AK
+          </span>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HERO SECTION
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden bg-[#0E0B1A]">
-   
       <CursorGlow />
-     
+
       {/* Ambient orbs */}
       <div
         className="absolute top-[-15%] right-[-5%] w-[600px] h-[600px] rounded-full pointer-events-none"
@@ -197,171 +429,164 @@ export default function Hero() {
       </motion.div>
 
       {/* ── Hero body ── */}
-      <div className="relative z-10 flex-1 flex flex-col justify-center px-6 sm:px-10 pt-8 pb-0">
-        {/* Availability badge */}
+      <div className="relative z-10 flex-1 flex flex-col justify-center px-6 sm:px-10 lg:px-12 xl:px-20 pt-8 pb-0">
         <RecruiterNudge />
-       
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: EASE, delay: 0.05 }}
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 border border-emerald-500/[0.22] bg-emerald-500/[0.07] rounded-full w-fit mb-6"
-        >
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
-          </span>
-          <span className="text-[9px] font-mono text-emerald-400/80 tracking-widest uppercase">
-            Open to Work · Full-time Roles
-          </span>
-        </motion.div>
 
-        {/* Index tag */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
-          className="flex items-center gap-3 text-[9px] font-mono text-purple-300/55 tracking-[0.35em] uppercase mb-6"
-        >
-          ◆ &nbsp; Portfolio · 2026
-          <div className="w-10 h-px bg-purple-400/25" />
-        </motion.div>
-
-        {/* Giant name */}
-        <div className="overflow-hidden">
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
-            className="font-black leading-[0.88] tracking-tight text-white select-none"
-            style={{
-              fontSize: "clamp(4rem, 13vw, 11rem)",
-              letterSpacing: "-0.03em",
-            }}
-          >
-            ANISH
-          </motion.h1>
-
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: EASE, delay: 0.28 }}
-            className="flex items-end gap-5 flex-wrap"
-          >
-            <h1
-              className="font-black leading-[0.88] tracking-tight text-transparent select-none"
-              style={{
-                fontSize: "clamp(4rem, 13vw, 11rem)",
-                letterSpacing: "-0.03em",
-                WebkitTextStroke: "1.5px rgba(167,139,250,0.5)",
-              }}
-            >
-              SINGH
-            </h1>
+        {/* Desktop: split layout | Mobile: single column (grid has no effect without lg: prefix) */}
+        <div className="lg:grid lg:grid-cols-[1fr_40%] lg:gap-8 lg:items-center">
+          {/* ═══ Left column — text content ═══ */}
+          <div>
+            {/* Index tag */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
-              className="mb-3 sm:mb-5 flex flex-col gap-1.5"
+              transition={{ delay: 0.1, duration: 0.5 }}
+              className="flex items-center gap-3 text-[9px] font-mono text-purple-300/55 tracking-[0.35em] uppercase mb-6"
             >
-              <span className="text-[10px] font-mono text-white/50 tracking-[0.28em] uppercase">
-                Full Stack Developer
-              </span>
-              <span className="text-[10px] font-mono text-purple-300/75 tracking-[0.28em] uppercase">
-                × AI Engineer
-              </span>
+              ◆ &nbsp; Portfolio · 2026
+              <div className="w-10 h-px bg-purple-400/25" />
             </motion.div>
-          </motion.div>
-        </div>
 
-        {/* Divider — purple gradient */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ delay: 0.55, duration: 0.8, ease: EASE }}
-          className="origin-left h-px mt-8 mb-8"
-          style={{
-            background:
-              "linear-gradient(90deg, rgba(167,139,250,0.35) 0%, rgba(255,255,255,0.06) 60%, transparent 100%)",
-          }}
-        />
+            {/* Giant name */}
+            <div className="overflow-hidden">
+              <motion.h1
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
+                className="font-black leading-[0.88] tracking-tight text-white select-none"
+                style={{
+                  fontSize: "clamp(4rem, 13vw, 11rem)",
+                  letterSpacing: "-0.03em",
+                }}
+              >
+                ANISH
+              </motion.h1>
 
-        {/* Bottom grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: EASE, delay: 0.65 }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-10 pb-10"
-        >
-          {/* Left: desc + stats */}
-          <div className="space-y-6">
-            <p className="text-[14px] text-white/50 leading-[1.85] max-w-md font-light">
-              I build production-grade web apps with{" "}
-              <span className="text-white/80 font-semibold">
-                Next.js, Node.js, React
-              </span>{" "}
-              — supercharged with{" "}
-              <span className="text-purple-300/85 font-medium">AI systems</span>
-              : LLMs, RAG pipelines, and multi-agent workflows. Currently
-              interning at{" "}
-              <span className="text-white/80 font-semibold">
-                Exponent Solutions
-              </span>
-              .
-            </p>
-            <div className="flex items-center gap-8">
-              {[
-                { val: "5+", label: "AI SaaS Shipped" },
-                { val: "350+", label: "DSA Problems" },
-                { val: "B.Tech", label: "CS · AI/ML '26" },
-              ].map(({ val, label }) => (
-                <div key={label} className="flex flex-col gap-1">
-                  <span className="text-xl font-black text-white/85 leading-none tracking-tight">
-                    {val}
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, ease: EASE, delay: 0.28 }}
+                className="flex items-end gap-5 flex-wrap"
+              >
+                <h1
+                  className="font-black leading-[0.88] tracking-tight text-transparent select-none"
+                  style={{
+                    fontSize: "clamp(4rem, 13vw, 11rem)",
+                    letterSpacing: "-0.03em",
+                    WebkitTextStroke: "1.5px rgba(167,139,250,0.5)",
+                  }}
+                >
+                  SINGH
+                </h1>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4, duration: 0.5 }}
+                  className="mb-3 sm:mb-5 flex flex-col gap-1.5"
+                >
+                  <span className="text-[10px] font-mono text-white/50 tracking-[0.28em] uppercase">
+                    Full Stack Developer
                   </span>
-                  <span className="text-[9px] font-mono text-white/38 tracking-widest uppercase">
-                    {label}
+                  <span className="text-[10px] font-mono text-purple-300/75 tracking-[0.28em] uppercase">
+                    × AI Engineer
                   </span>
-                </div>
-              ))}
+                </motion.div>
+              </motion.div>
             </div>
+
+            {/* Divider — purple gradient */}
+            <motion.div
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ delay: 0.55, duration: 0.8, ease: EASE }}
+              className="origin-left h-px mt-8 mb-8"
+              style={{
+                background:
+                  "linear-gradient(90deg, rgba(167,139,250,0.35) 0%, rgba(255,255,255,0.06) 60%, transparent 100%)",
+              }}
+            />
+
+            {/* Bio + Stats + CTAs */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: EASE, delay: 0.65 }}
+              className="space-y-8 pb-10"
+            >
+              {/* Bio & stats */}
+              <div className="space-y-6">
+                <p className="text-[14px] text-white/50 leading-[1.85] max-w-md font-light">
+                  I build production-grade web apps with{" "}
+                  <span className="text-white/80 font-semibold">
+                    Next.js, Node.js, React
+                  </span>{" "}
+                  — supercharged with{" "}
+                  <span className="text-purple-300/85 font-medium">AI systems</span>
+                  : LLMs, RAG pipelines, and multi-agent workflows. Currently
+                  interning at{" "}
+                  <span className="text-white/80 font-semibold">
+                    Exponent Solutions
+                  </span>
+                  .
+                </p>
+                <div className="flex items-center gap-8">
+                  {[
+                    { val: "5+", label: "AI SaaS Shipped" },
+                    { val: "350+", label: "DSA Problems" },
+                    { val: "B.Tech", label: "CS · AI/ML '26" },
+                  ].map(({ val, label }) => (
+                    <div key={label} className="flex flex-col gap-1">
+                      <span className="text-xl font-black text-white/85 leading-none tracking-tight">
+                        {val}
+                      </span>
+                      <span className="text-[9px] font-mono text-white/38 tracking-widest uppercase">
+                        {label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* CTAs */}
+              <div className="flex flex-wrap items-start gap-3">
+                <motion.a
+                  href="#projects"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="group flex items-center gap-2 px-6 py-3 bg-white text-[#0E0B1A] text-sm font-bold rounded-full hover:bg-white/90 transition-all"
+                >
+                  View Projects
+                  <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </motion.a>
+
+                <motion.a
+                  href="https://github.com/anishsingh234"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="flex items-center gap-2 px-6 py-3 border border-white/[0.14] text-white/65 hover:text-white hover:border-white/30 hover:bg-white/[0.05] text-sm font-bold rounded-full transition-all"
+                >
+                  <Github className="w-4 h-4" />
+                  GitHub
+                </motion.a>
+
+                <motion.a
+                  href="#contact"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="flex items-center gap-2 px-6 py-3 border border-purple-400/[0.28] text-purple-300/85 hover:text-white hover:border-purple-400/[0.55] hover:bg-purple-400/[0.1] text-sm font-bold rounded-full transition-all"
+                >
+                  <Mail className="w-4 h-4" />
+                  Contact
+                </motion.a>
+              </div>
+            </motion.div>
           </div>
 
-          {/* Right: CTAs */}
-          <div className="flex flex-wrap items-start gap-3 lg:justify-end lg:items-center">
-            <motion.a
-              href="#projects"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="group flex items-center gap-2 px-6 py-3 bg-white text-[#0E0B1A] text-sm font-bold rounded-full hover:bg-white/90 transition-all"
-            >
-              View Projects
-              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </motion.a>
-
-            <motion.a
-              href="https://github.com/anishsingh234"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-2 px-6 py-3 border border-white/[0.14] text-white/65 hover:text-white hover:border-white/30 hover:bg-white/[0.05] text-sm font-bold rounded-full transition-all"
-            >
-              <Github className="w-4 h-4" />
-              GitHub
-            </motion.a>
-
-            <motion.a
-              href="#contact"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-2 px-6 py-3 border border-purple-400/[0.28] text-purple-300/85 hover:text-white hover:border-purple-400/[0.55] hover:bg-purple-400/[0.1] text-sm font-bold rounded-full transition-all"
-            >
-              <Mail className="w-4 h-4" />
-              Contact
-            </motion.a>
-          </div>
-        </motion.div>
+          {/* ═══ Right column — orbit ring (desktop only) ═══ */}
+          <OrbitRing />
+        </div>
       </div>
 
       {/* ── Marquee ── */}
@@ -373,7 +598,6 @@ export default function Hero() {
       >
         <Marquee />
       </motion.div>
-      
 
       {/* ── Scroll cue ── */}
       <motion.div
