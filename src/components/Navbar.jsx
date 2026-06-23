@@ -10,13 +10,13 @@ import { Download, Search, X, Github, ArrowUpRight, Mail } from "lucide-react";
 const navItems = [
   { label: "Home",        href: "/",            id: null          },
   { label: "Projects",    href: "/#projects",   id: "projects"    },
-  { label: "Animations",  href: "/animations",  id: "animations"  },
+   { label: "Why Hire Me", href: "/#why-hire-me", id: "why-hire-me" },
   { label: "Blog",        href: "/#blog",       id: "blog"        },
   { label: "Skills",      href: "/#skills",     id: "skills"      },
   { label: "Experience",  href: "/#experience", id: "experience"  },
   { label: "About",       href: "/#about",      id: "about"       },
-  { label: "Why Hire Me", href: "/#why-hire-me", id: "why-hire-me" },
   { label: "Contact",     href: "/#contact",    id: "contact"     },
+  { label: "Animations",  href: "/animations",  id: "animations"  },
 ];
 
 /* ─── LIVE CLOCK ──────────────────────────────────────────────────────────── */
