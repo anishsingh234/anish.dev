@@ -3,25 +3,12 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Github, Mail, ArrowUpRight, MapPin } from "lucide-react";
 import { EASE } from "./SharedComponents";
-import RecruiterNudge from "./Recruiternudge";
-import Link from "next/link";
-import StudioPeek from "./StudioPeek";
+import ArrowAnimation from "./ArrowAnimation";
 
 const MARQUEE_ITEMS = [
-  "NEXT.JS",
-  "REACT",
-  "NODE.JS",
-  "PYTHON",
-  "FASTAPI",
-  "LANGCHAIN",
-  "CREWAI",
-  "RAG",
-  "PINECONE",
-  "TYPESCRIPT",
-  "MONGODB",
-  "SUPABASE",
-  "FRAMER MOTION",
-  "TAILWIND CSS",
+  "NEXT.JS","REACT","NODE.JS","PYTHON","FASTAPI",
+  "LANGCHAIN","CREWAI","RAG","PINECONE","TYPESCRIPT",
+  "MONGODB","SUPABASE","FRAMER MOTION","TAILWIND CSS",
 ];
 
 function Marquee() {
@@ -53,11 +40,9 @@ function LocalTime() {
       setTime(
         new Date().toLocaleTimeString("en-IN", {
           timeZone: "Asia/Kolkata",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
+          hour: "2-digit", minute: "2-digit", second: "2-digit",
           hour12: false,
-        }),
+        })
       );
     fmt();
     const t = setInterval(fmt, 1000);
@@ -88,10 +73,7 @@ function CursorGlow() {
   return (
     <motion.div
       className="absolute top-0 left-0 w-[700px] h-[700px] rounded-full pointer-events-none z-0"
-      style={{
-        background:
-          "radial-gradient(circle, rgba(139,92,246,0.09) 0%, transparent 65%)",
-      }}
+      style={{ background: "radial-gradient(circle, rgba(139,92,246,0.09) 0%, transparent 65%)" }}
       animate={{ x: pos.x - 350, y: pos.y - 350 }}
       transition={{ type: "tween", ease: "backOut", duration: 0.6 }}
     />
@@ -101,243 +83,10 @@ function CursorGlow() {
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (delay = 0) => ({
-    opacity: 1,
-    y: 0,
+    opacity: 1, y: 0,
     transition: { duration: 0.7, ease: EASE, delay },
   }),
 };
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   ORBIT RING — Desktop-only animated tech icon constellation
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-const ORBIT_TECH = [
-  { label: "React",      color: "#61DAFB" },
-  { label: "Next.js",    color: "#ffffff" },
-  { label: "Node.js",    color: "#68A063" },
-  { label: "Python",     color: "#3776AB" },
-  { label: "TypeScript", color: "#3178C6" },
-  { label: "MongoDB",    color: "#47A248" },
-  { label: "AI / ML",    color: "#a78bfa" },
-  { label: "Tailwind",   color: "#38BDF8" },
-];
-
-/* Deterministic particle positions — no Math.random() to avoid hydration mismatch */
-const PARTICLES = [
-  { x: 12, y: 18, s: 2,   d: 3.2 },
-  { x: 85, y: 12, s: 1.5, d: 4.1 },
-  { x: 8,  y: 72, s: 1,   d: 2.8 },
-  { x: 92, y: 65, s: 2.5, d: 3.5 },
-  { x: 45, y: 8,  s: 1,   d: 4.5 },
-  { x: 55, y: 92, s: 1.5, d: 3.0 },
-  { x: 20, y: 45, s: 1,   d: 3.8 },
-  { x: 80, y: 50, s: 1,   d: 4.2 },
-  { x: 35, y: 85, s: 2,   d: 2.5 },
-  { x: 65, y: 15, s: 1.5, d: 3.6 },
-  { x: 15, y: 58, s: 1,   d: 4.0 },
-  { x: 88, y: 40, s: 1.5, d: 3.3 },
-];
-
-function OrbitRing() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 1.2, ease: EASE, delay: 0.35 }}
-      className="hidden lg:flex items-center justify-center relative aspect-square w-full max-w-[520px] mx-auto"
-    >
-      {/* ── Large background glow ── */}
-      <div
-        className="absolute w-[80%] h-[80%] rounded-full pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(139,92,246,0.10) 0%, rgba(59,130,246,0.05) 40%, transparent 70%)",
-        }}
-      />
-
-      {/* ── Outer orbit path ── */}
-      <div
-        className="absolute rounded-full pointer-events-none"
-        style={{
-          width: "84%",
-          height: "84%",
-          border: "1px dashed rgba(167,139,250,0.12)",
-        }}
-      />
-
-      {/* ── Inner orbit path ── */}
-      <div
-        className="absolute rounded-full pointer-events-none"
-        style={{
-          width: "48%",
-          height: "48%",
-          border: "1px solid rgba(167,139,250,0.07)",
-        }}
-      />
-
-      {/* ── Crosshair lines through center ── */}
-      <div
-        className="absolute pointer-events-none"
-        style={{
-          width: "70%",
-          height: "1px",
-          background:
-            "linear-gradient(90deg, transparent 0%, rgba(167,139,250,0.06) 30%, rgba(167,139,250,0.06) 70%, transparent 100%)",
-        }}
-      />
-      <div
-        className="absolute pointer-events-none"
-        style={{
-          width: "1px",
-          height: "70%",
-          background:
-            "linear-gradient(180deg, transparent 0%, rgba(167,139,250,0.06) 30%, rgba(167,139,250,0.06) 70%, transparent 100%)",
-        }}
-      />
-
-      {/* ── Rotating outer icons ── */}
-      <div
-        className="absolute animate-spin-slow"
-        style={{ width: "84%", height: "84%" }}
-      >
-        {ORBIT_TECH.map((tech, i) => {
-          const angle =
-            (i / ORBIT_TECH.length) * Math.PI * 2 - Math.PI / 2;
-          const x = 50 + 50 * Math.cos(angle);
-          const y = 50 + 50 * Math.sin(angle);
-          return (
-            <div
-              key={tech.label}
-              className="absolute -translate-x-1/2 -translate-y-1/2"
-              style={{ left: `${x}%`, top: `${y}%` }}
-            >
-              <motion.div
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  delay: 0.6 + i * 0.09,
-                  duration: 0.5,
-                  ease: [0.34, 1.56, 0.64, 1],
-                }}
-                className="animate-spin-slow-reverse"
-              >
-                <div
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl backdrop-blur-sm"
-                  style={{
-                    background: "rgba(255,255,255,0.03)",
-                    border: `1px solid ${tech.color}20`,
-                    boxShadow: `0 0 24px ${tech.color}0a, 0 2px 8px rgba(0,0,0,0.2)`,
-                  }}
-                >
-                  <div
-                    className="w-2 h-2 rounded-full flex-shrink-0"
-                    style={{
-                      background: tech.color,
-                      boxShadow: `0 0 8px ${tech.color}55`,
-                    }}
-                  />
-                  <span className="text-[10px] font-mono text-white/55 whitespace-nowrap">
-                    {tech.label}
-                  </span>
-                </div>
-              </motion.div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* ── Rotating inner dots (counter-clockwise) ── */}
-      <div
-        className="absolute animate-spin-slow-reverse"
-        style={{ width: "48%", height: "48%" }}
-      >
-        {Array.from({ length: 8 }).map((_, i) => {
-          const angle = (i / 8) * Math.PI * 2;
-          const x = 50 + 50 * Math.cos(angle);
-          const y = 50 + 50 * Math.sin(angle);
-          return (
-            <div
-              key={i}
-              className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
-              style={{
-                left: `${x}%`,
-                top: `${y}%`,
-                width: i % 2 === 0 ? 4 : 3,
-                height: i % 2 === 0 ? 4 : 3,
-                background:
-                  i % 2 === 0
-                    ? "rgba(167,139,250,0.3)"
-                    : "rgba(139,92,246,0.18)",
-              }}
-            />
-          );
-        })}
-      </div>
-
-      {/* ── Floating particles ── */}
-      {PARTICLES.map((p, i) => (
-        <motion.div
-          key={i}
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            width: p.s,
-            height: p.s,
-            left: `${p.x}%`,
-            top: `${p.y}%`,
-            background: "rgba(167,139,250,0.25)",
-          }}
-          animate={{ opacity: [0.12, 0.5, 0.12] }}
-          transition={{
-            duration: p.d,
-            repeat: Infinity,
-            delay: i * 0.15,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
-
-      {/* ── Center monogram ── */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.4 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.25, duration: 0.9, ease: [0.34, 1.56, 0.64, 1] }}
-        className="relative z-10 flex items-center justify-center"
-      >
-        {/* Outer pulse glow */}
-        <motion.div
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            width: 160,
-            height: 160,
-            background:
-              "radial-gradient(circle, rgba(139,92,246,0.18) 0%, rgba(139,92,246,0.04) 50%, transparent 70%)",
-          }}
-          animate={{ scale: [1, 1.15, 1], opacity: [0.6, 1, 0.6] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        />
-        {/* Monogram circle */}
-        <div
-          className="relative w-[76px] h-[76px] rounded-full flex items-center justify-center backdrop-blur-sm"
-          style={{
-            background:
-              "linear-gradient(135deg, rgba(139,92,246,0.14) 0%, rgba(59,130,246,0.14) 100%)",
-            border: "1.5px solid rgba(167,139,250,0.28)",
-            boxShadow:
-              "0 0 50px rgba(139,92,246,0.18), 0 0 100px rgba(139,92,246,0.06), inset 0 1px 0 rgba(255,255,255,0.06)",
-          }}
-        >
-          <span className="text-[22px] font-black text-white/85 tracking-tight select-none">
-            AK
-          </span>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   HERO SECTION
-   ═══════════════════════════════════════════════════════════════════════════ */
 
 export default function Hero() {
   return (
@@ -345,27 +94,12 @@ export default function Hero() {
       <CursorGlow />
 
       {/* Ambient orbs */}
-      <div
-        className="absolute top-[-15%] right-[-5%] w-[600px] h-[600px] rounded-full pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 65%)",
-        }}
-      />
-      <div
-        className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(99,55,200,0.1) 0%, transparent 65%)",
-        }}
-      />
-      <div
-        className="absolute top-[40%] left-[40%] w-[400px] h-[400px] rounded-full pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(167,139,250,0.04) 0%, transparent 65%)",
-        }}
-      />
+      <div className="absolute top-[-15%] right-[-5%] w-[600px] h-[600px] rounded-full pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 65%)" }} />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(99,55,200,0.1) 0%, transparent 65%)" }} />
+      <div className="absolute top-[40%] left-[40%] w-[400px] h-[400px] rounded-full pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(167,139,250,0.04) 0%, transparent 65%)" }} />
 
       {/* ── Top bar ── */}
       <motion.div
@@ -385,42 +119,23 @@ export default function Hero() {
           <LocalTime />
 
           {/* GitHub */}
-          <a
-            href="https://github.com/anishsingh234"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center w-8 h-8 rounded-lg border border-purple-400/[0.15] bg-purple-400/[0.05] text-white/50 hover:text-white hover:border-purple-400/[0.4] hover:bg-purple-400/[0.12] transition-all"
-          >
+          <a href="https://github.com/anishsingh234" target="_blank" rel="noopener noreferrer"
+            className="flex items-center justify-center w-8 h-8 rounded-lg border border-purple-400/[0.15] bg-purple-400/[0.05] text-white/50 hover:text-white hover:border-purple-400/[0.4] hover:bg-purple-400/[0.12] transition-all">
             <Github className="w-3.5 h-3.5" />
           </a>
 
-          <Link
-            href="https://linkedin.com/in/anish-ai"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="LinkedIn"
-            className="flex items-center justify-center w-8 h-8 rounded-lg border border-purple-400/[0.15] bg-purple-400/[0.05] text-white/50 hover:text-white hover:border-purple-400/[0.4] hover:bg-purple-400/[0.12] transition-all"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+          {/* Music */}
+          <button
+            className="flex items-center justify-center w-8 h-8 rounded-lg border border-purple-400/[0.15] bg-purple-400/[0.05] text-white/50 hover:text-white hover:border-purple-400/[0.4] hover:bg-purple-400/[0.12] transition-all">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
             </svg>
-          </Link>
+          </button>
 
           {/* Resume */}
-          <a
-            href="/resume"
-            className="flex items-center gap-1.5 px-3.5 py-1.5 border border-purple-400/[0.2] rounded-lg text-[9px] font-mono text-white/55 hover:text-white hover:border-purple-400/[0.45] hover:bg-purple-400/[0.08] transition-all tracking-widest uppercase"
-          >
-            <svg
-              width="11"
-              height="11"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
+          <a href="/resume"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 border border-purple-400/[0.2] rounded-lg text-[9px] font-mono text-white/55 hover:text-white hover:border-purple-400/[0.45] hover:bg-purple-400/[0.08] transition-all tracking-widest uppercase">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
             </svg>
             Resume
@@ -429,164 +144,135 @@ export default function Hero() {
       </motion.div>
 
       {/* ── Hero body ── */}
-      <div className="relative z-10 flex-1 flex flex-col justify-center px-6 sm:px-10 lg:px-12 xl:px-20 pt-8 pb-0">
-        <RecruiterNudge />
+      <div className="relative z-10 flex-1 flex flex-col justify-center px-6 sm:px-10 pt-8 pb-0">
 
-        {/* Desktop: split layout | Mobile: single column (grid has no effect without lg: prefix) */}
-        <div className="lg:grid lg:grid-cols-[1fr_40%] lg:gap-8 lg:items-center">
-          {/* ═══ Left column — text content ═══ */}
-          <div>
-            {/* Index tag */}
+
+  
+
+        {/* Giant name */}
+        <div className="overflow-hidden">
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
+            className="font-black leading-[0.88] tracking-tight text-white select-none"
+            style={{ fontSize: "clamp(4rem, 13vw, 11rem)", letterSpacing: "-0.03em" }}
+          >
+            ANISH
+          </motion.h1>
+
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: EASE, delay: 0.28 }}
+            className="flex items-end gap-5 flex-wrap"
+          >
+            <h1
+              className="font-black leading-[0.88] tracking-tight text-transparent select-none"
+              style={{
+                fontSize: "clamp(4rem, 13vw, 11rem)",
+                letterSpacing: "-0.03em",
+                WebkitTextStroke: "1.5px rgba(167,139,250,0.5)",
+              }}
+            >
+              SINGH
+            </h1>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.1, duration: 0.5 }}
-              className="flex items-center gap-3 text-[9px] font-mono text-purple-300/55 tracking-[0.35em] uppercase mb-6"
+              transition={{ delay: 0.4, duration: 0.5 }}
+              className="mb-3 sm:mb-5 flex flex-col gap-1.5"
             >
-              ◆ &nbsp; Portfolio · 2026
-              <div className="w-10 h-px bg-purple-400/25" />
+              <span className="text-[10px] font-mono text-white/50 tracking-[0.28em] uppercase">
+                Full Stack Developer
+              </span>
+              <span className="text-[10px] font-mono text-purple-300/75 tracking-[0.28em] uppercase">
+                × AI Engineer
+              </span>
             </motion.div>
+          </motion.div>
+        </div>
 
-            {/* Giant name */}
-            <div className="overflow-hidden">
-              <motion.h1
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
-                className="font-black leading-[0.88] tracking-tight text-white select-none"
-                style={{
-                  fontSize: "clamp(4rem, 13vw, 11rem)",
-                  letterSpacing: "-0.03em",
-                }}
-              >
-                ANISH
-              </motion.h1>
+        {/* Divider — purple gradient */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ delay: 0.55, duration: 0.8, ease: EASE }}
+          className="origin-left h-px mt-8 mb-8"
+          style={{ background: "linear-gradient(90deg, rgba(167,139,250,0.35) 0%, rgba(255,255,255,0.06) 60%, transparent 100%)" }}
+        />
 
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, ease: EASE, delay: 0.28 }}
-                className="flex items-end gap-5 flex-wrap"
-              >
-                <h1
-                  className="font-black leading-[0.88] tracking-tight text-transparent select-none"
-                  style={{
-                    fontSize: "clamp(4rem, 13vw, 11rem)",
-                    letterSpacing: "-0.03em",
-                    WebkitTextStroke: "1.5px rgba(167,139,250,0.5)",
-                  }}
-                >
-                  SINGH
-                </h1>
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4, duration: 0.5 }}
-                  className="mb-3 sm:mb-5 flex flex-col gap-1.5"
-                >
-                  <span className="text-[10px] font-mono text-white/50 tracking-[0.28em] uppercase">
-                    Full Stack Developer
+        {/* Bottom grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: EASE, delay: 0.65 }}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-10 pb-10"
+        >
+          {/* Left: desc + stats */}
+          <div className="space-y-6">
+            <p className="text-[14px] text-white/50 leading-[1.85] max-w-md font-light">
+              I build production-grade web apps with{" "}
+              <span className="text-white/80 font-semibold">Next.js, Node.js, React</span>{" "}
+              — supercharged with{" "}
+              <span className="text-purple-300/85 font-medium">AI systems</span>:
+              LLMs, RAG pipelines, and multi-agent workflows.
+              Currently interning at{" "}
+              <span className="text-white/80 font-semibold">Exponent Solutions</span>.
+            </p>
+            <div className="flex items-center gap-8">
+              {[
+                { val: "5+",     label: "AI SaaS Shipped" },
+                { val: "350+",   label: "DSA Problems"    },
+                { val: "B.Tech", label: "CS · AI/ML '26"  },
+              ].map(({ val, label }) => (
+                <div key={label} className="flex flex-col gap-1">
+                  <span className="text-xl font-black text-white/85 leading-none tracking-tight">
+                    {val}
                   </span>
-                  <span className="text-[10px] font-mono text-purple-300/75 tracking-[0.28em] uppercase">
-                    × AI Engineer
+                  <span className="text-[9px] font-mono text-white/38 tracking-widest uppercase">
+                    {label}
                   </span>
-                </motion.div>
-              </motion.div>
-            </div>
-
-            {/* Divider — purple gradient */}
-            <motion.div
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ delay: 0.55, duration: 0.8, ease: EASE }}
-              className="origin-left h-px mt-8 mb-8"
-              style={{
-                background:
-                  "linear-gradient(90deg, rgba(167,139,250,0.35) 0%, rgba(255,255,255,0.06) 60%, transparent 100%)",
-              }}
-            />
-
-            {/* Bio + Stats + CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: EASE, delay: 0.65 }}
-              className="space-y-8 pb-10"
-            >
-              {/* Bio & stats */}
-              <div className="space-y-6">
-                <p className="text-[14px] text-white/50 leading-[1.85] max-w-md font-light">
-                  I build production-grade web apps with{" "}
-                  <span className="text-white/80 font-semibold">
-                    Next.js, Node.js, React
-                  </span>{" "}
-                  — supercharged with{" "}
-                  <span className="text-purple-300/85 font-medium">AI systems</span>
-                  : LLMs, RAG pipelines, and multi-agent workflows. Currently
-                  interning at{" "}
-                  <span className="text-white/80 font-semibold">
-                    Exponent Solutions
-                  </span>
-                  .
-                </p>
-                <div className="flex items-center gap-8">
-                  {[
-                    { val: "5+", label: "AI SaaS Shipped" },
-                    { val: "350+", label: "DSA Problems" },
-                    { val: "B.Tech", label: "CS · AI/ML '26" },
-                  ].map(({ val, label }) => (
-                    <div key={label} className="flex flex-col gap-1">
-                      <span className="text-xl font-black text-white/85 leading-none tracking-tight">
-                        {val}
-                      </span>
-                      <span className="text-[9px] font-mono text-white/38 tracking-widest uppercase">
-                        {label}
-                      </span>
-                    </div>
-                  ))}
                 </div>
-              </div>
-
-              {/* CTAs */}
-              <div className="flex flex-wrap items-start gap-3">
-                <motion.a
-                  href="#projects"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="group flex items-center gap-2 px-6 py-3 bg-white text-[#0E0B1A] text-sm font-bold rounded-full hover:bg-white/90 transition-all"
-                >
-                  View Projects
-                  <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </motion.a>
-
-                <motion.a
-                  href="https://github.com/anishsingh234"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="flex items-center gap-2 px-6 py-3 border border-white/[0.14] text-white/65 hover:text-white hover:border-white/30 hover:bg-white/[0.05] text-sm font-bold rounded-full transition-all"
-                >
-                  <Github className="w-4 h-4" />
-                  GitHub
-                </motion.a>
-
-                <motion.a
-                  href="#contact"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="flex items-center gap-2 px-6 py-3 border border-purple-400/[0.28] text-purple-300/85 hover:text-white hover:border-purple-400/[0.55] hover:bg-purple-400/[0.1] text-sm font-bold rounded-full transition-all"
-                >
-                  <Mail className="w-4 h-4" />
-                  Contact
-                </motion.a>
-              </div>
-            </motion.div>
+              ))}
+            </div>
           </div>
 
-          {/* ═══ Right column — orbit ring (desktop only) ═══ */}
-          <OrbitRing />
-        </div>
+          {/* Right: CTAs */}
+          <div className="flex flex-wrap items-start gap-3 lg:justify-end lg:items-center">
+            <motion.a
+              href="#projects"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="group flex items-center gap-2 px-6 py-3 bg-white text-[#0E0B1A] text-sm font-bold rounded-full hover:bg-white/90 transition-all"
+            >
+              View Projects
+              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </motion.a>
+
+            <motion.a
+              href="https://github.com/anishsingh234"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="flex items-center gap-2 px-6 py-3 border border-white/[0.14] text-white/65 hover:text-white hover:border-white/30 hover:bg-white/[0.05] text-sm font-bold rounded-full transition-all"
+            >
+              <Github className="w-4 h-4" />
+              GitHub
+            </motion.a>
+
+            <motion.a
+              href="#contact"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="flex items-center gap-2 px-6 py-3 border border-purple-400/[0.28] text-purple-300/85 hover:text-white hover:border-purple-400/[0.55] hover:bg-purple-400/[0.1] text-sm font-bold rounded-full transition-all"
+            >
+              <Mail className="w-4 h-4" />
+              Contact
+            </motion.a>
+          </div>
+        </motion.div>
       </div>
 
       {/* ── Marquee ── */}
@@ -599,23 +285,14 @@ export default function Hero() {
         <Marquee />
       </motion.div>
 
-      {/* ── Scroll cue ── */}
+      {/* ── Arrow Animation ── */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 1 }}
-        className="relative z-10 flex items-center justify-between px-6 sm:px-10 py-4"
+        transition={{ delay: 1.2, duration: 0.8 }}
+        className="relative z-10 flex items-center justify-center py-5"
       >
-        <span className="text-[9px] font-mono text-white/28 tracking-[0.3em] uppercase">
-          Scroll to explore
-        </span>
-        <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-          className="w-4 h-7 border border-purple-400/[0.22] rounded-full flex justify-center py-1"
-        >
-          <div className="w-0.5 h-1.5 bg-purple-400/40 rounded-full" />
-        </motion.div>
+        <ArrowAnimation />
       </motion.div>
     </section>
   );
