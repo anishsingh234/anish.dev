@@ -1,13 +1,9 @@
 "use client";
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Github } from "lucide-react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
-
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+import { motion, useSpring, useTransform, useMotionValue } from "framer-motion";
 
 export const featuredProjects = [
   {
@@ -129,110 +125,129 @@ function StoryBlock({ label, text, isDarkText }) {
   );
 }
 
-// ── Project Card Sub-Component ───────────────────────────────
-function ProjectCard({ project, index }) {
+// ── Project Card Sub-Component (Framer Motion) ───────────────
+function ProjectCard({ project }) {
   const isDarkText = project.textColor === "text-[#111018]";
   const cardRef = useRef(null);
-  const imageContainerRef = useRef(null);
-  const imageRef = useRef(null);
-  const contentRef = useRef(null);
 
-  useGSAP(() => {
-    // 3D Parallax Hover Effect on the image container
-    const xTo = gsap.quickTo(imageRef.current, "rotationY", { duration: 0.5, ease: "power3" });
-    const yTo = gsap.quickTo(imageRef.current, "rotationX", { duration: 0.5, ease: "power3" });
+  // 3D Parallax Hover Setup using Framer Motion
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
 
-    const handleMouseMove = (e) => {
-      if (!imageContainerRef.current) return;
-      const rect = imageContainerRef.current.getBoundingClientRect();
-      
-      // Calculate mouse position relative to center of container (-1 to 1)
-      const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
-      const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
-      
-      // Max rotation in degrees
-      const maxRotation = 12;
-      xTo(x * maxRotation);
-      yTo(-y * maxRotation); // Invert Y for natural tilt feeling
-    };
+  const mouseXSpring = useSpring(x, { stiffness: 150, damping: 15 });
+  const mouseYSpring = useSpring(y, { stiffness: 150, damping: 15 });
 
-    const handleMouseLeave = () => {
-      xTo(0);
-      yTo(0);
-    };
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["12deg", "-12deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-12deg", "12deg"]);
 
-    const imgContainer = imageContainerRef.current;
-    if (imgContainer) {
-      imgContainer.addEventListener("mousemove", handleMouseMove);
-      imgContainer.addEventListener("mouseleave", handleMouseLeave);
-    }
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
 
-    return () => {
-      if (imgContainer) {
-        imgContainer.removeEventListener("mousemove", handleMouseMove);
-        imgContainer.removeEventListener("mouseleave", handleMouseLeave);
-      }
-    };
-  }, { scope: cardRef });
+    // Convert to values between -0.5 and 0.5
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  // Variants for staggering children in and out perfectly on scroll
+  const containerVariants = {
+    hidden: { opacity: 0, y: 100, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.8,
+        ease: [0.25, 1, 0.5, 1], // Smooth spring-like ease
+        when: "beforeChildren",
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const childVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
+  };
 
   return (
-    <div
-      ref={cardRef}
-      className={`project-card sticky w-full mb-16 rounded-sm border-t-8 ${project.accentColor} ${project.bgColor} ${project.textColor}`}
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: false, amount: 0.2 }} // 'once: false' ensures it triggers in reverse scroll!
+      variants={containerVariants}
+      className={`relative w-full rounded-sm border-t-8 ${project.accentColor} ${project.bgColor} ${project.textColor}`}
       style={{
-        top: `calc(5vh + ${index * 1.5}rem)`,
-        boxShadow: "0 -15px 40px rgba(0,0,0,0.6)",
-        clipPath:
-          index % 2 === 0
-            ? "polygon(0 0, 100% 1%, 99% 100%, 1% 99%)"
-            : "polygon(1% 0, 99% 1%, 100% 100%, 0 99%)",
-        transformOrigin: "top center", // Ensures scaling happens from the top edge
+        boxShadow: "0 25px 50px -12px rgba(0,0,0,0.5)",
       }}
     >
       <div className="p-6 lg:p-10 flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
         {/* Meta / Info Column */}
-        <div ref={contentRef} className="card-content flex-1 flex flex-col justify-between">
+        <div className="flex-1 flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between mb-6">
+            <motion.div
+              variants={childVariants}
+              className="flex items-center justify-between mb-6"
+            >
               <span
-                className={`card-index font-black text-6xl opacity-10 font-mono tracking-tighter ${isDarkText ? "text-black" : "text-white"}`}
+                className={`font-black text-6xl opacity-10 font-mono tracking-tighter ${isDarkText ? "text-black" : "text-white"}`}
               >
                 _{project.index}
               </span>
-              {project.demo && <div className="card-badge"><LiveBadge /></div>}
-            </div>
+              {project.demo && <LiveBadge />}
+            </motion.div>
 
-            <span
-              className={`card-tag font-mono uppercase tracking-[0.2em] font-bold text-xs ${isDarkText ? "text-[#111018]/60" : "text-white/60"}`}
+            <motion.div variants={childVariants}>
+              <span
+                className={`font-mono uppercase tracking-[0.2em] font-bold text-xs ${isDarkText ? "text-[#111018]/60" : "text-white/60"}`}
+              >
+                {project.tag}
+              </span>
+            </motion.div>
+
+            <motion.h3
+              variants={childVariants}
+              className="font-black text-4xl sm:text-5xl tracking-tight mt-1 mb-5"
             >
-              {project.tag}
-            </span>
-
-            <h3 className="card-title font-black text-4xl sm:text-5xl tracking-tight mt-1 mb-5">
               {project.name}
-            </h3>
+            </motion.h3>
 
             <div className="flex flex-col gap-4">
-              <div className="card-story">
+              <motion.div variants={childVariants}>
                 <StoryBlock
                   label="The Problem"
                   text={project.problem}
                   isDarkText={isDarkText}
                 />
-              </div>
-              <div className="card-story">
+              </motion.div>
+              <motion.div variants={childVariants}>
                 <StoryBlock
                   label="The Solution"
                   text={project.solution}
                   isDarkText={isDarkText}
                 />
-              </div>
+              </motion.div>
             </div>
           </div>
 
-          <div className="mt-6">
-            {/* Tech Stack */}
-            <div className="card-tech flex flex-wrap gap-2 mb-4">
+          <motion.div variants={childVariants} className="mt-6">
+            <div className="flex flex-wrap gap-2 mb-4">
               {project.tech.map((t) => (
                 <span
                   key={t}
@@ -250,8 +265,7 @@ function ProjectCard({ project, index }) {
               ))}
             </div>
 
-            {/* CTAs */}
-            <div className="card-ctas flex items-center gap-4 flex-wrap">
+            <div className="flex items-center gap-4 flex-wrap">
               {project.demo && (
                 <a
                   href={project.demo}
@@ -262,9 +276,7 @@ function ProjectCard({ project, index }) {
                       ? "bg-[#111018] text-white hover:bg-black"
                       : "bg-white text-[#111018] hover:bg-gray-200 text-black"
                   }`}
-                  style={{
-                    boxShadow: "4px 6px 12px rgba(0,0,0,0.2)",
-                  }}
+                  style={{ boxShadow: "4px 6px 12px rgba(0,0,0,0.2)" }}
                 >
                   View Live
                   <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
@@ -282,35 +294,35 @@ function ProjectCard({ project, index }) {
                 </a>
               )}
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        {/* Image Column */}
-        <div 
-          ref={imageContainerRef}
-          className="card-image-col flex-1 flex items-center justify-center mt-8 lg:mt-0 w-full"
-          style={{ perspective: "1000px" }}
+        {/* Image Column with Framer Motion 3D Hover */}
+        <motion.div
+          variants={childVariants}
+          ref={cardRef}
+          className="flex-1 flex items-center justify-center mt-8 lg:mt-0 w-full"
+          style={{ perspective: 1200 }}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
         >
-          <div
-            ref={imageRef}
-            className="relative w-full aspect-[16/10] bg-[#111018]/10 p-2 sm:p-4 transition-transform duration-200 ease-out"
-            style={{ 
-              boxShadow: "8px 12px 25px rgba(0,0,0,0.4)",
-              transformStyle: "preserve-3d" // Required for nested 3D elements
+          <motion.div
+            style={{
+              rotateX,
+              rotateY,
+              transformStyle: "preserve-3d",
             }}
+            className="relative w-full aspect-[16/10] bg-[#111018]/10 p-2 sm:p-4 shadow-2xl transition-shadow"
           >
             {/* "Tape" accent pop out */}
             <div
-              className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-white/30 backdrop-blur-md rotate-[-3deg] z-20"
-              style={{ 
-                boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                transform: "translateZ(40px)" // Pops out more during tilt
-              }}
+              className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-white/30 backdrop-blur-md rotate-[-3deg] z-20 shadow-md"
+              style={{ transform: "translateZ(40px)" }}
             />
 
-            <div 
+            <div
               className="relative w-full h-full overflow-hidden border-2 border-black/10 bg-[#0D0A1A]"
-              style={{ transform: "translateZ(20px)" }} // Image slightly popped out
+              style={{ transform: "translateZ(20px)" }}
             >
               <Image
                 src={project.image}
@@ -320,107 +332,22 @@ function ProjectCard({ project, index }) {
                 className="object-contain p-2"
               />
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
 // ── Main component ───────────────────────────────────────────────
 export default function Projects() {
-  const containerRef = useRef(null);
-  const headerRef = useRef(null);
-
-  useGSAP(
-    () => {
-      // 1. Header line draw animation
-      gsap.fromTo(
-        ".header-drawn-line path",
-        { strokeDasharray: 500, strokeDashoffset: 500 },
-        {
-          strokeDashoffset: 0,
-          duration: 1.5,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: headerRef.current,
-            start: "top 80%",
-          },
-        },
-      );
-
-      const cards = gsap.utils.toArray(".project-card");
-
-      // 2. Cinematic Entrance & Stagger for each card
-      cards.forEach((card) => {
-        // Query elements within the card for staggered reveal
-        const contentElems = card.querySelectorAll(".card-index, .card-badge, .card-tag, .card-title, .card-story, .card-tech, .card-ctas");
-        const imageCol = card.querySelector(".card-image-col");
-
-        // Set initial state for entrance
-        gsap.set(card, { y: 100, opacity: 0 });
-        gsap.set(contentElems, { y: 30, opacity: 0 });
-        gsap.set(imageCol, { x: 50, opacity: 0, scale: 0.9 });
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: card,
-            start: "top 85%",
-            toggleActions: "play none none none"
-          },
-        });
-
-        tl.to(card, {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-        })
-        .to(contentElems, {
-          y: 0,
-          opacity: 1,
-          duration: 0.6,
-          stagger: 0.1, // Stagger reveal
-          ease: "back.out(1.2)",
-        }, "-=0.4")
-        .to(imageCol, {
-          x: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          ease: "power3.out",
-        }, "-=0.6");
-      });
-
-      // 3. Stacking depth (scale down + blur + darken as cards stack up)
-      cards.forEach((card, i) => {
-        if (i === cards.length - 1) return; // Last card doesn't stack behind anything
-        
-        // We use the next card as the trigger to squish the current card
-        gsap.to(card, {
-          scale: 0.92,
-          opacity: 0.4,
-          filter: "blur(4px)",
-          scrollTrigger: {
-            trigger: cards[i + 1],
-            start: "top 85%", // Starts squishing when the NEXT card is 85% down
-            end: "top 20%",   // Finishes squishing when the NEXT card reaches 20% down
-            scrub: true,
-          },
-        });
-      });
-    },
-    { scope: containerRef },
-  );
-
   return (
     <section
       id="projects"
-      ref={containerRef}
-      className="relative py-20 sm:py-28 bg-[#111018] font-sans"
+      className="relative py-20 sm:py-28 bg-[#111018] font-sans overflow-hidden"
     >
       {/* Paper texture background */}
-      <svg className="pointer-events-none fixed inset-0 w-full h-full opacity-[0.15] mix-blend-overlay z-0">
+      <svg className="pointer-events-none absolute inset-0 w-full h-full opacity-[0.15] mix-blend-overlay z-0">
         <filter id="projects-noise">
           <feTurbulence
             type="fractalNoise"
@@ -438,8 +365,11 @@ export default function Projects() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
         {/* ── Header ── */}
-        <div
-          ref={headerRef}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.5 }} // Re-animates when scrolling back up
+          transition={{ duration: 0.8 }}
           className="flex flex-col md:flex-row items-end justify-between mb-20 gap-6"
         >
           <div className="relative">
@@ -459,17 +389,21 @@ export default function Projects() {
                 Projects
               </span>
             </h2>
-            {/* Hand-drawn SVG underline */}
+            {/* Animated SVG underline */}
             <svg
-              className="header-drawn-line absolute -bottom-6 left-0 w-[120%] h-8 overflow-visible"
+              className="absolute -bottom-6 left-0 w-[120%] h-8 overflow-visible"
               viewBox="0 0 200 20"
               fill="none"
             >
-              <path
+              <motion.path
                 d="M0,10 Q50,0 100,10 T200,10"
                 stroke="#A78BFA"
                 strokeWidth="4"
                 strokeLinecap="round"
+                initial={{ pathLength: 0 }}
+                whileInView={{ pathLength: 1 }}
+                viewport={{ once: false }}
+                transition={{ duration: 1.5, ease: "easeInOut" }}
               />
             </svg>
           </div>
@@ -485,16 +419,12 @@ export default function Projects() {
             View Archive
             <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
           </Link>
-        </div>
+        </motion.div>
 
-        {/* ── Stacked Cards Container ── */}
-        <div className="relative">
+        {/* ── Cards Container ── */}
+        <div className="relative flex flex-col gap-12">
           {featuredProjects.map((project, i) => (
-            <ProjectCard 
-              key={project.id} 
-              project={project} 
-              index={i} 
-            />
+            <ProjectCard key={project.id} project={project} index={i} />
           ))}
         </div>
       </div>
