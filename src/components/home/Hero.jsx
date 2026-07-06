@@ -133,7 +133,7 @@ export default function Hero() {
       <PaperTexture />
 
       {/* ── Landing Area ── */}
-      <div className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-20 pb-40">
+      <div className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-32 pb-40">
         {/* ── Collage Name: ANISH ── */}
         <div className="w-full max-w-4xl mx-auto mb-2 flex flex-col items-center justify-center relative z-10">
           <div className="flex justify-center items-center gap-1 sm:gap-3 mb-6">

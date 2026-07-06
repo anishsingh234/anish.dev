@@ -93,13 +93,19 @@ export default function AboutSection() {
             className="font-bebas text-white leading-none tracking-wide"
             style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}
           >
-            Who I
-            <br />
-            <span
-              className="text-transparent"
-              style={{ WebkitTextStroke: "2px #E8E6E1" }}
-            >
-              Actually Am
+            Who I{" "}
+            <span className="relative inline-block mt-2 sm:mt-0">
+              {/* Purple Blob Background */}
+              <span 
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[70%] bg-[#8B5CF6] rounded-[100%] -z-10" 
+                style={{ transform: "translate(-50%, -50%) rotate(-2deg)" }}
+              />
+              <span
+                className="text-transparent relative z-10"
+                style={{ WebkitTextStroke: "2px #E8E6E1" }}
+              >
+                Actually Am
+              </span>
             </span>
           </h2>
         </div>
