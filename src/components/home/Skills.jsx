@@ -170,26 +170,17 @@ export default function Skills() {
       {/* eslint-disable-next-line @next/next/no-head-element */}
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
 
-      <section ref={containerRef} id="skills" className="relative bg-[#111018] font-sans overflow-hidden border-t border-white/5">
+      <section ref={containerRef} id="skills" className="relative bg-transparent font-sans overflow-hidden border-t-2 border-white/5">
         
-        {/* Paper texture overlay */}
-        <svg className="pointer-events-none absolute inset-0 z-0 w-full h-full opacity-[0.15] mix-blend-overlay">
-          <filter id="skills-noise">
-            <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" />
-            <feColorMatrix type="matrix" values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 0.5 0" />
-          </filter>
-          <rect width="100%" height="100%" filter="url(#skills-noise)" />
-        </svg>
-
         {/* ── Intro Header ── */}
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-20 pb-10 relative z-10">
-          <p className="text-[10px] font-mono text-purple-400/80 tracking-[0.3em] uppercase mb-4 font-bold">
-            ◆ &nbsp; Tech Arsenal
+          <p className="text-2xl font-caveat text-purple-400 mb-2 transform -rotate-2">
+            Tech Arsenal
           </p>
-          <h2 className="font-black text-white leading-none tracking-tight mb-8" style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", letterSpacing: "-0.03em" }}>
-            The <span className="text-transparent" style={{ WebkitTextStroke: "1.5px #A78BFA" }}>Dossier</span>
+          <h2 className="font-bebas text-white leading-none tracking-wide mb-8" style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}>
+            The <span className="text-transparent" style={{ WebkitTextStroke: "2px #A78BFA" }}>Dossier</span>
           </h2>
-          <p className="text-white/60 font-serif max-w-xl text-lg">
+          <p className="text-white/80 font-sans max-w-xl text-lg bg-black/40 p-4 border-l-4 border-purple-500 rounded-r-lg">
             A comprehensive collection of the tools, languages, and frameworks I use to build intelligent systems and scalable web applications. Scroll to browse the files.
           </p>
         </div>
@@ -235,11 +226,11 @@ export default function Skills() {
                   >
                     
                     {/* Top Secret Stamp */}
-                    <div className="absolute top-8 right-8 md:top-12 md:right-12 opacity-30 transform rotate-12 pointer-events-none select-none border-4 border-red-500 text-red-500 font-bold uppercase tracking-widest p-2 text-2xl md:text-4xl">
+                    <div className="absolute top-8 right-8 md:top-12 md:right-12 opacity-30 transform rotate-12 pointer-events-none select-none border-4 border-red-500 text-red-500 font-bebas tracking-[0.2em] p-2 text-3xl md:text-5xl">
                       CONFIDENTIAL
                     </div>
 
-                    <h3 className={`text-4xl md:text-6xl font-black tracking-tighter mb-12 ${group.textColor}`}>
+                    <h3 className={`text-5xl md:text-7xl font-bebas tracking-wide mb-12 ${group.textColor}`}>
                       {group.label}
                     </h3>
 

@@ -10,7 +10,9 @@ module.exports = {
       fontFamily:{
         fredoka: ['var(--font-fredoka)'],
         inter: ['var(--font-inter)'],
-        space: ['var(--font-space-grotesk)'],
+        space: ['var(--font-sans)'],
+        bebas: ['var(--font-bebas)'],
+        caveat: ['var(--font-caveat)'],
       },
       colors:{
         background: 'rgb(var(--background))',

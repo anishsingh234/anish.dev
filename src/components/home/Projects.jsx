@@ -206,7 +206,7 @@ function ProjectCard({ project }) {
               className="flex items-center justify-between mb-6"
             >
               <span
-                className={`font-black text-6xl opacity-10 font-mono tracking-tighter ${isDarkText ? "text-black" : "text-white"}`}
+                className={`font-bebas text-7xl opacity-10 tracking-wide select-none ${isDarkText ? "text-black" : "text-white"}`}
               >
                 _{project.index}
               </span>
@@ -223,7 +223,7 @@ function ProjectCard({ project }) {
 
             <motion.h3
               variants={childVariants}
-              className="font-black text-4xl sm:text-5xl tracking-tight mt-1 mb-5"
+              className="font-bebas text-5xl sm:text-6xl tracking-wide mt-1 mb-5"
             >
               {project.name}
             </motion.h3>
@@ -344,25 +344,8 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      className="relative py-20 sm:py-28 bg-[#111018] font-sans overflow-hidden"
+      className="relative py-20 sm:py-28 bg-transparent font-sans overflow-hidden border-t-2 border-white/5"
     >
-      {/* Paper texture background */}
-      <svg className="pointer-events-none absolute inset-0 w-full h-full opacity-[0.15] mix-blend-overlay z-0">
-        <filter id="projects-noise">
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="0.8"
-            numOctaves="4"
-            stitchTiles="stitch"
-          />
-          <feColorMatrix
-            type="matrix"
-            values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 0.5 0"
-          />
-        </filter>
-        <rect width="100%" height="100%" filter="url(#projects-noise)" />
-      </svg>
-
       <div className="max-w-6xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
         {/* ── Header ── */}
         <motion.div
@@ -374,10 +357,9 @@ export default function Projects() {
         >
           <div className="relative">
             <h2
-              className="font-black text-white leading-none tracking-tight inline-block relative"
+              className="font-bebas text-white leading-none tracking-wide inline-block relative"
               style={{
-                fontSize: "clamp(3rem, 8vw, 6rem)",
-                letterSpacing: "-0.035em",
+                fontSize: "clamp(4rem, 10vw, 8rem)",
               }}
             >
               Selected

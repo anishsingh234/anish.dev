@@ -8,87 +8,96 @@ import { Mail, ArrowUpRight } from "lucide-react";
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const stats = [
-  { value: "12+",      label: "Projects",    sub: "Full-Stack & AI"      },
-  { value: "350+",     label: "DSA Solved",  sub: "LeetCode"             },
-  { value: "6mo+",     label: "Experience",  sub: "Exponent Solutions"   },
-  { value: "5+",       label: "AI SaaS",     sub: "Built & Shipped"      },
-  { value: "'26",      label: "Graduating",  sub: "B.Tech AI & ML"       },
+  { value: "12+", label: "Projects", sub: "Full-Stack & AI" },
+  { value: "350+", label: "DSA Solved", sub: "LeetCode" },
+  { value: "6mo+", label: "Experience", sub: "Exponent Solutions" },
+  { value: "5+", label: "AI SaaS", sub: "Built & Shipped" },
+  { value: "'26", label: "Graduating", sub: "B.Tech AI & ML" },
 ];
 
 export default function AboutSection() {
   const containerRef = useRef(null);
 
-  useGSAP(() => {
-    // 1. Draw SVG Highlight on Name
-    gsap.fromTo(
-      ".about-name-highlight path",
-      { strokeDasharray: 300, strokeDashoffset: 300 },
-      {
-        strokeDashoffset: 0,
-        duration: 1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".about-name-highlight",
-          start: "top 80%",
+  useGSAP(
+    () => {
+      // 1. Draw SVG Highlight on Name
+      gsap.fromTo(
+        ".about-name-highlight path",
+        { strokeDasharray: 300, strokeDashoffset: 300 },
+        {
+          strokeDashoffset: 0,
+          duration: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ".about-name-highlight",
+            start: "top 80%",
+          },
         },
-      }
-    );
+      );
 
-    // 2. Physical Card Throw Animations
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 60%",
-      }
-    });
+      // 2. Physical Card Throw Animations
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top 60%",
+        },
+      });
 
-    gsap.set(".about-letter, .about-stats-card", { transformPerspective: 1000 });
+      gsap.set(".about-letter, .about-stats-card", {
+        transformPerspective: 1000,
+      });
 
-    // Throw the Letter on desk first (Page Flip)
-    tl.fromTo(".about-letter",
-      { opacity: 0, rotationX: -90, transformOrigin: "top center" },
-      { opacity: 1, rotationX: 0, rotation: -2, duration: 1, ease: "power3.out" }
-    )
-    // Snap the ID card on top (Flutter down)
-    .fromTo(".about-stats-card",
-      { y: -30, opacity: 0, rotationZ: 10, rotationX: 45 },
-      { y: 0, opacity: 1, rotationZ: 3, rotationX: 0, duration: 0.8, ease: "power2.out" },
-      "-=0.5"
-    );
-
-  }, { scope: containerRef });
+      // Throw the Letter on desk first (Page Flip)
+      tl.fromTo(
+        ".about-letter",
+        { opacity: 0, rotationX: -90, transformOrigin: "top center" },
+        {
+          opacity: 1,
+          rotationX: 0,
+          rotation: -2,
+          duration: 1,
+          ease: "power3.out",
+        },
+      )
+        // Snap the ID card on top (Flutter down)
+        .fromTo(
+          ".about-stats-card",
+          { y: -30, opacity: 0, rotationZ: 10, rotationX: 45 },
+          {
+            y: 0,
+            opacity: 1,
+            rotationZ: 3,
+            rotationX: 0,
+            duration: 0.8,
+            ease: "power2.out",
+          },
+          "-=0.5",
+        );
+    },
+    { scope: containerRef },
+  );
 
   return (
     <section
       id="about"
       ref={containerRef}
-      className="relative py-20 sm:py-32 bg-[#111018] font-sans overflow-hidden border-t border-white/5"
+      className="relative py-20 sm:py-32 bg-transparent font-sans overflow-hidden border-t-2 border-white/5"
     >
-      {/* Paper texture background */}
-      <svg className="pointer-events-none absolute inset-0 z-0 w-full h-full opacity-[0.15] mix-blend-overlay">
-        <filter id="about-noise">
-          <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" />
-          <feColorMatrix type="matrix" values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 0.5 0" />
-        </filter>
-        <rect width="100%" height="100%" filter="url(#about-noise)" />
-      </svg>
-
       <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 relative z-10">
-
         {/* ── Section header ── */}
         <div className="mb-16 sm:mb-24 text-center">
-          <p className="text-[10px] font-mono text-purple-400/80 tracking-[0.3em] uppercase mb-4 font-bold">
-            ◆ &nbsp; Profile
+          <p className="text-2xl font-caveat text-purple-400 mb-2 transform -rotate-2">
+            Profile
           </p>
           <h2
-            className="font-black text-white leading-none tracking-tight"
-            style={{ fontSize: "clamp(3rem, 7vw, 5.5rem)", letterSpacing: "-0.03em" }}
+            className="font-bebas text-white leading-none tracking-wide"
+            style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}
           >
             Who I
             <br />
             <span
               className="text-transparent"
-              style={{ WebkitTextStroke: "1.5px #E8E6E1" }}
+              style={{ WebkitTextStroke: "2px #E8E6E1" }}
             >
               Actually Am
             </span>
@@ -97,20 +106,18 @@ export default function AboutSection() {
 
         {/* ── Overlapping Cards Grid ── */}
         <div className="relative flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-0 mt-10">
-
           {/* ── Left: The Parchment Letter ── */}
-          <div 
+          <div
             className="about-letter relative w-full lg:w-[60%] bg-[#E8E6E1] text-[#111018] p-8 sm:p-12 lg:p-16 shadow-2xl z-10"
-            style={{ 
+            style={{
               clipPath: "polygon(1% 1%, 99% 0, 100% 99%, 0 100%)",
-              boxShadow: "0 20px 50px rgba(0,0,0,0.5)" 
+              boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
             }}
           >
             {/* Top Tape */}
             <div className="absolute -top-4 left-10 w-24 h-8 bg-white/40 backdrop-blur-md rotate-[-5deg] z-20 shadow-sm" />
 
             <div className="flex flex-col gap-8">
-              
               <div className="font-mono text-xs opacity-50 uppercase tracking-widest border-b border-black/10 pb-4">
                 File No: 404-DEV // Confidential Summary
               </div>
@@ -118,21 +125,42 @@ export default function AboutSection() {
               {/* Paragraphs in Serif */}
               <div className="space-y-6 text-base sm:text-lg text-[#111018]/80 leading-relaxed font-serif">
                 <p>
-                  I&apos;m a <span className="font-bold text-[#111018]">Full-Stack Developer</span> who builds production-grade web applications with <span className="italic">Next.js, React, Node.js</span> and modern databases — then makes them intelligent.
+                  I&apos;m a{" "}
+                  <span className="font-bold text-[#111018]">
+                    Full-Stack Developer
+                  </span>{" "}
+                  who builds production-grade web applications with{" "}
+                  <span className="italic">Next.js, React, Node.js</span> and
+                  modern databases — then makes them intelligent.
                 </p>
                 <p>
                   What sets me apart is the ability to seamlessly layer{" "}
                   <span className="relative inline-block font-bold">
                     AI capabilities
                     {/* Hand-drawn SVG circle highlight */}
-                    <svg className="about-name-highlight absolute -inset-2 w-[calc(100%+1rem)] h-[calc(100%+1rem)] pointer-events-none z-10 overflow-visible" viewBox="0 0 100 40" preserveAspectRatio="none">
-                      <path d="M10,20 C10,5 90,5 90,20 C90,35 10,35 10,20 C10,10 90,10 90,20" fill="none" stroke="#A78BFA" strokeWidth="4" strokeLinecap="round" />
+                    <svg
+                      className="about-name-highlight absolute -inset-2 w-[calc(100%+1rem)] h-[calc(100%+1rem)] pointer-events-none z-10 overflow-visible"
+                      viewBox="0 0 100 40"
+                      preserveAspectRatio="none"
+                    >
+                      <path
+                        d="M10,20 C10,5 90,5 90,20 C90,35 10,35 10,20 C10,10 90,10 90,20"
+                        fill="none"
+                        stroke="#A78BFA"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                      />
                     </svg>
                   </span>{" "}
-                  on top of solid engineering — LLMs, RAG pipelines, agents, and multi-agent workflows that actually work in production.
+                  on top of solid engineering — LLMs, RAG pipelines, agents, and
+                  multi-agent workflows that actually work in production.
                 </p>
                 <p>
-                  I&apos;ve shipped multiple AI-powered SaaS products that combine beautiful frontends with scalable backends. Currently interning at <span className="font-bold">Exponent Solutions</span> and finishing my B.Tech in AI & ML.
+                  I&apos;ve shipped multiple AI-powered SaaS products that
+                  combine beautiful frontends with scalable backends. Currently
+                  interning at{" "}
+                  <span className="font-bold">Exponent Solutions</span> and
+                  finishing my B.Tech in AI & ML.
                 </p>
               </div>
 
@@ -158,16 +186,15 @@ export default function AboutSection() {
                   <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </a>
               </div>
-
             </div>
           </div>
 
           {/* ── Right: The Dark ID Card (Stats) ── */}
-          <div 
+          <div
             className="about-stats-card relative w-full lg:w-[45%] lg:-ml-12 bg-[#232132] text-white p-8 sm:p-10 shadow-2xl z-20"
-            style={{ 
+            style={{
               clipPath: "polygon(0 0, 100% 2%, 98% 100%, 2% 98%)",
-              boxShadow: "-10px 20px 40px rgba(0,0,0,0.6)"
+              boxShadow: "-10px 20px 40px rgba(0,0,0,0.6)",
             }}
           >
             {/* Red Stamp */}
@@ -211,9 +238,7 @@ export default function AboutSection() {
                 Open to Opportunities
               </span>
             </div>
-
           </div>
-
         </div>
       </div>
     </section>

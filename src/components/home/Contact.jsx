@@ -73,27 +73,19 @@ export default function Contact() {
     <section
       id="contact"
       ref={containerRef}
-      className="relative bg-[#111018] py-20 sm:py-28 overflow-hidden font-sans"
+      className="relative bg-transparent py-20 sm:py-28 overflow-hidden font-sans border-t-2 border-white/5"
     >
-      {/* Paper texture overlay */}
-      <svg className="pointer-events-none absolute inset-0 z-0 w-full h-full opacity-[0.15] mix-blend-overlay">
-        <filter id="contact-noise">
-          <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" />
-          <feColorMatrix type="matrix" values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 0.5 0" />
-        </filter>
-        <rect width="100%" height="100%" filter="url(#contact-noise)" />
-      </svg>
 
       <div className="contact-wrapper max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 relative z-10">
 
         {/* ── Section header ── */}
         <div className="contact-header mb-16 relative w-fit">
-          <p className="text-[10px] font-mono text-purple-400/80 tracking-[0.3em] uppercase mb-4 font-bold">
-            ◆ &nbsp; Open Comms
+          <p className="text-2xl font-caveat text-purple-400 mb-2 transform -rotate-2">
+            Open Comms
           </p>
-          <h2 className="font-black text-white leading-none tracking-tight" style={{ fontSize: "clamp(3rem, 7vw, 6rem)", letterSpacing: "-0.03em" }}>
+          <h2 className="font-bebas text-white leading-none tracking-wide" style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}>
             Direct{" "}
-            <span className="text-transparent" style={{ WebkitTextStroke: "1.5px #A78BFA" }}>
+            <span className="text-transparent" style={{ WebkitTextStroke: "2px #A78BFA" }}>
               Line.
             </span>
           </h2>

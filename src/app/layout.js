@@ -3,17 +3,23 @@ import "./globals.css";
 import clsx from "clsx";
 import Footer from "@/components/footer";
 import CustomCursor from "@/components/home/CustomCursor";
-import StarBackground from "@/components/StarBackground";
 import { Analytics } from '@vercel/analytics/react';
 
 import { Dancing_Script, Great_Vibes } from "next/font/google";
 import Preloader from "@/components/home/Preloader";
-import { Bebas_Neue } from 'next/font/google';
+import { Bebas_Neue, Caveat } from 'next/font/google';
 
 const bebas = Bebas_Neue({
   weight: '400',
   subsets: ['latin'],
+  variable: "--font-bebas",
   display: 'swap',
+});
+
+const caveat = Caveat({
+  subsets: ["latin"],
+  variable: "--font-caveat",
+  display: "swap",
 });
 
 const dancingScript = Dancing_Script({
@@ -78,14 +84,15 @@ export default function RootLayout({ children }) {
           spaceGrotesk.variable,
           dancingScript.variable,
           greatVibes.variable,
-          "bg-background text-foreground font-sans"
+          bebas.variable,
+          caveat.variable,
+          "bg-background text-foreground font-sans paper-bg"
         )}
       >
         <Preloader />
         {children}
         <Analytics />
         <CustomCursor />
-        <StarBackground />
       </body>
     </html>
   );
