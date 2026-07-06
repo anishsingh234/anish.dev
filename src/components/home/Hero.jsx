@@ -24,22 +24,31 @@ export default function Hero() {
 
   useGSAP(() => {
     // 1. Initial "Drawing" Animation (Delayed to sync with Preloader exit)
-    const tl = gsap.timeline({ defaults: { ease: "power2.out" }, delay: 2.2 });
+    const tl = gsap.timeline({ defaults: { ease: "power3.out" }, delay: 2.2 });
     
-    // Animate SVG text strokes
-    tl.fromTo(".drawn-text path", 
-      { strokeDasharray: 1000, strokeDashoffset: 1000 },
-      { strokeDashoffset: 0, duration: 2, stagger: 0.15, ease: "power1.inOut" }
+    // 1. Drop in collage letters with gravity and bounce
+    tl.fromTo(".collage-letter", 
+      { y: -300, opacity: 0, rotationZ: () => Math.random() * 60 - 30, scale: 1.5 },
+      { 
+        y: 0, opacity: 1, scale: 1, duration: 0.8, stagger: 0.1, 
+        // Try to keep their original inline rotation if possible
+        rotationZ: (i, el) => parseFloat(el.getAttribute('data-rot') || "0"), 
+        ease: "bounce.out" 
+      }
     )
-    // Fill in the text
-    .to(".drawn-text path", { fill: "rgba(255,255,255,0.9)", duration: 1 }, "-=0.5")
-    // Flutter in the paper cut-out elements
+    // 2. Stamp the last name aggressively
+    .fromTo(".stamped-text", 
+      { opacity: 0, scale: 3 },
+      { opacity: 0.8, scale: 1, duration: 0.3, stagger: 0.05, ease: "power4.in" },
+      "-=0.2"
+    )
+    // 3. Flutter in the paper cut-out elements
     .fromTo(".paper-card", 
       { y: 60, opacity: 0, rotationZ: () => Math.random() * 10 - 5, rotationX: 30 },
-      { y: 0, opacity: 1, duration: 1, stagger: 0.2, rotationZ: () => Math.random() * 4 - 2, rotationX: 0, ease: "power3.out" },
-      "-=0.5"
+      { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, rotationZ: 0, rotationX: 0, ease: "power3.out" },
+      "-=0.2"
     )
-    .fromTo(".scroll-indicator", { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 1 }, "-=0.5");
+    .fromTo(".scroll-indicator", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 1 }, "-=0.4");
 
     // 2. Scrollytelling Pinned Sequence
     const panels = gsap.utils.toArray(".story-panel");
@@ -60,56 +69,81 @@ export default function Hero() {
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} className="relative bg-[#111018] text-white overflow-hidden font-sans">
+    <section ref={containerRef} className="relative bg-[#0D0A10] text-white overflow-hidden font-sans">
       <PaperTexture />
 
       {/* ── Landing Area ── */}
       <div className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-20 pb-10">
         
-        {/* Hand-drawn SVG Title */}
-        <div className="w-full max-w-4xl mx-auto mb-16 flex justify-center">
-          <svg className="drawn-text w-full h-auto max-h-[30vh] overflow-visible" viewBox="0 0 800 200" fill="transparent" stroke="rgba(167,139,250,0.8)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            {/* "ANISH" */}
-            <path d="M100 150 L150 50 L200 150 M125 100 L175 100" /> {/* A */}
-            <path d="M220 150 L220 50 L280 150 L280 50" /> {/* N */}
-            <path d="M310 50 L350 50 M330 50 L330 150 M310 150 L350 150" /> {/* I */}
-            <path d="M430 50 C380 50, 380 100, 405 100 C430 100, 430 150, 380 150" /> {/* S */}
-            <path d="M460 50 L460 150 M510 50 L510 150 M460 100 L510 100" /> {/* H */}
-            
-            {/* "SINGH" slightly offset and smaller */}
-            <g transform="translate(150, 60) scale(0.6)">
-               <path d="M430 50 C380 50, 380 100, 405 100 C430 100, 430 150, 380 150" /> {/* S */}
-               <path d="M450 50 L490 50 M470 50 L470 150 M450 150 L490 150" /> {/* I */}
-               <path d="M510 150 L510 50 L570 150 L570 50" /> {/* N */}
-               <path d="M650 50 C600 50, 590 150, 620 150 C650 150, 650 100, 620 100" /> {/* G */}
-               <path d="M680 50 L680 150 M730 50 L730 150 M680 100 L730 100" /> {/* H */}
-            </g>
-          </svg>
+        {/* ── Collage Name: ANISH ── */}
+        <div className="w-full max-w-4xl mx-auto mb-2 flex flex-col items-center justify-center relative z-10">
+          <div className="flex justify-center items-center gap-1 sm:gap-3 mb-6">
+            {/* A - Newspaper */}
+            <div className="collage-letter relative bg-[#f4f1ea] text-black font-serif font-black text-6xl sm:text-8xl px-4 sm:px-6 py-2 sm:py-4 shadow-xl border border-gray-300" 
+                 data-rot="-6" style={{ clipPath: "polygon(5% 0%, 100% 3%, 95% 100%, 0% 97%)", transform: "rotate(-6deg)" }}>
+              A
+            </div>
+            {/* N - Yellow notepad */}
+            <div className="collage-letter relative bg-[#fdf5c9] text-blue-800 font-sans font-bold text-6xl sm:text-8xl px-4 sm:px-6 py-2 sm:py-4 shadow-xl border-t-[10px] border-[#e2d58b]" 
+                 data-rot="4" style={{ clipPath: "polygon(0% 2%, 98% 0%, 100% 98%, 3% 100%)", transform: "rotate(4deg)" }}>
+              N
+            </div>
+            {/* I - Black tape */}
+            <div className="collage-letter relative bg-[#1a1a1a] text-white font-mono font-bold text-6xl sm:text-8xl px-5 sm:px-8 py-1 sm:py-2 shadow-2xl" 
+                 data-rot="-2" style={{ clipPath: "polygon(2% 0%, 98% 2%, 100% 100%, 0% 96%)", transform: "rotate(-2deg)" }}>
+              I
+            </div>
+            {/* S - Cardboard */}
+            <div className="collage-letter relative bg-[#d4b595] text-[#3a2818] font-black text-6xl sm:text-8xl px-4 sm:px-6 py-2 sm:py-4 shadow-xl border-2 border-[#b59575] border-dashed" 
+                 data-rot="8" style={{ transform: "rotate(8deg)" }}>
+              S
+            </div>
+            {/* H - Receipt paper */}
+            <div className="collage-letter relative bg-white text-black font-mono text-6xl sm:text-8xl px-4 sm:px-6 py-2 sm:py-4 shadow-xl" 
+                 data-rot="-5" style={{ clipPath: "polygon(0% 0%, 100% 0%, 95% 100%, 5% 100%)", transform: "rotate(-5deg)" }}>
+              H
+            </div>
+          </div>
+          
+          {/* Stamped Last Name: SINGH */}
+          <div className="flex justify-center mb-16 relative">
+            <div className="stamped-text font-mono font-black text-4xl sm:text-6xl tracking-[0.4em] text-[#ff3366] mix-blend-screen" 
+                 style={{ transform: "rotate(-2deg)" }}>
+              SINGH
+            </div>
+            {/* Ink splatters */}
+            <div className="stamped-text absolute -top-4 right-0 w-3 h-3 bg-[#ff3366] rounded-full mix-blend-screen" style={{ transform: "rotate(-2deg)" }}></div>
+            <div className="stamped-text absolute bottom-2 -left-4 w-1.5 h-1.5 bg-[#ff3366] rounded-full mix-blend-screen"></div>
+          </div>
         </div>
 
         {/* Paper Cut-out CTA Cards */}
         <div className="flex flex-wrap items-center justify-center gap-6 md:gap-12 relative z-10">
-          <a href="#projects" className="paper-card group relative bg-[#E8E6E1] text-[#111018] px-8 py-4 font-bold text-lg inline-flex items-center gap-3 transition-transform hover:scale-105"
-             style={{ clipPath: "polygon(2% 0, 100% 2%, 98% 100%, 0 98%)", boxShadow: "4px 8px 15px rgba(0,0,0,0.4)" }}>
+          {/* View My Work - Manila folder tab */}
+          <a href="#projects" className="paper-card group relative bg-[#d9c5a0] text-[#111018] px-8 py-4 font-bold text-lg inline-flex items-center gap-3 transition-transform hover:scale-105 border border-[#c2ae87]"
+             style={{ clipPath: "polygon(0% 10%, 15% 0%, 100% 0%, 100% 100%, 0% 100%)", boxShadow: "4px 8px 15px rgba(0,0,0,0.4)" }}>
              <span>View My Work</span>
              <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-             {/* Drawn underline effect on hover */}
-             <svg className="absolute bottom-2 left-8 w-[calc(100%-4rem)] h-2 stroke-[#111018] stroke-2 fill-none stroke-dasharray-[100] stroke-dashoffset-[100] group-hover:stroke-dashoffset-0 transition-all duration-500" viewBox="0 0 100 10" preserveAspectRatio="none">
-               <path d="M0 5 Q 50 0 100 8" />
-             </svg>
           </a>
 
-          <a href="/resume" className="paper-card group relative bg-transparent border-2 border-purple-400 text-purple-300 px-8 py-4 font-bold text-lg inline-flex items-center gap-3 transition-colors hover:bg-purple-400/10"
-             style={{ clipPath: "polygon(0 2%, 98% 0, 100% 98%, 2% 100%)", boxShadow: "4px 6px 12px rgba(167,139,250,0.15)" }}>
+          {/* Resume - Neon Sticky Note */}
+          <a href="/resume" className="paper-card group relative bg-[#ffeb3b] text-[#111018] px-8 py-4 font-bold text-lg inline-flex items-center gap-3 transition-transform hover:-translate-y-2 origin-bottom-right"
+             style={{ boxShadow: "6px 6px 15px rgba(0,0,0,0.4)", clipPath: "polygon(0% 0%, 100% 0%, 95% 100%, 0% 95%)" }}>
              <Download className="w-5 h-5" />
              <span>Resume</span>
+             {/* Sticky note folded corner illusion */}
+             <div className="absolute bottom-0 right-0 w-6 h-6 bg-[#d4c32b] transform -rotate-12 translate-x-1 translate-y-1 opacity-0 group-hover:opacity-100 transition-opacity" style={{ clipPath: "polygon(0% 100%, 100% 0%, 100% 100%)" }}></div>
           </a>
         </div>
 
         {/* Scroll Indicator */}
-        <div className="scroll-indicator absolute bottom-10 flex flex-col items-center gap-2 opacity-50">
-          <span className="text-xs font-mono tracking-widest uppercase">Scroll to read</span>
-          <div className="w-px h-16 bg-gradient-to-b from-purple-400 to-transparent" />
+        <div className="scroll-indicator absolute bottom-10 flex flex-col items-center gap-2 opacity-60">
+          <span className="text-xs font-mono tracking-[0.2em] uppercase text-white/80" style={{ transform: "rotate(-3deg)" }}>Scroll</span>
+          {/* Hand-drawn arrow SVG */}
+          <svg width="40" height="60" viewBox="0 0 40 60" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/80">
+            <path d="M20 5 Q25 30 15 50" />
+            <path d="M5 40 Q15 55 15 50 Q25 45 35 35" />
+          </svg>
         </div>
       </div>
 
