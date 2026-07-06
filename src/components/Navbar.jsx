@@ -15,7 +15,6 @@ const navItems = [
   { label: "Experience",  href: "/#experience", id: "experience"  },
   { label: "About",       href: "/#about",      id: "about"       },
   { label: "Contact",     href: "/#contact",    id: "contact"     },
-  { label: "Animations",  href: "/animations",  id: "animations"  },
 ];
 
 /* ─── LIVE CLOCK (TYPEWRITER STYLE) ───────────────────────────────────────── */
@@ -37,29 +36,39 @@ function LiveClock() {
     return () => clearInterval(t);
   }, []);
   return (
-    <span className="font-mono text-xs text-[#111018] font-bold tracking-[0.2em] tabular-nums">
+    <span className="font-mono text-sm text-[#111018] font-bold tracking-[0.2em] tabular-nums">
       {time}
     </span>
   );
 }
 
-/* ─── DESKTOP TABS (DOSSIER FOLDERS) ──────────────────────────────────────── */
-function DossierTabs({ activeSection, pathname, onSearchOpen }) {
+/* ─── DESKTOP NAV (TORN PARCHMENT STRIP) ──────────────────────────────────────── */
+function TornStripNav({ activeSection, pathname, onSearchOpen }) {
   const navRef = useRef(null);
   const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
 
-  // Scroll detection to collapse or shrink tabs slightly
+  // Scroll detection to float down slightly or add shadow
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Entrance physics
+  useEffect(() => {
+    if (!navRef.current) return;
+    gsap.fromTo(navRef.current, 
+      { y: -100, rotationZ: -4, opacity: 0 },
+      { y: scrolled ? 10 : 20, rotationZ: 0, opacity: 1, duration: 1, ease: "back.out(1.2)" }
+    );
+  }, []);
+
+  // Update Y position based on scroll
   useEffect(() => {
     if (!navRef.current) return;
     gsap.to(navRef.current, {
-      y: scrolled ? -10 : 0,
+      y: scrolled ? 10 : 20,
       duration: 0.4,
       ease: "power2.out"
     });
@@ -68,58 +77,53 @@ function DossierTabs({ activeSection, pathname, onSearchOpen }) {
   return (
     <nav
       ref={navRef}
-      className="hidden lg:flex fixed top-0 left-1/2 -translate-x-1/2 z-[100] items-end justify-center gap-1 font-sans"
+      className="hidden lg:flex fixed top-0 left-1/2 -translate-x-1/2 z-[100] font-sans items-center"
     >
-      {/* Brand Tab */}
-      <Link href="/" className="relative group flex items-end">
-        <div 
-          className="bg-[#111018] text-white px-4 pt-3 pb-2 transition-transform duration-300 group-hover:translate-y-2"
-          style={{ clipPath: "polygon(10% 0, 90% 0, 100% 100%, 0 100%)" }}
-        >
-          <span className="font-black text-lg tracking-tighter">AK.</span>
-        </div>
-      </Link>
+      {/* Tape holding it up */}
+      <div className="absolute -top-3 left-10 w-12 h-6 bg-white/40 rotate-[-15deg] shadow-sm pointer-events-none z-10" />
+      <div className="absolute -top-4 right-10 w-16 h-6 bg-white/30 rotate-[8deg] shadow-sm pointer-events-none z-10" />
 
-      {/* Nav Tabs */}
-      {navItems.slice(0, 8).map((item, i) => {
-        const isActive = item.id ? activeSection === item.id : isHome && !activeSection;
-        // Alternate colors for tabs
-        const bgColors = ["bg-[#E8E6E1]", "bg-[#D3D1C8]", "bg-[#C4C2B9]"];
-        const bgColor = isActive ? "bg-purple-600 text-white" : `${bgColors[i % 3]} text-[#111018]`;
-        
-        return (
-          <Link key={item.label} href={item.href} className="relative group flex items-end cursor-pointer">
-            <div 
-              className={`${bgColor} px-5 pt-3 pb-2 transition-transform duration-300 transform group-hover:translate-y-2 shadow-sm font-mono text-xs font-bold uppercase tracking-wider`}
-              style={{ clipPath: "polygon(5% 0, 95% 0, 100% 100%, 0 100%)" }}
-            >
-              {item.label}
+      {/* The Torn Strip Background */}
+      <div 
+        className="relative flex items-center gap-1 sm:gap-2 px-6 py-4 bg-[#E8E6E1] text-[#111018] shadow-[8px_12px_0_rgba(0,0,0,0.8)] border border-[#111018]/10"
+        style={{ 
+          // Super jagged edges simulating a torn strip of paper
+          clipPath: "polygon(1% 4%, 4% 1%, 8% 3%, 12% 0%, 15% 4%, 20% 1%, 25% 3%, 30% 0%, 35% 4%, 40% 1%, 45% 3%, 50% 0%, 55% 4%, 60% 1%, 65% 3%, 70% 0%, 75% 4%, 80% 1%, 85% 3%, 90% 0%, 95% 4%, 98% 1%, 100% 5%, 98% 95%, 95% 98%, 90% 96%, 85% 99%, 80% 96%, 75% 99%, 70% 96%, 65% 99%, 60% 96%, 55% 99%, 50% 96%, 45% 99%, 40% 96%, 35% 99%, 30% 96%, 25% 99%, 20% 96%, 15% 99%, 12% 96%, 8% 99%, 4% 96%, 0% 98%)"
+        }}
+      >
+        {/* Brand */}
+        <Link href="/" className="mr-6 group">
+          <span className="font-black text-2xl tracking-tighter bg-[#111018] text-[#E8E6E1] px-3 py-1.5 rotate-[-2deg] inline-block shadow-[2px_3px_0_rgba(0,0,0,0.5)] group-hover:rotate-0 transition-transform">
+            AK.
+          </span>
+        </Link>
+
+        {/* Links */}
+        {navItems.slice(1, 8).map((item) => {
+          const isActive = item.id ? activeSection === item.id : isHome && !activeSection;
+          
+          return (
+            <Link key={item.label} href={item.href} className="relative group px-4 py-2 cursor-pointer">
+              <span className="relative z-10 font-mono text-xs sm:text-[13px] font-bold uppercase tracking-widest text-[#111018] group-hover:text-red-600 transition-colors">
+                {item.label}
+              </span>
               
+              {/* Sharpie marker underline for active state */}
               {isActive && (
-                <div className="absolute bottom-1 left-2 w-[calc(100%-16px)] h-[3px] bg-red-500 transform rotate-[-2deg]" />
+                <div className="absolute -bottom-0.5 left-0 w-full h-[4px] bg-red-600 rotate-[-2deg] opacity-80" />
               )}
-            </div>
-          </Link>
-        );
-      })}
+            </Link>
+          );
+        })}
 
-      {/* Search Tab */}
-      <button onClick={onSearchOpen} className="relative group flex items-end ml-4">
-        <div 
-          className="bg-[#232132] text-white px-4 pt-3 pb-2 transition-transform duration-300 group-hover:translate-y-2 flex items-center gap-2"
-          style={{ clipPath: "polygon(10% 0, 90% 0, 100% 100%, 0 100%)" }}
-        >
-          <Search className="w-4 h-4" />
-          <kbd className="text-[10px] font-mono tracking-widest border border-white/20 px-1 py-0.5">⌘K</kbd>
-        </div>
-      </button>
+        {/* Search Tab */}
+        <button onClick={onSearchOpen} className="group flex items-center gap-2 ml-4 px-4 py-2 border-l-2 border-black/20 pl-8">
+          <Search className="w-4 h-4 text-[#111018] group-hover:text-red-600 transition-colors" />
+          <kbd className="text-[11px] font-mono font-bold tracking-widest bg-black/10 px-2 py-0.5 border border-black/20">⌘K</kbd>
+        </button>
 
-      {/* Clock Tab */}
-      <div className="relative group flex items-end ml-4 pointer-events-none">
-        <div 
-          className="bg-white px-4 pt-3 pb-2"
-          style={{ clipPath: "polygon(5% 0, 95% 0, 100% 100%, 0 100%)" }}
-        >
+        {/* Clock Tab */}
+        <div className="ml-2 pointer-events-none px-4 py-2 border-l-2 border-black/20 pl-8">
           <LiveClock />
         </div>
       </div>
@@ -449,8 +453,8 @@ export default function Navbar() {
       {/* Hide nav chrome on pages with their own navigation (e.g. Animation Studio) */}
       {!isAnimations && (
         <>
-          {/* Desktop — Dossier Tabs */}
-          <DossierTabs
+          {/* Desktop — Torn Strip */}
+          <TornStripNav
             activeSection={activeSection}
             pathname={pathname}
             onSearchOpen={() => setPaletteOpen(true)}
