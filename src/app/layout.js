@@ -6,7 +6,6 @@ import CustomCursor from "@/components/home/CustomCursor";
 import { Analytics } from '@vercel/analytics/react';
 
 import { Dancing_Script, Great_Vibes } from "next/font/google";
-import Preloader from "@/components/home/Preloader";
 import { Bebas_Neue, Caveat } from 'next/font/google';
 
 const bebas = Bebas_Neue({
@@ -89,7 +88,6 @@ export default function RootLayout({ children }) {
           "bg-background text-foreground font-sans paper-bg"
         )}
       >
-        <Preloader />
         {children}
         <Analytics />
         <CustomCursor />
