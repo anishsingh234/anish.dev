@@ -4,14 +4,14 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import gsap from "gsap";
-import { Download, Search, X, Github, ArrowUpRight, Mail } from "lucide-react";
+import { Search, X, Github, ArrowUpRight, Mail, Download } from "lucide-react";
 
 /* ─── NAV DATA ────────────────────────────────────────────────────────────── */
 const navItems = [
   { label: "Home",        href: "/",            id: null          },
   { label: "Projects",    href: "/#projects",   id: "projects"    },
-   { label: "Why Hire Me", href: "/#why-hire-me", id: "why-hire-me" },
-  { label: "Blog",        href: "/#blog",       id: "blog"        },
+  { label: "Why Hire Me", href: "/#why-hire-me", id: "why-hire-me" },
+
   { label: "Skills",      href: "/#skills",     id: "skills"      },
   { label: "Experience",  href: "/#experience", id: "experience"  },
   { label: "About",       href: "/#about",      id: "about"       },
@@ -19,7 +19,7 @@ const navItems = [
   { label: "Animations",  href: "/animations",  id: "animations"  },
 ];
 
-/* ─── LIVE CLOCK ──────────────────────────────────────────────────────────── */
+/* ─── LIVE CLOCK (TYPEWRITER STYLE) ───────────────────────────────────────── */
 function LiveClock() {
   const [time, setTime] = useState("");
   useEffect(() => {
@@ -38,46 +38,102 @@ function LiveClock() {
     return () => clearInterval(t);
   }, []);
   return (
-    <span className="font-mono text-[10px] text-purple-300/50 tracking-widest tabular-nums">
+    <span className="font-mono text-xs text-[#111018] font-bold tracking-[0.2em] tabular-nums">
       {time}
     </span>
   );
 }
 
-/* ─── MAGNETIC BUTTON WRAPPER ─────────────────────────────────────────────── */
-function MagneticWrap({ children, className = "", strength = 0.35 }) {
-  const ref = useRef(null);
+/* ─── DESKTOP TABS (DOSSIER FOLDERS) ──────────────────────────────────────── */
+function DossierTabs({ activeSection, pathname, onSearchOpen }) {
+  const navRef = useRef(null);
+  const isHome = pathname === "/";
+  const [scrolled, setScrolled] = useState(false);
 
-  const handleMove = (e) => {
-    const el = ref.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = (e.clientX - rect.left - rect.width / 2) * strength;
-    const y = (e.clientY - rect.top - rect.height / 2) * strength;
-    gsap.to(el, { x, y, duration: 0.4, ease: "power3.out" });
-  };
+  // Scroll detection to collapse or shrink tabs slightly
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-  const handleLeave = () => {
-    gsap.to(ref.current, { x: 0, y: 0, duration: 0.6, ease: "elastic.out(1, 0.4)" });
-  };
+  useEffect(() => {
+    if (!navRef.current) return;
+    gsap.to(navRef.current, {
+      y: scrolled ? -10 : 0,
+      duration: 0.4,
+      ease: "power2.out"
+    });
+  }, [scrolled]);
 
   return (
-    <div
-      ref={ref}
-      className={className}
-      onMouseMove={handleMove}
-      onMouseLeave={handleLeave}
+    <nav
+      ref={navRef}
+      className="hidden lg:flex fixed top-0 left-1/2 -translate-x-1/2 z-[100] items-end justify-center gap-1 font-sans"
     >
-      {children}
-    </div>
+      {/* Brand Tab */}
+      <Link href="/" className="relative group flex items-end">
+        <div 
+          className="bg-[#111018] text-white px-4 pt-3 pb-2 transition-transform duration-300 group-hover:translate-y-2"
+          style={{ clipPath: "polygon(10% 0, 90% 0, 100% 100%, 0 100%)" }}
+        >
+          <span className="font-black text-lg tracking-tighter">AK.</span>
+        </div>
+      </Link>
+
+      {/* Nav Tabs */}
+      {navItems.slice(0, 8).map((item, i) => {
+        const isActive = item.id ? activeSection === item.id : isHome && !activeSection;
+        // Alternate colors for tabs
+        const bgColors = ["bg-[#E8E6E1]", "bg-[#D3D1C8]", "bg-[#C4C2B9]"];
+        const bgColor = isActive ? "bg-purple-600 text-white" : `${bgColors[i % 3]} text-[#111018]`;
+        
+        return (
+          <Link key={item.label} href={item.href} className="relative group flex items-end cursor-pointer">
+            <div 
+              className={`${bgColor} px-5 pt-3 pb-2 transition-transform duration-300 transform group-hover:translate-y-2 shadow-sm font-mono text-xs font-bold uppercase tracking-wider`}
+              style={{ clipPath: "polygon(5% 0, 95% 0, 100% 100%, 0 100%)" }}
+            >
+              {item.label}
+              
+              {isActive && (
+                <div className="absolute bottom-1 left-2 w-[calc(100%-16px)] h-[3px] bg-red-500 transform rotate-[-2deg]" />
+              )}
+            </div>
+          </Link>
+        );
+      })}
+
+      {/* Search Tab */}
+      <button onClick={onSearchOpen} className="relative group flex items-end ml-4">
+        <div 
+          className="bg-[#232132] text-white px-4 pt-3 pb-2 transition-transform duration-300 group-hover:translate-y-2 flex items-center gap-2"
+          style={{ clipPath: "polygon(10% 0, 90% 0, 100% 100%, 0 100%)" }}
+        >
+          <Search className="w-4 h-4" />
+          <kbd className="text-[10px] font-mono tracking-widest border border-white/20 px-1 py-0.5">⌘K</kbd>
+        </div>
+      </button>
+
+      {/* Clock Tab */}
+      <div className="relative group flex items-end ml-4 pointer-events-none">
+        <div 
+          className="bg-white px-4 pt-3 pb-2"
+          style={{ clipPath: "polygon(5% 0, 95% 0, 100% 100%, 0 100%)" }}
+        >
+          <LiveClock />
+        </div>
+      </div>
+    </nav>
   );
 }
 
-/* ─── COMMAND PALETTE (GSAP) ──────────────────────────────────────────────── */
-function CommandPalette({ open, onClose, onNavigate }) {
+
+/* ─── COMMAND PALETTE (ARCHIVE CARD) ──────────────────────────────────────── */
+function ArchiveSearch({ open, onClose, onNavigate }) {
   const [query, setQuery] = useState("");
   const overlayRef = useRef(null);
-  const panelRef = useRef(null);
+  const cardRef = useRef(null);
   const inputRef = useRef(null);
   const itemsRef = useRef([]);
 
@@ -90,13 +146,14 @@ function CommandPalette({ open, onClose, onNavigate }) {
       setQuery("");
       return;
     }
-    // Animate in
+    // Drop down physics like a giant physical card
+    gsap.set(cardRef.current, { transformPerspective: 1200 });
     const tl = gsap.timeline();
     tl.fromTo(overlayRef.current, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" })
       .fromTo(
-        panelRef.current,
-        { opacity: 0, scale: 0.92, y: -30 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.45, ease: "back.out(1.7)" },
+        cardRef.current,
+        { rotationX: -90, transformOrigin: "top center", opacity: 0 },
+        { rotationX: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
         "-=0.15"
       );
     setTimeout(() => inputRef.current?.focus(), 100);
@@ -104,14 +161,14 @@ function CommandPalette({ open, onClose, onNavigate }) {
     return () => tl.kill();
   }, [open]);
 
-  // Stagger items when filtered list changes
+  // Stagger items
   useEffect(() => {
     if (!open) return;
     const items = itemsRef.current.filter(Boolean);
     gsap.fromTo(
       items,
-      { opacity: 0, x: -12 },
-      { opacity: 1, x: 0, duration: 0.3, stagger: 0.04, ease: "power2.out" }
+      { opacity: 0, x: -20, rotationZ: () => Math.random() * 4 - 2 },
+      { opacity: 1, x: 0, rotationZ: 0, duration: 0.4, stagger: 0.05, ease: "power2.out" }
     );
   }, [filtered.length, open]);
 
@@ -128,11 +185,9 @@ function CommandPalette({ open, onClose, onNavigate }) {
   }, [open, onClose]);
 
   const handleClose = useCallback(() => {
-    const tl = gsap.timeline({
-      onComplete: onClose,
-    });
-    tl.to(panelRef.current, { opacity: 0, scale: 0.95, y: -20, duration: 0.25, ease: "power2.in" })
-      .to(overlayRef.current, { opacity: 0, duration: 0.2 }, "-=0.1");
+    const tl = gsap.timeline({ onComplete: onClose });
+    tl.to(cardRef.current, { rotationX: -90, transformOrigin: "top center", opacity: 0, duration: 0.4, ease: "power2.in" })
+      .to(overlayRef.current, { opacity: 0, duration: 0.3 }, "-=0.2");
   }, [onClose]);
 
   if (!open) return null;
@@ -140,712 +195,214 @@ function CommandPalette({ open, onClose, onNavigate }) {
   return (
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-[200] flex items-start justify-center pt-[18vh] px-4"
+      className="fixed inset-0 z-[200] flex items-start justify-center pt-24 px-4 font-sans"
       onClick={handleClose}
       style={{ opacity: 0 }}
     >
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-md" />
+      <div className="absolute inset-0 bg-[#111018]/80 backdrop-blur-sm" />
+      
+      {/* Giant Paper Card */}
       <div
-        ref={panelRef}
+        ref={cardRef}
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg rounded-2xl border border-purple-400/[0.12] bg-[#0E0B1A]/95 backdrop-blur-2xl shadow-[0_40px_100px_-20px_rgba(139,92,246,0.25)] overflow-hidden"
-        style={{ opacity: 0 }}
+        className="relative w-full max-w-2xl bg-[#E8E6E1] text-[#111018] shadow-[15px_20px_40px_rgba(0,0,0,0.6)]"
+        style={{ 
+          clipPath: "polygon(1% 0, 99% 1%, 100% 99%, 0 100%)",
+          opacity: 0 
+        }}
       >
-        {/* Search header */}
-        <div className="flex items-center gap-3 px-5 py-4 border-b border-purple-400/[0.08]">
-          <Search className="w-4 h-4 text-purple-300/40 shrink-0" />
-          <input
-            ref={inputRef}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Navigate to..."
-            className="flex-1 bg-transparent text-sm text-white/80 placeholder:text-white/30 outline-none font-mono tracking-wide"
-          />
-          <div className="flex items-center gap-1.5">
-            <kbd className="text-[9px] font-mono text-purple-300/30 border border-purple-400/[0.1] rounded px-1.5 py-0.5">
-              ESC
-            </kbd>
+        {/* Tape */}
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-8 bg-white/50 backdrop-blur-sm rotate-[2deg] shadow-sm" />
+        
+        {/* Header/Input */}
+        <div className="p-8 border-b-4 border-black/20">
+          <p className="font-mono text-xs text-red-600 font-bold tracking-widest uppercase mb-4 border-b-2 border-red-600 pb-1 inline-block">
+            ARCHIVE SEARCH DIRECTORY
+          </p>
+          <div className="flex items-center gap-4 bg-white/50 px-4 py-3 border-2 border-black/80 shadow-[inset_2px_4px_6px_rgba(0,0,0,0.1)]">
+            <Search className="w-6 h-6 text-black/40" />
+            <input
+              ref={inputRef}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="TYPE DESTINATION..."
+              className="flex-1 bg-transparent text-xl font-bold font-mono text-[#111018] placeholder:text-[#111018]/30 outline-none uppercase tracking-wide"
+            />
+            <kbd className="text-xs font-mono font-bold bg-[#111018] text-white px-2 py-1">ESC</kbd>
           </div>
         </div>
 
         {/* Results */}
-        <div className="py-2 max-h-72 overflow-y-auto">
+        <div className="py-4 px-4 max-h-96 overflow-y-auto">
           {filtered.length === 0 ? (
-            <p className="text-center text-sm text-white/30 py-8 font-mono">
-              Nothing found
+            <p className="text-center text-[#111018]/40 py-10 font-mono font-bold uppercase tracking-widest">
+              NO RECORDS FOUND.
             </p>
           ) : (
-            filtered.map((item, i) => (
-              <button
-                key={item.label}
-                ref={(el) => (itemsRef.current[i] = el)}
-                onClick={() => {
-                  onNavigate(item);
-                  onClose();
-                }}
-                className="w-full flex items-center gap-3 px-5 py-3 hover:bg-purple-400/[0.06] transition-colors text-left group"
-              >
-                <span className="text-[10px] font-mono text-purple-300/30 w-5 shrink-0 tabular-nums">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span className="text-sm text-white/65 group-hover:text-white/90 transition-colors font-medium">
-                  {item.label}
-                </span>
-                <ArrowUpRight className="w-3 h-3 text-purple-300/20 ml-auto group-hover:text-purple-300/60 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-              </button>
-            ))
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {filtered.map((item, i) => (
+                <button
+                  key={item.label}
+                  ref={(el) => (itemsRef.current[i] = el)}
+                  onClick={() => {
+                    onNavigate(item);
+                    onClose();
+                  }}
+                  className="group relative flex items-center justify-between p-4 bg-white/40 border-2 border-black/10 hover:border-black/50 transition-colors text-left"
+                  style={{ clipPath: "polygon(2% 0, 100% 2%, 98% 100%, 0 98%)" }}
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="font-mono text-sm text-[#111018]/40 font-bold tabular-nums">
+                      {String(i + 1).padStart(2, "0")}.
+                    </span>
+                    <span className="font-bold text-lg text-[#111018] uppercase tracking-wide group-hover:translate-x-2 transition-transform">
+                      {item.label}
+                    </span>
+                  </div>
+                  <ArrowUpRight className="w-5 h-5 text-black/30 group-hover:text-black group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
+                </button>
+              ))}
+            </div>
           )}
         </div>
-
-        {/* Footer hint */}
-        <div className="px-5 py-3 border-t border-purple-400/[0.06] flex items-center gap-4">
-          <span className="text-[9px] font-mono text-white/20 tracking-wider">
-            ↑↓ navigate
-          </span>
-          <span className="text-[9px] font-mono text-white/20 tracking-wider">
-            ↵ select
-          </span>
-          <span className="text-[9px] font-mono text-white/20 tracking-wider">
-            esc close
-          </span>
-        </div>
       </div>
     </div>
   );
 }
 
-/* ─── FLOATING NAV PILL (DESKTOP) ─────────────────────────────────────────── */
-function FloatingNav({ activeSection, pathname, onSearchOpen }) {
-  const navRef = useRef(null);
-  const pillRef = useRef(null);
-  const itemRefs = useRef([]);
-  const glowRef = useRef(null);
-  const [hoveredIdx, setHoveredIdx] = useState(-1);
-  const [scrolled, setScrolled] = useState(false);
-  const isHome = pathname === "/";
 
-  // Entrance animation
-  useEffect(() => {
-    const nav = navRef.current;
-    if (!nav) return;
-
-    gsap.set(nav, { y: -80, opacity: 0 });
-    gsap.to(nav, {
-      y: 0,
-      opacity: 1,
-      duration: 1,
-      delay: 0.3,
-      ease: "power4.out",
-    });
-
-    // Stagger children
-    const items = itemRefs.current.filter(Boolean);
-    gsap.fromTo(
-      items,
-      { opacity: 0, y: -15 },
-      { opacity: 1, y: 0, duration: 0.6, stagger: 0.05, delay: 0.6, ease: "power3.out" }
-    );
-  }, []);
-
-  // Scroll detection
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Animate scroll state
-  useEffect(() => {
-    if (!navRef.current) return;
-    gsap.to(navRef.current, {
-      backdropFilter: scrolled ? "blur(20px)" : "blur(12px)",
-      borderColor: scrolled ? "rgba(167,139,250,0.12)" : "rgba(167,139,250,0.06)",
-      boxShadow: scrolled
-        ? "0 8px 40px -12px rgba(139,92,246,0.2), 0 0 0 1px rgba(167,139,250,0.06)"
-        : "0 4px 20px -8px rgba(0,0,0,0.3)",
-      duration: 0.4,
-      ease: "power2.out",
-    });
-  }, [scrolled]);
-
-  // Move active pill indicator
-  useEffect(() => {
-    const activeIdx = navItems.findIndex((item) =>
-      item.id ? activeSection === item.id : isHome && !activeSection
-    );
-    const el = itemRefs.current[activeIdx];
-    if (el && pillRef.current) {
-      const rect = el.getBoundingClientRect();
-      const parentRect = el.parentElement.getBoundingClientRect();
-      gsap.to(pillRef.current, {
-        x: rect.left - parentRect.left,
-        width: rect.width,
-        opacity: 1,
-        duration: 0.45,
-        ease: "power3.out",
-      });
-    }
-  }, [activeSection, isHome]);
-
-  // Glow follow mouse
-  const handleNavMouseMove = (e) => {
-    if (!glowRef.current || !navRef.current) return;
-    const rect = navRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    gsap.to(glowRef.current, {
-      x: x - 60,
-      opacity: 0.6,
-      duration: 0.4,
-      ease: "power2.out",
-    });
-  };
-
-  const handleNavMouseLeave = () => {
-    if (!glowRef.current) return;
-    gsap.to(glowRef.current, { opacity: 0, duration: 0.5, ease: "power2.out" });
-  };
-
-  // Only show first 5 items in the pill, rest go into "more" if needed
-  const visibleItems = navItems.slice(0, 6);
-  const moreItems = navItems.slice(6);
-
-  return (
-    <nav
-      ref={navRef}
-      className="hidden lg:flex fixed top-5 left-1/2 -translate-x-1/2 z-[100] items-center gap-0.5 px-2 py-2 rounded-2xl border border-purple-400/[0.06] bg-[#0E0B1A]/80 backdrop-blur-xl"
-      style={{ opacity: 0 }}
-      onMouseMove={handleNavMouseMove}
-      onMouseLeave={handleNavMouseLeave}
-    >
-      {/* Mouse-following glow */}
-      <div
-        ref={glowRef}
-        className="absolute top-0 w-[120px] h-full rounded-2xl pointer-events-none"
-        style={{
-          background: "radial-gradient(ellipse, rgba(167,139,250,0.08) 0%, transparent 70%)",
-          opacity: 0,
-        }}
-      />
-
-      {/* Active pill indicator */}
-      <div
-        ref={pillRef}
-        className="absolute top-[6px] h-[calc(100%-12px)] rounded-xl bg-purple-400/[0.08] border border-purple-400/[0.1] pointer-events-none"
-        style={{ opacity: 0, width: 0 }}
-      />
-
-      {/* Logo */}
-      <MagneticWrap strength={0.3}>
-        <Link
-          href="/"
-          className="relative flex items-center gap-2 px-3 py-1.5 rounded-xl mr-1 group"
-        >
-          <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-            <span className="text-[#0E0B1A] font-black text-[10px]">AK</span>
-          </div>
-          <span className="text-[11px] font-bold text-white/70 group-hover:text-white transition-colors hidden xl:block">
-            Anish
-          </span>
-        </Link>
-      </MagneticWrap>
-
-      {/* Divider */}
-      <div className="w-px h-5 bg-purple-400/[0.1] mx-1" />
-
-      {/* Nav items */}
-      <div className="relative flex items-center gap-0.5">
-        {visibleItems.map((item, i) => {
-          const isActive = item.id
-            ? activeSection === item.id
-            : isHome && !activeSection;
-
-          return (
-            <MagneticWrap key={item.label} strength={0.2}>
-              <Link
-                ref={(el) => (itemRefs.current[i] = el)}
-                href={item.href}
-                onMouseEnter={() => {
-                  setHoveredIdx(i);
-                  const el = itemRefs.current[i];
-                  if (el) {
-                    gsap.to(el, { scale: 1.05, duration: 0.3, ease: "power2.out" });
-                  }
-                }}
-                onMouseLeave={() => {
-                  setHoveredIdx(-1);
-                  const el = itemRefs.current[i];
-                  if (el) {
-                    gsap.to(el, { scale: 1, duration: 0.4, ease: "elastic.out(1, 0.5)" });
-                  }
-                }}
-                className={`relative px-3 py-1.5 rounded-xl text-[11.5px] font-medium transition-colors duration-200 whitespace-nowrap ${
-                  isActive
-                    ? "text-white"
-                    : "text-white/45 hover:text-white/80"
-                }`}
-              >
-                {item.label}
-                {item.id === "animations" && (
-                  <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-purple-400/50" />
-                )}
-              </Link>
-            </MagneticWrap>
-          );
-        })}
-
-        {/* More dropdown */}
-        {moreItems.length > 0 && <MoreMenu items={moreItems} activeSection={activeSection} />}
-      </div>
-
-      {/* Divider */}
-      <div className="w-px h-5 bg-purple-400/[0.1] mx-1" />
-
-      {/* Search */}
-      <MagneticWrap strength={0.3}>
-        <button
-          onClick={onSearchOpen}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-white/35 hover:text-white/65 hover:bg-purple-400/[0.06] transition-all"
-        >
-          <Search className="w-3.5 h-3.5" />
-          <kbd className="text-[9px] font-mono text-purple-300/25 border border-purple-400/[0.1] rounded px-1.5 py-0.5 hidden xl:block">
-            ⌘K
-          </kbd>
-        </button>
-      </MagneticWrap>
-
-      {/* Clock */}
-      <div className="hidden xl:flex items-center px-2">
-        <LiveClock />
-      </div>
-    </nav>
-  );
-}
-
-/* ─── MORE DROPDOWN ───────────────────────────────────────────────────────── */
-function MoreMenu({ items, activeSection }) {
-  const [open, setOpen] = useState(false);
-  const dropRef = useRef(null);
-  const btnRef = useRef(null);
-  const itemRefs = useRef([]);
-
-  useEffect(() => {
-    if (!open || !dropRef.current) return;
-
-    gsap.fromTo(
-      dropRef.current,
-      { opacity: 0, y: -8, scale: 0.95 },
-      { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: "back.out(2)" }
-    );
-
-    const els = itemRefs.current.filter(Boolean);
-    gsap.fromTo(
-      els,
-      { opacity: 0, x: -10 },
-      { opacity: 1, x: 0, duration: 0.3, stagger: 0.04, delay: 0.1, ease: "power2.out" }
-    );
-  }, [open]);
-
-  // Close on outside click
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e) => {
-      if (!dropRef.current?.contains(e.target) && !btnRef.current?.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [open]);
-
-  return (
-    <div className="relative">
-      <button
-        ref={btnRef}
-        onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[11.5px] font-medium text-white/40 hover:text-white/70 transition-colors"
-      >
-        More
-        <svg
-          className={`w-3 h-3 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-
-      {open && (
-        <div
-          ref={dropRef}
-          className="absolute top-full right-0 mt-3 py-2 min-w-[180px] rounded-xl border border-purple-400/[0.1] bg-[#0E0B1A]/95 backdrop-blur-2xl shadow-[0_20px_60px_-15px_rgba(139,92,246,0.2)]"
-          style={{ opacity: 0 }}
-        >
-          {items.map((item, i) => {
-            const isActive = item.id ? activeSection === item.id : false;
-            return (
-              <Link
-                key={item.label}
-                ref={(el) => (itemRefs.current[i] = el)}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className={`flex items-center gap-2.5 px-4 py-2.5 text-[12px] font-medium transition-colors ${
-                  isActive
-                    ? "text-white bg-purple-400/[0.08]"
-                    : "text-white/50 hover:text-white/80 hover:bg-purple-400/[0.04]"
-                }`}
-              >
-                <span className="text-[9px] font-mono text-purple-300/25 w-4 tabular-nums">
-                  {String(i + 7).padStart(2, "0")}
-                </span>
-                {item.label}
-                {isActive && (
-                  <span className="ml-auto w-1 h-1 rounded-full bg-purple-400/60" />
-                )}
-              </Link>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ─── MOBILE NAV ──────────────────────────────────────────────────────────── */
-function MobileNav({
-  open,
-  onClose,
-  activeSection,
-  onSearchOpen,
-}) {
-  const overlayRef = useRef(null);
-  const panelRef = useRef(null);
-  const itemRefs = useRef([]);
-  const headerRef = useRef(null);
-  const footerRef = useRef(null);
-  const lineRefs = useRef([]);
+/* ─── MOBILE NAV (THE UNFOLDING MAP) ──────────────────────────────────────── */
+function MobileNav({ open, onClose, onMenuOpen, activeSection, onSearchOpen }) {
+  const containerRef = useRef(null);
+  const flap1 = useRef(null);
+  const flap2 = useRef(null);
+  const flap3 = useRef(null);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    return () => { document.body.style.overflow = ""; };
   }, [open]);
 
   useEffect(() => {
     if (!open) return;
-
+    
+    gsap.set([flap1.current, flap2.current, flap3.current], { transformPerspective: 1200 });
+    
     const tl = gsap.timeline();
-
-    // Overlay fade
-    tl.fromTo(
-      overlayRef.current,
-      { opacity: 0 },
-      { opacity: 1, duration: 0.14, ease: "power2.out" }
+    // Reveal container
+    tl.to(containerRef.current, { opacity: 1, duration: 0.1, zIndex: 150 });
+    
+    // Unfold top flap down
+    tl.fromTo(flap1.current, 
+      { rotationX: 90, transformOrigin: "top center" },
+      { rotationX: 0, duration: 0.6, ease: "power3.out" }
     );
-
-    // Panel slide up
-    tl.fromTo(
-      panelRef.current,
-      { y: "100%", borderRadius: "32px 32px 0 0" },
-      { y: "0%", borderRadius: "0px", duration: 0.25, ease: "power4.out" },
-      "-=0.06"
+    // Unfold middle flap down from top flap
+    tl.fromTo(flap2.current,
+      { rotationX: 90, transformOrigin: "top center" },
+      { rotationX: 0, duration: 0.6, ease: "power3.out" },
+      "-=0.4"
     );
-
-    // Header fade
-    if (headerRef.current) {
-      tl.fromTo(
-        headerRef.current,
-        { opacity: 0, y: -20 },
-        { opacity: 1, y: 0, duration: 0.16, ease: "power3.out" },
-        "-=0.12"
-      );
-    }
-
-    // Horizontal lines
-    const lines = lineRefs.current.filter(Boolean);
-    tl.fromTo(
-      lines,
-      { scaleX: 0 },
-      { scaleX: 1, duration: 0.18, stagger: 0.025, ease: "power3.out" },
-      "-=0.1"
+    // Unfold bottom flap
+    tl.fromTo(flap3.current,
+      { rotationX: 90, transformOrigin: "top center" },
+      { rotationX: 0, duration: 0.6, ease: "power3.out" },
+      "-=0.4"
     );
-
-    // Nav items — cinematic stagger
-    const items = itemRefs.current.filter(Boolean);
-    tl.fromTo(
-      items,
-      { opacity: 0, x: -40, skewX: -3 },
-      {
-        opacity: 1,
-        x: 0,
-        skewX: 0,
-        duration: 0.22,
-        stagger: 0.025,
-        ease: "power3.out",
-      },
-      "-=0.12"
-    );
-
-    // Footer
-    if (footerRef.current) {
-      tl.fromTo(
-        footerRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.16, ease: "power3.out" },
-        "-=0.1"
-      );
-    }
 
     return () => tl.kill();
   }, [open]);
 
   const handleClose = useCallback(() => {
     const tl = gsap.timeline({ onComplete: onClose });
-
-    const items = itemRefs.current.filter(Boolean);
-    tl.to(items, {
-      opacity: 0,
-      x: 30,
-      duration: 0.12,
-      stagger: 0.015,
-      ease: "power2.in",
-    });
-
-    tl.to(
-      panelRef.current,
-      { y: "100%", duration: 0.2, ease: "power3.in" },
-      "-=0.06"
-    );
-
-    tl.to(overlayRef.current, { opacity: 0, duration: 0.12 }, "-=0.06");
+    tl.to(flap3.current, { rotationX: 90, transformOrigin: "top center", duration: 0.4, ease: "power2.in" })
+      .to(flap2.current, { rotationX: 90, transformOrigin: "top center", duration: 0.4, ease: "power2.in" }, "-=0.2")
+      .to(flap1.current, { rotationX: 90, transformOrigin: "top center", duration: 0.4, ease: "power2.in" }, "-=0.2")
+      .to(containerRef.current, { opacity: 0, duration: 0.1 });
   }, [onClose]);
-
-  if (!open) return null;
 
   return (
     <>
-      {/* Overlay */}
-      <div
-        ref={overlayRef}
-        className="lg:hidden fixed inset-0 z-[150] bg-black/60 backdrop-blur-sm"
-        onClick={handleClose}
-        style={{ opacity: 0 }}
-      />
-
-      {/* Full-screen panel */}
-      <div
-        ref={panelRef}
-        className="lg:hidden fixed inset-0 z-[160] bg-[#0E0B1A] flex flex-col overflow-hidden"
-        style={{ transform: "translateY(100%)" }}
+      {/* Mobile Trigger Button (Glued to top right) */}
+      <button
+        onClick={() => open ? handleClose() : null}
+        className={`lg:hidden fixed top-4 right-4 z-[160] w-14 h-14 flex items-center justify-center bg-[#111018] text-white shadow-lg transition-transform ${!open && 'hidden'}`}
+        style={{ clipPath: "polygon(10% 0, 100% 10%, 90% 100%, 0 90%)" }}
       >
-        {/* Header */}
-        <div
-          ref={headerRef}
-          className="flex items-center justify-between px-6 py-5 border-b border-purple-400/[0.06]"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
-              <span className="text-[#0E0B1A] font-black text-[10px]">AK</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[13px] font-bold text-white/80">Anish Kumar</span>
-              <span className="text-[9px] font-mono text-purple-300/40 tracking-widest">
-                NAVIGATION
-              </span>
-            </div>
-          </div>
-          <button
-            onClick={handleClose}
-            className="w-10 h-10 flex items-center justify-center rounded-xl border border-purple-400/[0.1] text-white/50 hover:text-white/80 hover:border-purple-400/[0.25] transition-all"
-          >
-            <X className="w-4 h-4" />
-          </button>
+        <X className="w-8 h-8" />
+      </button>
+
+      <button
+        onClick={() => !open ? onMenuOpen() : null}
+        className={`lg:hidden fixed top-4 right-4 z-[140] w-14 h-14 flex items-center justify-center bg-purple-600 text-white shadow-lg transition-transform ${open ? 'hidden' : ''}`}
+        style={{ clipPath: "polygon(0 10%, 90% 0, 100% 90%, 10% 100%)" }}
+      >
+        <div className="flex flex-col gap-[6px]">
+          <span className="block w-6 h-1 bg-white" />
+          <span className="block w-4 h-1 bg-white" />
+          <span className="block w-6 h-1 bg-white" />
         </div>
+      </button>
 
-        {/* Search bar in mobile */}
-        <div className="px-6 py-3">
-          <button
-            onClick={() => {
-              handleClose();
-              setTimeout(onSearchOpen, 40);
-            }}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-purple-400/[0.08] bg-purple-400/[0.03] text-white/30 hover:border-purple-400/[0.15] transition-all"
-          >
-            <Search className="w-4 h-4" />
-            <span className="text-[12px] font-mono">Search sections...</span>
-            <kbd className="ml-auto text-[9px] font-mono text-purple-300/25 border border-purple-400/[0.1] rounded px-1.5 py-0.5">
-              ⌘K
-            </kbd>
-          </button>
-        </div>
+      <button
+        onClick={() => {
+          handleClose();
+          setTimeout(onSearchOpen, 500);
+        }}
+        className={`lg:hidden fixed top-4 right-20 z-[140] w-14 h-14 flex items-center justify-center bg-[#E8E6E1] text-[#111018] shadow-lg transition-transform ${open && 'hidden'}`}
+        style={{ clipPath: "polygon(5% 0, 95% 5%, 100% 95%, 0 100%)" }}
+      >
+        <Search className="w-6 h-6" />
+      </button>
 
-        {/* Nav items — full height list */}
-        <nav className="flex-1 overflow-y-auto px-6 py-2">
-          {navItems.map((item, i) => {
-            const isActive = item.id
-              ? activeSection === item.id
-              : false;
 
-            return (
-              <div key={item.label}>
-                <div
-                  ref={(el) => (lineRefs.current[i] = el)}
-                  className="h-px bg-purple-400/[0.06] origin-left"
-                  style={{ transform: "scaleX(0)" }}
-                />
-                <Link
-                  ref={(el) => (itemRefs.current[i] = el)}
-                  href={item.href}
-                  onClick={handleClose}
-                  className={`flex items-center justify-between py-4 group ${
-                    isActive ? "text-white" : "text-white/50"
-                  }`}
-                  style={{ opacity: 0 }}
-                >
-                  <div className="flex items-center gap-4">
-                    <span className="text-[10px] font-mono text-purple-300/25 w-5 tabular-nums">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span
-                      className={`text-[22px] font-bold tracking-tight transition-colors duration-200 ${
-                        isActive
-                          ? "text-white"
-                          : "text-white/55 group-hover:text-white/85"
-                      }`}
-                    >
-                      {item.label}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {isActive && (
-                      <span className="w-2 h-2 rounded-full bg-purple-400/60" />
-                    )}
-                    <ArrowUpRight
-                      className="w-4 h-4 text-purple-300/15 group-hover:text-purple-300/50 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all"
-                    />
-                  </div>
+      {/* Container overlay */}
+      <div 
+        ref={containerRef}
+        className="lg:hidden fixed inset-0 bg-[#0A0812]/90 flex flex-col pt-10 px-4 pointer-events-none opacity-0"
+      >
+        <div className="pointer-events-auto h-full overflow-y-auto pb-20">
+          
+          {/* Flap 1 (Top) */}
+          <div ref={flap1} className="w-full bg-[#E8E6E1] text-[#111018] p-6 shadow-xl mb-[-2px] border-b-2 border-black/20" style={{ clipPath: "polygon(1% 0, 99% 0, 100% 100%, 0 100%)" }}>
+            <p className="font-mono text-xs font-bold text-red-600 tracking-widest uppercase mb-6">Directory</p>
+            <div className="flex flex-col gap-4">
+              {navItems.slice(0, 4).map((item) => (
+                <Link key={item.label} href={item.href} onClick={handleClose} className="text-3xl font-black uppercase tracking-tighter">
+                  {item.label}
                 </Link>
-              </div>
-            );
-          })}
-          <div
-            ref={(el) => (lineRefs.current[navItems.length] = el)}
-            className="h-px bg-purple-400/[0.06] origin-left"
-            style={{ transform: "scaleX(0)" }}
-          />
-        </nav>
-
-        {/* Footer */}
-        <div
-          ref={footerRef}
-          className="px-6 py-5 border-t border-purple-400/[0.06] space-y-4"
-          style={{ opacity: 0 }}
-        >
-          {/* Social + Resume */}
-          <div className="flex items-center gap-2.5">
-            <a
-              href="https://github.com/anishsingh234"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center w-10 h-10 rounded-xl border border-purple-400/[0.1] text-white/40 hover:text-white/70 hover:border-purple-400/[0.25] transition-all"
-            >
-              <Github className="w-4 h-4" />
-            </a>
-            <a
-              href="https://linkedin.com/in/anish-ai"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center w-10 h-10 rounded-xl border border-purple-400/[0.1] text-white/40 hover:text-white/70 hover:border-purple-400/[0.25] transition-all"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-              </svg>
-            </a>
-            <a
-              href="mailto:contact@anish.dev"
-              className="flex items-center justify-center w-10 h-10 rounded-xl border border-purple-400/[0.1] text-white/40 hover:text-white/70 hover:border-purple-400/[0.25] transition-all"
-            >
-              <Mail className="w-4 h-4" />
-            </a>
-            <a
-              href="/resume.pdf"
-              download="Anish_Kumar_Resume.pdf"
-              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-purple-400/[0.12] bg-purple-400/[0.05] text-[11px] font-mono text-purple-300/60 hover:text-white hover:border-purple-400/[0.3] transition-all tracking-wider uppercase"
-            >
-              <Download className="w-3.5 h-3.5" />
-              Resume
-            </a>
-          </div>
-
-          {/* Status */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-              </span>
-              <span className="text-[10px] font-mono text-emerald-400/70 tracking-widest uppercase">
-                Open to work
-              </span>
+              ))}
             </div>
-            <LiveClock />
           </div>
+
+          {/* Flap 2 (Middle) */}
+          <div ref={flap2} className="w-full bg-[#D3D1C8] text-[#111018] p-6 shadow-xl mb-[-2px] border-b-2 border-black/20" style={{ clipPath: "polygon(0 0, 100% 0, 99% 100%, 1% 100%)" }}>
+            <div className="flex flex-col gap-4">
+              {navItems.slice(4).map((item) => (
+                <Link key={item.label} href={item.href} onClick={handleClose} className="text-3xl font-black uppercase tracking-tighter">
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Flap 3 (Bottom) */}
+          <div ref={flap3} className="w-full bg-[#232132] text-white p-6 shadow-xl pb-10" style={{ clipPath: "polygon(0 0, 100% 0, 95% 100%, 5% 100%)" }}>
+             <p className="font-mono text-xs font-bold text-emerald-400 tracking-widest uppercase mb-6">Network</p>
+             <div className="flex flex-col gap-4">
+               <a href="https://github.com/anishsingh234" className="flex items-center gap-4 text-xl font-bold uppercase"><Github/> Github</a>
+               <a href="https://linkedin.com/in/anish-ai" className="flex items-center gap-4 text-xl font-bold uppercase"><ArrowUpRight/> LinkedIn</a>
+               <a href="mailto:contact@anish.dev" className="flex items-center gap-4 text-xl font-bold uppercase"><Mail/> Email</a>
+               <a href="/resume.pdf" className="flex items-center gap-4 text-xl font-bold uppercase text-purple-400 mt-4"><Download/> Resume</a>
+             </div>
+          </div>
+
         </div>
       </div>
     </>
   );
 }
 
-/* ─── MOBILE TOP BAR ──────────────────────────────────────────────────────── */
-function MobileTopBar({ onMenuOpen, onSearchOpen }) {
-  const barRef = useRef(null);
-
-  useEffect(() => {
-    if (!barRef.current) return;
-    gsap.fromTo(
-      barRef.current,
-      { y: -60, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.3, delay: 0, ease: "power4.out" }
-    );
-  }, []);
-
-  return (
-    <header
-      ref={barRef}
-      className="lg:hidden fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-5 h-14 border-b border-purple-400/[0.06] bg-[#0E0B1A]/90 backdrop-blur-xl"
-      style={{ opacity: 0 }}
-    >
-      <Link href="/" className="flex items-center gap-2.5">
-        <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center">
-          <span className="text-[#0E0B1A] font-black text-[10px]">AK</span>
-        </div>
-        <span className="text-[13px] font-bold text-white/75">Anish Kumar</span>
-      </Link>
-
-      <div className="flex items-center gap-2.5">
-        <button
-          onClick={onSearchOpen}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 border border-purple-400/[0.1] rounded-lg text-white/40 hover:text-white/65 transition-all"
-        >
-          <Search className="w-3.5 h-3.5" />
-          <kbd className="text-[9px] font-mono tracking-wider text-purple-300/30">⌘K</kbd>
-        </button>
-        <button
-          onClick={onMenuOpen}
-          className="w-9 h-9 flex items-center justify-center rounded-xl border border-purple-400/[0.1] text-white/55 hover:text-white/70 transition-all"
-        >
-          <div className="flex flex-col gap-[5px]">
-            <span className="block w-[18px] h-[1.5px] bg-current rounded-full" />
-            <span className="block w-[13px] h-[1.5px] bg-current rounded-full" />
-            <span className="block w-[18px] h-[1.5px] bg-current rounded-full" />
-          </div>
-        </button>
-      </div>
-    </header>
-  );
-}
 
 /* ─── MAIN NAVBAR EXPORT ──────────────────────────────────────────────────── */
 export default function Navbar() {
@@ -893,31 +450,26 @@ export default function Navbar() {
       {/* Hide nav chrome on pages with their own navigation (e.g. Animation Studio) */}
       {!isAnimations && (
         <>
-          {/* Desktop — Floating pill navbar */}
-          <FloatingNav
+          {/* Desktop — Dossier Tabs */}
+          <DossierTabs
             activeSection={activeSection}
             pathname={pathname}
             onSearchOpen={() => setPaletteOpen(true)}
           />
 
-          {/* Mobile — Top bar */}
-          <MobileTopBar
-            onMenuOpen={() => setMobileOpen(true)}
-            onSearchOpen={() => setPaletteOpen(true)}
-          />
-
-          {/* Mobile — Full screen nav overlay */}
+          {/* Mobile — Unfolding Map */}
           <MobileNav
             open={mobileOpen}
             onClose={() => setMobileOpen(false)}
+            onMenuOpen={() => setMobileOpen(true)}
             activeSection={activeSection}
             onSearchOpen={() => setPaletteOpen(true)}
           />
         </>
       )}
 
-      {/* Command palette — always available via ⌘K */}
-      <CommandPalette
+      {/* Command palette — The Archive Card */}
+      <ArchiveSearch
         open={paletteOpen}
         onClose={() => setPaletteOpen(false)}
         onNavigate={(item) => router.push(item.href)}

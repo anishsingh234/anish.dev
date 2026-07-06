@@ -1,7 +1,11 @@
 "use client";
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { Mail, ArrowUpRight } from "lucide-react";
-import { EASE } from "./SharedComponents";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const stats = [
   { value: "12+",      label: "Projects",    sub: "Full-Stack & AI"      },
@@ -12,153 +16,203 @@ const stats = [
 ];
 
 export default function AboutSection() {
+  const containerRef = useRef(null);
+
+  useGSAP(() => {
+    // 1. Draw SVG Highlight on Name
+    gsap.fromTo(
+      ".about-name-highlight path",
+      { strokeDasharray: 300, strokeDashoffset: 300 },
+      {
+        strokeDashoffset: 0,
+        duration: 1,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".about-name-highlight",
+          start: "top 80%",
+        },
+      }
+    );
+
+    // 2. Physical Card Throw Animations
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top 60%",
+      }
+    });
+
+    gsap.set(".about-letter, .about-stats-card", { transformPerspective: 1000 });
+
+    // Throw the Letter on desk first (Page Flip)
+    tl.fromTo(".about-letter",
+      { opacity: 0, rotationX: -90, transformOrigin: "top center" },
+      { opacity: 1, rotationX: 0, rotation: -2, duration: 1, ease: "power3.out" }
+    )
+    // Snap the ID card on top (Flutter down)
+    .fromTo(".about-stats-card",
+      { y: -30, opacity: 0, rotationZ: 10, rotationX: 45 },
+      { y: 0, opacity: 1, rotationZ: 3, rotationX: 0, duration: 0.8, ease: "power2.out" },
+      "-=0.5"
+    );
+
+  }, { scope: containerRef });
+
   return (
     <section
       id="about"
-      className="py-14 sm:py-18 lg:py-22 border-t border-white/[0.06] scroll-mt-20"
+      ref={containerRef}
+      className="relative py-20 sm:py-32 bg-[#111018] font-sans overflow-hidden border-t border-white/5"
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+      {/* Paper texture background */}
+      <svg className="pointer-events-none absolute inset-0 z-0 w-full h-full opacity-[0.15] mix-blend-overlay">
+        <filter id="about-noise">
+          <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" />
+          <feColorMatrix type="matrix" values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 0.5 0" />
+        </filter>
+        <rect width="100%" height="100%" filter="url(#about-noise)" />
+      </svg>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 relative z-10">
 
         {/* ── Section header ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: EASE }}
-          className="mb-10 sm:mb-14"
-        >
-          <p className="text-[10px] font-mono text-white/58 tracking-[0.3em] uppercase mb-4">
-            ◆ &nbsp; About
+        <div className="mb-16 sm:mb-24 text-center">
+          <p className="text-[10px] font-mono text-purple-400/80 tracking-[0.3em] uppercase mb-4 font-bold">
+            ◆ &nbsp; Profile
           </p>
           <h2
             className="font-black text-white leading-none tracking-tight"
-            style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", letterSpacing: "-0.03em" }}
+            style={{ fontSize: "clamp(3rem, 7vw, 5.5rem)", letterSpacing: "-0.03em" }}
           >
             Who I
             <br />
             <span
               className="text-transparent"
-              style={{ WebkitTextStroke: "1.5px rgba(167,139,250,0.45)" }}
+              style={{ WebkitTextStroke: "1.5px #E8E6E1" }}
             >
               Actually Am
             </span>
           </h2>
-        </motion.div>
+        </div>
 
-        {/* ── Body grid ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+        {/* ── Overlapping Cards Grid ── */}
+        <div className="relative flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-0 mt-10">
 
-          {/* ── Left: text ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
-            className="flex flex-col gap-8"
+          {/* ── Left: The Parchment Letter ── */}
+          <div 
+            className="about-letter relative w-full lg:w-[60%] bg-[#E8E6E1] text-[#111018] p-8 sm:p-12 lg:p-16 shadow-2xl z-10"
+            style={{ 
+              clipPath: "polygon(1% 1%, 99% 0, 100% 99%, 0 100%)",
+              boxShadow: "0 20px 50px rgba(0,0,0,0.5)" 
+            }}
           >
-            {/* Paragraphs */}
-            <div className="space-y-5 text-[15px] text-white/65 leading-[1.85] font-light max-w-lg">
-              <p>
-                I&apos;m a{" "}
-                <span className="text-white/80 font-semibold">Full-Stack Developer</span>{" "}
-                who builds production-grade web applications with{" "}
-                <span className="text-white/70 font-medium">Next.js, React, Node.js</span>{" "}
-                and modern databases — then makes them intelligent.
-              </p>
-              <p>
-                What sets me apart is the ability to seamlessly layer{" "}
-                <span className="text-purple-300/80 font-medium">AI capabilities</span>{" "}
-                on top of solid engineering — LLMs, RAG pipelines, agents, and
-                multi-agent workflows that actually work in production.
-              </p>
-              <p>
-                I&apos;ve shipped multiple{" "}
-                <span className="text-white/70 font-medium">AI-powered SaaS products</span>{" "}
-                that combine beautiful frontends with scalable backends and
-                cutting-edge AI features. Currently interning at{" "}
-                <span className="text-white/70 font-medium">Exponent Solutions</span>{" "}
-                and finishing my B.Tech in AI & ML — graduating 2026.
-              </p>
-            </div>
+            {/* Top Tape */}
+            <div className="absolute -top-4 left-10 w-24 h-8 bg-white/40 backdrop-blur-md rotate-[-5deg] z-20 shadow-sm" />
 
-            {/* Divider */}
-            <div className="h-px bg-white/[0.07]" />
+            <div className="flex flex-col gap-8">
+              
+              <div className="font-mono text-xs opacity-50 uppercase tracking-widest border-b border-black/10 pb-4">
+                File No: 404-DEV // Confidential Summary
+              </div>
 
-            {/* CTAs */}
-            <div className="flex flex-wrap gap-3">
-              <motion.a
-                href="mailto:anishsingh210204@gmail.com"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="group flex items-center gap-2 px-6 py-3 bg-white text-[#0E0B1A] text-sm font-bold rounded-full transition-all hover:bg-white/90"
-              >
-                <Mail className="w-4 h-4" />
-                Get in Touch
-              </motion.a>
-              <motion.a
-                href="https://linkedin.com/in/anish-ai"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.03, backgroundColor: "rgba(255,255,255,0.05)" }}
-                whileTap={{ scale: 0.97 }}
-                className="group flex items-center gap-2 px-6 py-3 border border-white/[0.1] text-white/75 hover:text-white text-sm font-bold rounded-full transition-all"
-              >
-                LinkedIn
-                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </motion.a>
-            </div>
-          </motion.div>
+              {/* Paragraphs in Serif */}
+              <div className="space-y-6 text-base sm:text-lg text-[#111018]/80 leading-relaxed font-serif">
+                <p>
+                  I&apos;m a <span className="font-bold text-[#111018]">Full-Stack Developer</span> who builds production-grade web applications with <span className="italic">Next.js, React, Node.js</span> and modern databases — then makes them intelligent.
+                </p>
+                <p>
+                  What sets me apart is the ability to seamlessly layer{" "}
+                  <span className="relative inline-block font-bold">
+                    AI capabilities
+                    {/* Hand-drawn SVG circle highlight */}
+                    <svg className="about-name-highlight absolute -inset-2 w-[calc(100%+1rem)] h-[calc(100%+1rem)] pointer-events-none z-10 overflow-visible" viewBox="0 0 100 40" preserveAspectRatio="none">
+                      <path d="M10,20 C10,5 90,5 90,20 C90,35 10,35 10,20 C10,10 90,10 90,20" fill="none" stroke="#A78BFA" strokeWidth="4" strokeLinecap="round" />
+                    </svg>
+                  </span>{" "}
+                  on top of solid engineering — LLMs, RAG pipelines, agents, and multi-agent workflows that actually work in production.
+                </p>
+                <p>
+                  I&apos;ve shipped multiple AI-powered SaaS products that combine beautiful frontends with scalable backends. Currently interning at <span className="font-bold">Exponent Solutions</span> and finishing my B.Tech in AI & ML.
+                </p>
+              </div>
 
-          {/* ── Right: stats ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: EASE, delay: 0.2 }}
-          >
-            {/* Stat rows */}
-            <div className="flex flex-col">
-              {stats.map(({ value, label, sub }, i) => (
-                <motion.div
-                  key={label}
-                  initial={{ opacity: 0, x: 16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, ease: EASE, delay: 0.15 + i * 0.07 }}
-                  className="group flex items-center justify-between py-5 border-b border-white/[0.06] hover:border-white/[0.12] transition-colors duration-300 cursor-default"
+              {/* Divider */}
+              <div className="h-px w-full bg-black/10 my-2" />
+
+              {/* CTAs */}
+              <div className="flex flex-wrap gap-4">
+                <a
+                  href="mailto:anishsingh210204@gmail.com"
+                  className="group flex items-center gap-2 px-6 py-3 bg-[#111018] text-white text-sm font-bold rounded-sm transition-transform hover:-translate-y-1 shadow-lg"
                 >
-                  {/* Left: label + sub */}
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-[13px] font-semibold text-white/75 tracking-tight group-hover:text-white/75 transition-colors">
+                  <Mail className="w-4 h-4" />
+                  Contact Me
+                </a>
+                <a
+                  href="https://linkedin.com/in/anish-ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-2 px-6 py-3 border-2 border-[#111018] text-[#111018] font-bold text-sm rounded-sm transition-colors hover:bg-[#111018]/5"
+                >
+                  LinkedIn
+                  <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </a>
+              </div>
+
+            </div>
+          </div>
+
+          {/* ── Right: The Dark ID Card (Stats) ── */}
+          <div 
+            className="about-stats-card relative w-full lg:w-[45%] lg:-ml-12 bg-[#232132] text-white p-8 sm:p-10 shadow-2xl z-20"
+            style={{ 
+              clipPath: "polygon(0 0, 100% 2%, 98% 100%, 2% 98%)",
+              boxShadow: "-10px 20px 40px rgba(0,0,0,0.6)"
+            }}
+          >
+            {/* Red Stamp */}
+            <div className="absolute -top-4 -right-4 opacity-40 transform rotate-12 pointer-events-none select-none border-4 border-red-500 text-red-500 font-bold uppercase tracking-widest p-2 text-2xl z-30">
+              VERIFIED
+            </div>
+
+            <div className="font-mono text-xs opacity-50 uppercase tracking-widest border-b border-white/10 pb-4 mb-8">
+              Key Metrics
+            </div>
+
+            <div className="flex flex-col gap-6">
+              {stats.map(({ value, label, sub }, i) => (
+                <div
+                  key={label}
+                  className="flex items-center justify-between group cursor-default"
+                >
+                  <div className="flex flex-col gap-1">
+                    <span className="text-sm font-bold text-purple-300">
                       {label}
                     </span>
-                    <span className="text-[10px] font-mono text-white/58 tracking-widest uppercase">
+                    <span className="text-[10px] font-mono text-white/50 tracking-widest uppercase">
                       {sub}
                     </span>
                   </div>
 
-                  {/* Right: value */}
-                  <span
-                    className="font-black text-white/70 leading-none tracking-tight group-hover:text-white transition-colors"
-                    style={{ fontSize: "clamp(1.6rem, 3vw, 2.4rem)", letterSpacing: "-0.03em" }}
-                  >
+                  <span className="font-black text-3xl sm:text-4xl tracking-tighter text-white group-hover:text-purple-400 transition-colors">
                     {value}
                   </span>
-                </motion.div>
+                </div>
               ))}
-
-              {/* Bottom note */}
-              <div className="pt-6 flex items-center gap-3">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-                </span>
-                <span className="text-[11px] font-mono text-white/68 tracking-widest uppercase">
-                  Open to full-time roles & exciting opportunities
-                </span>
-              </div>
             </div>
-          </motion.div>
+
+            {/* Bottom Note */}
+            <div className="mt-10 pt-6 border-t border-white/10 flex items-center gap-3">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+              <span className="text-[10px] font-mono text-white/60 tracking-widest uppercase">
+                Open to Opportunities
+              </span>
+            </div>
+
+          </div>
 
         </div>
       </div>

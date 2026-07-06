@@ -3,32 +3,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import emailjs from "@emailjs/browser";
 import { Toaster, toast } from "sonner";
-import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { 
-    opacity: 1, 
-    y: 0,
-    transition: {
-      duration: 0.5,
-      type: "spring",
-      stiffness: 100,
-    }
-  },
-};
 
 export default function Form() {
   const {
@@ -39,15 +14,7 @@ export default function Form() {
   } = useForm();
 
   const sendEmail = (params) => {
-    const toastId = toast.loading("Sending your message, please wait...");
-
-    toast.info(
-      "Done",
-      {
-        id: toastId,
-      }
-    );
-
+    const toastId = toast.loading("Sending dispatch, please wait...");
     emailjs
       .send(
         process.env.NEXT_PUBLIC_SERVICE_ID,
@@ -55,29 +22,17 @@ export default function Form() {
         params,
         {
           publicKey: process.env.NEXT_PUBLIC_PUBLIC_KEY,
-          limitRate: {
-            throttle: 5000, 
-          },
+          limitRate: { throttle: 5000 },
         }
       )
       .then(
         () => {
           reset();
-          toast.success(
-            "I have received your message, I will get back to you soon!",
-            {
-              id: toastId,
-            }
-          );
+          toast.success("Dispatch received! I will get back to you soon.", { id: toastId });
         },
         (error) => {
           console.error("EmailJS Error:", error);
-          toast.error(
-            `Error sending message: ${error?.text || error?.message || "Unknown error"}`,
-            {
-              id: toastId,
-            }
-          );
+          toast.error(`Error sending dispatch: ${error?.text || error?.message || "Unknown error"}`, { id: toastId });
         }
       );
   };
@@ -89,92 +44,85 @@ export default function Form() {
       reply_to: data.email,
       message: data.message,
     };
-
     sendEmail(templateParams);
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full relative">
       <Toaster richColors={true} />
-      <motion.form 
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="space-y-4 w-full" 
+      <form 
+        className="space-y-6 w-full relative z-10" 
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="w-full flex-col flex gap-1">
-            <motion.input 
-              variants={item}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="w-full flex-col flex gap-2 form-element">
+            <input 
               type="text" 
-              placeholder="Name" 
+              placeholder="YOUR NAME" 
               suppressHydrationWarning
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 transition-all font-medium"
+              className="w-full bg-[#111018]/5 border-2 border-black/20 px-4 py-4 text-sm text-[#111018] placeholder:text-[#111018]/40 focus:outline-none focus:border-purple-600 transition-colors font-mono font-bold uppercase tracking-wider"
+              style={{ clipPath: "polygon(1% 0, 99% 2%, 100% 98%, 0 100%)", boxShadow: "inset 2px 3px 5px rgba(0,0,0,0.1)" }}
               {...register("name", {
                 required: "Name is required!",
-                minLength: {
-                  value: 3,
-                  message: "At least 3 characters.",
-                },
+                minLength: { value: 3, message: "At least 3 characters." },
               })}
             />
             {errors.name && (
-              <span className="inline-block text-red-400 text-xs font-medium pl-1">
-                {errors.name.message}
+              <span className="inline-block text-red-600 font-mono text-xs font-bold pl-1 uppercase">
+                * {errors.name.message}
               </span>
             )}
           </div>
           
-          <div className="w-full flex-col flex gap-1">
-            <motion.input 
-              variants={item}
+          <div className="w-full flex-col flex gap-2 form-element">
+            <input 
               type="email" 
-              placeholder="Email" 
+              placeholder="RETURN ADDRESS (EMAIL)" 
               suppressHydrationWarning
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 transition-all font-medium"
+              className="w-full bg-[#111018]/5 border-2 border-black/20 px-4 py-4 text-sm text-[#111018] placeholder:text-[#111018]/40 focus:outline-none focus:border-purple-600 transition-colors font-mono font-bold uppercase tracking-wider"
+              style={{ clipPath: "polygon(0 2%, 99% 0, 98% 100%, 2% 98%)", boxShadow: "inset 2px 3px 5px rgba(0,0,0,0.1)" }}
               {...register("email", { required: "Email is required!" })}
             />
             {errors.email && (
-              <span className="inline-block text-red-400 text-xs font-medium pl-1">
-                {errors.email.message}
+              <span className="inline-block text-red-600 font-mono text-xs font-bold pl-1 uppercase">
+                * {errors.email.message}
               </span>
             )}
           </div>
         </div>
         
-        <div className="w-full flex-col flex gap-1">
-          <motion.textarea 
-            variants={item}
-            rows={4} 
-            placeholder="Message" 
+        <div className="w-full flex-col flex gap-2 form-element">
+          <textarea 
+            rows={5} 
+            placeholder="WRITE YOUR MESSAGE HERE..." 
             suppressHydrationWarning
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 transition-all resize-none font-medium"
+            className="w-full bg-[#111018]/5 border-2 border-black/20 px-4 py-4 text-sm text-[#111018] placeholder:text-[#111018]/40 focus:outline-none focus:border-purple-600 transition-colors resize-none font-mono font-bold uppercase tracking-wider"
+            style={{ clipPath: "polygon(0 0, 100% 1%, 99% 100%, 1% 99%)", boxShadow: "inset 2px 4px 6px rgba(0,0,0,0.1)" }}
             {...register("message", {
               required: "Message is required!",
-              minLength: {
-                value: 20,
-                message: "Please write a bit more.",
-              },
+              minLength: { value: 20, message: "Please write a bit more." },
             })}
           />
           {errors.message && (
-            <span className="inline-block text-red-400 text-xs font-medium pl-1">
-              {errors.message.message}
+            <span className="inline-block text-red-600 font-mono text-xs font-bold pl-1 uppercase">
+              * {errors.message.message}
             </span>
           )}
         </div>
         
-        <motion.button 
-          variants={item}
+        <button 
           type="submit"
           suppressHydrationWarning
-          className="w-full py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-xl hover:shadow-[0_0_25px_rgba(139,92,246,0.4)] hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2 group"
+          className="form-element group relative w-full py-5 bg-[#111018] text-white font-mono font-black tracking-[0.2em] uppercase transition-transform hover:-translate-y-1 hover:shadow-[8px_12px_20px_rgba(0,0,0,0.4)] flex items-center justify-center gap-3"
+          style={{ clipPath: "polygon(1% 1%, 99% 0, 98% 99%, 0 100%)", boxShadow: "4px 6px 12px rgba(0,0,0,0.3)" }}
         >
-          Send Message
-          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-        </motion.button>
-      </motion.form>
+          Send Dispatch
+          <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+          
+          {/* Subtle tape overlay */}
+          <div className="absolute top-0 right-4 w-12 h-3 bg-white/20 rotate-[-5deg]" />
+        </button>
+      </form>
     </div>
   );
 }

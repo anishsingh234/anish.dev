@@ -1,457 +1,277 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 
-// ─── Paste or import your EASE constant ───────────────────────────────────────
-const EASE = [0.25, 0.1, 0.25, 1];
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-// ─── Devicon CDN icon classes ─────────────────────────────────────────────────
 const GROUPS = [
   {
-    cmd: "skills --category ai",
     label: "AI / ML",
-    comment: "## Primary Specialization ──────────────────────────────",
-    rows: [
-      {
-        hi: true,
-        skills: [
-          { name: "LLMs",              icon: "devicon-jupyter-plain"        },
-          { name: "RAG Pipelines",     icon: "devicon-azure-plain"          },
-          { name: "Prompt Engineering",icon: "devicon-bash-plain"           },
-          { name: "Tool Calling",      icon: "devicon-python-plain"         },
-        ],
-      },
-      {
-        hi: true,
-        skills: [
-          { name: "LangChain",         icon: "devicon-python-plain"         },
-          { name: "CrewAI",            icon: "devicon-python-plain"         },
-          { name: "Multi-Agent",       icon: "devicon-kubernetes-plain"     },
-          { name: "Vercel AI SDK",     icon: "devicon-vercel-plain"         },
-        ],
-      },
-      {
-        hi: false,
-        skills: [
-          { name: "Pinecone",          icon: "devicon-postgresql-plain"     },
-          { name: "Hugging Face",      icon: "devicon-python-plain"         },
-          { name: "Ollama",            icon: "devicon-linux-plain"          },
-        ],
-      },
+    color: "#E8E6E1", // light paper
+    textColor: "text-[#111018]",
+    skills: [
+      { name: "LLMs", icon: "devicon-jupyter-plain", hi: true },
+      { name: "RAG Pipelines", icon: "devicon-azure-plain", hi: true },
+      { name: "Prompt Engineering", icon: "devicon-bash-plain", hi: true },
+      { name: "LangChain", icon: "devicon-python-plain", hi: true },
+      { name: "CrewAI", icon: "devicon-python-plain", hi: true },
+      { name: "Multi-Agent", icon: "devicon-kubernetes-plain", hi: false },
+      { name: "Vercel AI SDK", icon: "devicon-vercel-plain", hi: true },
+      { name: "Pinecone", icon: "devicon-postgresql-plain", hi: false },
+      { name: "Hugging Face", icon: "devicon-python-plain", hi: false },
+      { name: "Ollama", icon: "devicon-linux-plain", hi: false },
     ],
-    accent: "purple",
   },
   {
-    cmd: "skills --category frontend",
     label: "Frontend",
-    comment: "## Frontend ────────────────────────────────────────────",
-    rows: [
-      {
-        hi: true,
-        skills: [
-          { name: "React.js",          icon: "devicon-react-original"       },
-          { name: "Next.js",           icon: "devicon-nextjs-plain"         },
-          { name: "Tailwind CSS",      icon: "devicon-tailwindcss-plain"    },
-          { name: "TypeScript",        icon: "devicon-typescript-plain"     },
-        ],
-      },
-      {
-        hi: false,
-        skills: [
-          { name: "Framer Motion",     icon: "devicon-figma-plain"          },
-          { name: "React Native",      icon: "devicon-react-original"       },
-          { name: "Expo",              icon: "devicon-androidstudio-plain"  },
-          { name: "Three.js",          icon: "devicon-threejs-original"     },
-        ],
-      },
+    color: "#232132", // dark paper
+    textColor: "text-white",
+    skills: [
+      { name: "React.js", icon: "devicon-react-original", hi: true },
+      { name: "Next.js", icon: "devicon-nextjs-plain", hi: true },
+      { name: "Tailwind CSS", icon: "devicon-tailwindcss-plain", hi: true },
+      { name: "TypeScript", icon: "devicon-typescript-plain", hi: true },
+      { name: "Framer Motion", icon: "devicon-figma-plain", hi: false },
+      { name: "React Native", icon: "devicon-react-original", hi: false },
+      { name: "Expo", icon: "devicon-androidstudio-plain", hi: false },
+      { name: "Three.js", icon: "devicon-threejs-original", hi: false },
+      { name: "GSAP", icon: "devicon-javascript-plain", hi: true },
     ],
-    accent: "blue",
   },
   {
-    cmd: "skills --category backend",
     label: "Backend",
-    comment: "## Backend ─────────────────────────────────────────────",
-    rows: [
-      {
-        hi: true,
-        skills: [
-          { name: "Node.js",           icon: "devicon-nodejs-plain"         },
-          { name: "Express.js",        icon: "devicon-express-original"     },
-          { name: "FastAPI",           icon: "devicon-fastapi-plain"        },
-          { name: "REST APIs",         icon: "devicon-swagger-plain"        },
-        ],
-      },
-      {
-        hi: false,
-        skills: [
-          { name: "GraphQL",           icon: "devicon-graphql-plain"        },
-          { name: "WebSockets",        icon: "devicon-nodejs-plain"         },
-        ],
-      },
+    color: "#1E1A2D", // dark paper
+    textColor: "text-white",
+    skills: [
+      { name: "Node.js", icon: "devicon-nodejs-plain", hi: true },
+      { name: "Express.js", icon: "devicon-express-original", hi: true },
+      { name: "FastAPI", icon: "devicon-fastapi-plain", hi: true },
+      { name: "REST APIs", icon: "devicon-swagger-plain", hi: true },
+      { name: "GraphQL", icon: "devicon-graphql-plain", hi: false },
+      { name: "WebSockets", icon: "devicon-nodejs-plain", hi: false },
     ],
-    accent: "green",
   },
   {
-    cmd: "skills --category database",
     label: "Database",
-    comment: "## Database ────────────────────────────────────────────",
-    rows: [
-      {
-        hi: true,
-        skills: [
-          { name: "MongoDB",           icon: "devicon-mongodb-plain"        },
-          { name: "Prisma ORM",        icon: "devicon-prisma-original"      },
-          { name: "MySQL",             icon: "devicon-mysql-plain"          },
-          { name: "Supabase",          icon: "devicon-supabase-plain"       },
-          { name: "Redis",             icon: "devicon-redis-plain"          },
-        ],
-      },
+    color: "#E8E6E1", // light paper
+    textColor: "text-[#111018]",
+    skills: [
+      { name: "MongoDB", icon: "devicon-mongodb-plain", hi: true },
+      { name: "Prisma ORM", icon: "devicon-prisma-original", hi: true },
+      { name: "MySQL", icon: "devicon-mysql-plain", hi: false },
+      { name: "Supabase", icon: "devicon-supabase-plain", hi: true },
+      { name: "Redis", icon: "devicon-redis-plain", hi: false },
     ],
-    accent: "green",
   },
   {
-    cmd: "skills --category languages",
     label: "Languages",
-    comment: "## Languages ───────────────────────────────────────────",
-    rows: [
-      {
-        hi: true,
-        skills: [
-          { name: "JavaScript",        icon: "devicon-javascript-plain"     },
-          { name: "TypeScript",        icon: "devicon-typescript-plain"     },
-          { name: "Python",            icon: "devicon-python-plain"         },
-        ],
-      },
-      {
-        hi: false,
-        skills: [
-          { name: "C++",               icon: "devicon-cplusplus-plain"      },
-          { name: "SQL",               icon: "devicon-azuresqldatabase-plain"},
-          { name: "HTML",              icon: "devicon-html5-plain"          },
-          { name: "CSS",               icon: "devicon-css3-plain"           },
-          { name: "C",                 icon: "devicon-c-plain"              },
-        ],
-      },
+    color: "#232132", // dark paper
+    textColor: "text-white",
+    skills: [
+      { name: "JavaScript", icon: "devicon-javascript-plain", hi: true },
+      { name: "TypeScript", icon: "devicon-typescript-plain", hi: true },
+      { name: "Python", icon: "devicon-python-plain", hi: true },
+      { name: "C++", icon: "devicon-cplusplus-plain", hi: false },
+      { name: "SQL", icon: "devicon-azuresqldatabase-plain", hi: false },
+      { name: "C", icon: "devicon-c-plain", hi: false },
     ],
-    accent: "purple",
   },
   {
-    cmd: "skills --category tools",
     label: "Tools",
-    comment: "## Tools & Platforms ───────────────────────────────────",
-    rows: [
-      {
-        hi: true,
-        skills: [
-          { name: "Git",               icon: "devicon-git-plain"            },
-          { name: "GitHub",            icon: "devicon-github-original"      },
-          { name: "Vercel",            icon: "devicon-vercel-plain"         },
-          { name: "VS Code",           icon: "devicon-vscode-plain"         },
-        ],
-      },
-      {
-        hi: false,
-        skills: [
-          { name: "Postman",           icon: "devicon-postman-plain"        },
-          { name: "Clerk Auth",        icon: "devicon-nodejs-plain"         },
-          { name: "Figma",             icon: "devicon-figma-plain"          },
-        ],
-      },
+    color: "#1E1A2D", // dark paper
+    textColor: "text-white",
+    skills: [
+      { name: "Git", icon: "devicon-git-plain", hi: true },
+      { name: "GitHub", icon: "devicon-github-original", hi: true },
+      { name: "Vercel", icon: "devicon-vercel-plain", hi: true },
+      { name: "VS Code", icon: "devicon-vscode-plain", hi: true },
+      { name: "Postman", icon: "devicon-postman-plain", hi: false },
+      { name: "Clerk Auth", icon: "devicon-nodejs-plain", hi: false },
+      { name: "Figma", icon: "devicon-figma-plain", hi: false },
     ],
-    accent: "blue",
   },
 ];
 
-// ─── Accent colour maps ───────────────────────────────────────────────────────
-const ACCENT = {
-  purple: {
-    hi:     "text-purple-300/90",
-    lo:     "text-purple-200/45",
-    hiIcon: "text-purple-300/85",
-    loIcon: "text-purple-300/40",
-  },
-  blue: {
-    hi:     "text-blue-300/90",
-    lo:     "text-blue-200/45",
-    hiIcon: "text-blue-300/85",
-    loIcon: "text-blue-300/40",
-  },
-  green: {
-    hi:     "text-emerald-300/85",
-    lo:     "text-emerald-200/45",
-    hiIcon: "text-emerald-300/80",
-    loIcon: "text-emerald-300/40",
-  },
-};
+// Helper to generate a random rotation between -5 and 5 degrees
+const getRandomRotation = () => Math.random() * 10 - 5;
 
-// ─── Typewriter hook ──────────────────────────────────────────────────────────
-function useTypewriter(text, speed = 22, delay = 0) {
-  const [displayed, setDisplayed] = useState("");
-  const [done, setDone]           = useState(false);
+// The SVG Marker Circle
+const RedMarker = () => (
+  <svg 
+    className="marker-circle absolute -inset-2 w-[calc(100%+1rem)] h-[calc(100%+1rem)] pointer-events-none z-10" 
+    viewBox="0 0 100 40" 
+    preserveAspectRatio="none"
+  >
+    <path 
+      d="M10,20 C10,5 90,5 90,20 C90,35 10,35 10,20 C10,10 90,10 90,20" 
+      fill="none" 
+      stroke="#EF4444" 
+      strokeWidth="3" 
+      strokeLinecap="round" 
+      className="opacity-80"
+    />
+  </svg>
+);
 
-  useEffect(() => {
-    setDisplayed("");
-    setDone(false);
-    if (!text) return;
-    let i = 0;
-    const t = setTimeout(() => {
-      const iv = setInterval(() => {
-        i++;
-        setDisplayed(text.slice(0, i));
-        if (i >= text.length) { clearInterval(iv); setDone(true); }
-      }, speed);
-      return () => clearInterval(iv);
-    }, delay);
-    return () => clearTimeout(t);
-  }, [text, speed, delay]);
-
-  return { displayed, done };
-}
-
-// ─── Single group block ───────────────────────────────────────────────────────
-function GroupBlock({ group, show }) {
-  const { displayed: typedCmd, done: cmdDone } = useTypewriter(
-    show ? `$ ${group.cmd}` : "",
-    22,
-    80
-  );
-  const colors = ACCENT[group.accent];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: show ? 1 : 0 }}
-      transition={{ duration: 0.25 }}
-      className="mb-1"
-    >
-      {/* Prompt line */}
-      <div className="flex items-center gap-2 mb-1 flex-wrap">
-        <span className="font-mono text-[12px] text-purple-400/70">anish</span>
-        <span className="font-mono text-[12px] text-white/58">@portfolio</span>
-        <span className="font-mono text-[12px] text-white/75">{typedCmd}</span>
-        {!cmdDone && show && (
-          <span className="inline-block w-[7px] h-[13px] bg-purple-400/60 animate-pulse" />
-        )}
-      </div>
-
-      {/* Output */}
-      {cmdDone && (
-        <motion.div
-          initial={{ opacity: 0, y: 3 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.25 }}
-          className="pl-4 border-l border-white/[0.05] ml-1 mb-4"
-        >
-          <p className="font-mono text-[10px] text-white/68 mb-2 leading-relaxed tracking-wide">
-            {group.comment}
-          </p>
-
-          {group.rows.map((row, ri) => (
-            <div key={ri} className="flex flex-wrap gap-x-5 gap-y-2 mb-2">
-              {row.skills.map((skill, si) => (
-                <motion.span
-                  key={skill.name}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: ri * 0.07 + si * 0.035, duration: 0.25 }}
-                  className={`flex items-center gap-1.5 cursor-default select-none transition-all duration-150 hover:brightness-125 ${
-                    row.hi ? colors.hi : colors.lo
-                  }`}
-                >
-                  {/* Devicon */}
-                  <i
-                    className={`${skill.icon} text-[15px] leading-none ${
-                      row.hi ? colors.hiIcon : colors.loIcon
-                    }`}
-                  />
-                  <span className="font-mono text-[12px] sm:text-[13px] font-medium">
-                    {skill.name}
-                  </span>
-                </motion.span>
-              ))}
-            </div>
-          ))}
-        </motion.div>
-      )}
-    </motion.div>
-  );
-}
-
-// ─── Main section ─────────────────────────────────────────────────────────────
 export default function Skills() {
-  const [visibleCount, setVisibleCount] = useState(0);
-  const [started,      setStarted]      = useState(false);
-  const sectionRef = useRef(null);
+  const containerRef = useRef(null);
+  const scrollWrapRef = useRef(null);
 
-  // Trigger on scroll-into-view
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting && !started) setStarted(true); },
-      { threshold: 0.15 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, [started]);
+  useGSAP(() => {
+    // 1. Horizontal Scroll Pinning
+    const folders = gsap.utils.toArray(".dossier-folder");
+    
+    gsap.to(folders, {
+      xPercent: -100 * (folders.length - 1),
+      ease: "none",
+      scrollTrigger: {
+        trigger: scrollWrapRef.current,
+        pin: true,
+        scrub: 1,
+        snap: 1 / (folders.length - 1),
+        start: "top top",
+        end: () => "+=" + (scrollWrapRef.current.offsetWidth * 2), // Extend scroll distance
+      }
+    });
 
-  // Stagger groups
-  useEffect(() => {
-    if (!started || visibleCount >= GROUPS.length) return;
-    const timer = setTimeout(
-      () => setVisibleCount((v) => v + 1),
-      visibleCount === 0 ? 500 : 950
-    );
-    return () => clearTimeout(timer);
-  }, [started, visibleCount]);
+    // 2. Draw Red Markers when the folder comes into view
+    folders.forEach((folder, i) => {
+      // Find all markers in this specific folder
+      const markers = folder.querySelectorAll(".marker-circle path");
+      
+      // Calculate when this specific folder is active during the scrub
+      const startProgress = i / folders.length;
+      const endProgress = (i + 1) / folders.length;
+      
+      gsap.fromTo(markers, 
+        { strokeDasharray: 300, strokeDashoffset: 300 },
+        {
+          strokeDashoffset: 0,
+          duration: 1,
+          stagger: 0.2,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: scrollWrapRef.current,
+            start: () => `top+=${startProgress * 200}% top`,
+            end: () => `top+=${endProgress * 200}% top`,
+            toggleActions: "play none none reverse"
+          }
+        }
+      );
+    });
+
+  }, { scope: containerRef });
 
   return (
     <>
-      {/* ── Devicon CDN ── */}
+      {/* Devicon CDN */}
       {/* eslint-disable-next-line @next/next/no-head-element */}
-      <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
-      />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
 
-      <section
-        id="skills"
-        ref={sectionRef}
-        className="py-14 sm:py-18 lg:py-22 scroll-mt-20 border-t border-white/[0.06]"
-      >
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+      <section ref={containerRef} id="skills" className="relative bg-[#111018] font-sans overflow-hidden border-t border-white/5">
+        
+        {/* Paper texture overlay */}
+        <svg className="pointer-events-none absolute inset-0 z-0 w-full h-full opacity-[0.15] mix-blend-overlay">
+          <filter id="skills-noise">
+            <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" />
+            <feColorMatrix type="matrix" values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 0.5 0" />
+          </filter>
+          <rect width="100%" height="100%" filter="url(#skills-noise)" />
+        </svg>
 
-          {/* ── Header ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: EASE }}
-            className="flex items-end justify-between mb-10 sm:mb-12 flex-wrap gap-5"
-          >
-            <div>
-              <p className="text-[10px] font-mono text-white/58 tracking-[0.3em] uppercase mb-4">
-                ◆ &nbsp; Tech Stack
-              </p>
-              <h2
-                className="font-black text-white leading-none tracking-tight"
-                style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", letterSpacing: "-0.03em" }}
-              >
-                Tools I
-                <br />
-                <span
-                  className="text-transparent"
-                  style={{ WebkitTextStroke: "1.5px rgba(167,139,250,0.45)" }}
-                >
-                  Architect With
-                </span>
-              </h2>
-            </div>
+        {/* ── Intro Header ── */}
+        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-20 pb-10 relative z-10">
+          <p className="text-[10px] font-mono text-purple-400/80 tracking-[0.3em] uppercase mb-4 font-bold">
+            ◆ &nbsp; Tech Arsenal
+          </p>
+          <h2 className="font-black text-white leading-none tracking-tight mb-8" style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", letterSpacing: "-0.03em" }}>
+            The <span className="text-transparent" style={{ WebkitTextStroke: "1.5px #A78BFA" }}>Dossier</span>
+          </h2>
+          <p className="text-white/60 font-serif max-w-xl text-lg">
+            A comprehensive collection of the tools, languages, and frameworks I use to build intelligent systems and scalable web applications. Scroll to browse the files.
+          </p>
+        </div>
 
-            <div className="flex items-center gap-8">
-              {[
-                { val: "40+",  label: "Technologies" },
-                { val: "350+", label: "DSA Solved"   },
-                { val: "5+",   label: "AI Systems"   },
-              ].map(({ val, label }) => (
-                <div key={label} className="flex flex-col items-end">
-                  <span className="text-2xl font-black text-white/75 leading-none tracking-tight">
-                    {val}
-                  </span>
-                  <span className="text-[9px] font-mono text-white/58 tracking-widest uppercase mt-1">
-                    {label}
-                  </span>
+        {/* ── Scrollytelling Pinned Folders ── */}
+        <div ref={scrollWrapRef} className="h-screen flex flex-nowrap overflow-hidden relative z-10 items-center bg-[#111018]/50">
+          
+          {GROUPS.map((group, i) => {
+            const isDark = group.textColor === "text-[#111018]";
+            return (
+              <div key={group.label} className="dossier-folder w-screen h-[85vh] flex-shrink-0 flex items-center justify-center p-4 md:p-12 relative">
+                
+                {/* Background big index number */}
+                <div className="absolute top-4 left-8 md:top-12 md:left-20 text-[15vw] font-black text-white/[0.02] pointer-events-none select-none z-0">
+                  0{i + 1}
                 </div>
-              ))}
-            </div>
-          </motion.div>
 
-          {/* ── Terminal ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.15, ease: EASE }}
-            className="rounded-2xl border border-white/[0.08] overflow-hidden"
-            style={{ background: "#0E0B1A", boxShadow: "0 40px 80px rgba(0,0,0,0.55)" }}
-          >
-            {/* Title bar */}
-            <div
-              className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.06]"
-              style={{ background: "rgba(255,255,255,0.02)" }}
-            >
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-500/55"    />
-                <div className="w-3 h-3 rounded-full bg-yellow-500/55" />
-                <div className="w-3 h-3 rounded-full bg-green-500/55"  />
-              </div>
-              <span className="font-mono text-[11px] text-white/52 tracking-widest">
-                anish@portfolio — skills
-              </span>
-              <div className="w-16" />
-            </div>
-
-            {/* Body */}
-            <div className="px-6 py-7 sm:px-8">
-
-              {/* Welcome banner */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: started ? 1 : 0 }}
-                transition={{ duration: 0.4 }}
-                className="mb-5"
-              >
-                <p className="font-mono text-[11px] text-white/52 leading-relaxed">
-                  Welcome. Type{" "}
-                  <span className="text-purple-400/50">skills --help</span>{" "}
-                  for all commands.
-                </p>
-                <p className="font-mono text-[10px] text-white/[0.12] mt-1 tracking-wider">
-                  ────────────────────────────────────────────────────
-                </p>
-              </motion.div>
-
-              {/* List-all command */}
-              {started && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="mb-5"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-[12px] text-purple-400/70">anish</span>
-                    <span className="font-mono text-[12px] text-white/58">@portfolio</span>
-                    <span className="font-mono text-[12px] text-white/75">$ skills --list --all</span>
+                {/* The Manila Folder */}
+                <div className="relative w-full max-w-5xl h-full mt-10 md:mt-0 z-10 flex flex-col">
+                  
+                  {/* Folder Tab */}
+                  <div 
+                    className="w-48 h-12 md:w-64 md:h-16 flex items-center justify-center"
+                    style={{ 
+                      backgroundColor: group.color,
+                      clipPath: "polygon(0 100%, 10% 0, 90% 0, 100% 100%)",
+                      boxShadow: "0 -5px 10px rgba(0,0,0,0.2)"
+                    }}
+                  >
+                    <span className={`font-mono text-xs md:text-sm font-bold uppercase tracking-widest ${group.textColor}`}>
+                      {group.label}
+                    </span>
                   </div>
-                  <p className="font-mono text-[10px] text-white/52 pl-4 border-l border-white/[0.05] ml-1 mt-1 mb-4">
-                    Listing all skill categories...
-                  </p>
-                </motion.div>
-              )}
+                  
+                  {/* Folder Body */}
+                  <div 
+                    className={`flex-1 w-full rounded-b-xl rounded-tr-xl p-8 md:p-12 lg:p-16 relative`}
+                    style={{ 
+                      backgroundColor: group.color,
+                      boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
+                      clipPath: "polygon(0 0, 100% 0, 99% 100%, 1% 99%)"
+                    }}
+                  >
+                    
+                    {/* Top Secret Stamp */}
+                    <div className="absolute top-8 right-8 md:top-12 md:right-12 opacity-30 transform rotate-12 pointer-events-none select-none border-4 border-red-500 text-red-500 font-bold uppercase tracking-widest p-2 text-2xl md:text-4xl">
+                      CONFIDENTIAL
+                    </div>
 
-              {/* Groups */}
-              {GROUPS.map((group, i) => (
-                <GroupBlock
-                  key={group.cmd}
-                  group={group}
-                  show={started && visibleCount > i}
-                />
-              ))}
+                    <h3 className={`text-4xl md:text-6xl font-black tracking-tighter mb-12 ${group.textColor}`}>
+                      {group.label}
+                    </h3>
 
-              {/* Final blinking cursor */}
-              {visibleCount >= GROUPS.length && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                  className="flex items-center gap-2 mt-2 pt-3 border-t border-white/[0.05]"
-                >
-                  <span className="font-mono text-[12px] text-purple-400/70">anish</span>
-                  <span className="font-mono text-[12px] text-white/58">@portfolio</span>
-                  <span className="inline-block w-[7px] h-[13px] bg-purple-400/55 animate-pulse ml-0.5" />
-                </motion.div>
-              )}
+                    {/* Stickers Container */}
+                    <div className="flex flex-wrap gap-4 md:gap-6 justify-start">
+                      {group.skills.map((skill) => (
+                        <div
+                          key={skill.name}
+                          className={`relative flex items-center gap-3 px-4 py-3 md:px-6 md:py-4 shadow-lg transition-transform hover:scale-110 hover:z-50 cursor-default ${
+                            isDark ? "bg-[#111018] text-white border-2 border-white/10" : "bg-white text-[#111018] border-2 border-black/10"
+                          }`}
+                          style={{ 
+                            transform: `rotate(${getRandomRotation()}deg)`,
+                            clipPath: "polygon(2% 2%, 98% 0, 100% 98%, 0 100%)"
+                          }}
+                        >
+                          <i className={`${skill.icon} text-2xl md:text-3xl`} />
+                          <span className="font-mono text-sm md:text-base font-bold select-none">
+                            {skill.name}
+                          </span>
+                          
+                          {/* Red Marker for highlighted skills */}
+                          {skill.hi && <RedMarker />}
+                        </div>
+                      ))}
+                    </div>
 
-            </div>
-          </motion.div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
 
         </div>
       </section>

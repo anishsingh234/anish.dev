@@ -1,7 +1,11 @@
 "use client";
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { ArrowUpRight } from "lucide-react";
-import { EASE } from "./SharedComponents";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const proof = [
   {
@@ -37,150 +41,187 @@ const proof = [
 ];
 
 export default function WhyHireMe() {
+  const containerRef = useRef(null);
+
+  useGSAP(() => {
+    // 1. Draw SVG Highlight on Title
+    gsap.fromTo(
+      ".hire-title-highlight path",
+      { strokeDasharray: 300, strokeDashoffset: 300 },
+      {
+        strokeDashoffset: 0,
+        duration: 1.2,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".hire-title-highlight",
+          start: "top 85%",
+        },
+      }
+    );
+
+    // 2. Animate the parchment note landing
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top 70%",
+      }
+    });
+
+    gsap.set(".hire-pitch-note, .hire-evidence-tag", { transformPerspective: 1000 });
+
+    tl.fromTo(".hire-pitch-note",
+      { opacity: 0, rotationX: -90, transformOrigin: "top center" },
+      { opacity: 1, rotationX: 0, rotation: -2, duration: 1, ease: "power3.out" }
+    );
+
+    // 3. Stagger in the evidence tags (flutter)
+    const tags = gsap.utils.toArray(".hire-evidence-tag");
+    gsap.fromTo(tags,
+      { y: -30, opacity: 0, rotationZ: () => Math.random() * 20 - 10, rotationX: 45 },
+      {
+        y: 0, 
+        opacity: 1, 
+        rotationZ: () => Math.random() * 6 - 3, 
+        rotationX: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top 50%",
+        }
+      }
+    );
+
+  }, { scope: containerRef });
+
   return (
     <section
       id="why-hire-me"
-      className="py-14 sm:py-18 lg:py-22 border-t border-white/[0.06] scroll-mt-20"
+      ref={containerRef}
+      className="relative py-20 sm:py-32 bg-[#05050A] font-sans overflow-hidden border-t border-white/5"
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+      {/* Subtle Paper texture background */}
+      <svg className="pointer-events-none absolute inset-0 z-0 w-full h-full opacity-10 mix-blend-overlay">
+        <filter id="hire-noise">
+          <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3" stitchTiles="stitch" />
+          <feColorMatrix type="matrix" values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 0.5 0" />
+        </filter>
+        <rect width="100%" height="100%" filter="url(#hire-noise)" />
+      </svg>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 relative z-10">
 
         {/* ── Section header ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: EASE }}
-          className="mb-10 sm:mb-14"
-        >
-          <p className="text-[10px] font-mono text-white/58 tracking-[0.3em] uppercase mb-4">
-            ◆ &nbsp; Why Hire Me
+        <div className="mb-16 sm:mb-20">
+          <p className="text-[10px] font-mono text-purple-400/80 tracking-[0.3em] uppercase mb-4 font-bold">
+            ◆ &nbsp; The Verdict
           </p>
           <h2
-            className="font-black text-white leading-none tracking-tight"
-            style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", letterSpacing: "-0.03em" }}
+            className="font-black text-white leading-none tracking-tight relative inline-block"
+            style={{ fontSize: "clamp(3rem, 7vw, 5.5rem)", letterSpacing: "-0.03em" }}
           >
             The case
             <br />
-            <span
-              className="text-transparent"
-              style={{ WebkitTextStroke: "1.5px rgba(167,139,250,0.45)" }}
-            >
+            <span className="text-transparent relative z-10" style={{ WebkitTextStroke: "1.5px #E8E6E1" }}>
               for hiring me.
             </span>
+            
+            {/* SVG Highlight behind text */}
+            <svg className="hire-title-highlight absolute bottom-0 left-0 w-full h-1/2 -z-10 overflow-visible opacity-70" viewBox="0 0 200 40" preserveAspectRatio="none">
+              <path d="M5,30 C50,20 150,20 195,30" stroke="#A78BFA" strokeWidth="15" strokeLinecap="round" fill="none" />
+            </svg>
           </h2>
-        </motion.div>
+        </div>
 
         {/* ── Two column body ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-12 lg:gap-20 items-start">
 
-          {/* ── Left: pitch copy ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
-            className="flex flex-col gap-7"
+          {/* ── Left: Pitch Note (Parchment) ── */}
+          <div 
+            className="hire-pitch-note relative bg-[#E8E6E1] text-[#111018] p-8 sm:p-12 shadow-2xl z-10"
+            style={{ 
+              clipPath: "polygon(2% 1%, 100% 0, 99% 99%, 0 100%)",
+              boxShadow: "0 20px 50px rgba(0,0,0,0.5)" 
+            }}
           >
-            <div className="space-y-5 text-[15px] text-white/65 leading-[1.85] font-light max-w-lg">
+            {/* Top Tape */}
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-8 bg-white/40 backdrop-blur-md rotate-[3deg] z-20 shadow-sm" />
+            
+            {/* Top Secret Stamp */}
+            <div className="absolute bottom-10 right-6 opacity-20 transform -rotate-12 pointer-events-none select-none border-4 border-red-500 text-red-500 font-bold uppercase tracking-widest p-2 text-2xl z-0">
+              URGENT
+            </div>
+
+            <div className="font-mono text-xs opacity-50 uppercase tracking-widest border-b border-black/10 pb-4 mb-8">
+              Subject: Candidate Pitch
+            </div>
+
+            <div className="space-y-6 text-base sm:text-lg text-[#111018]/85 leading-relaxed font-serif relative z-10">
               <p>
-                I&apos;m not just another dev who can build a CRUD app. I combine{" "}
-                <span className="text-white/75 font-semibold">solid full-stack engineering</span>{" "}
-                with real{" "}
-                <span className="text-purple-300/80 font-medium">AI system experience</span>{" "}
-                — shipped to production, used by real users.
+                I&apos;m not just another dev who can build a CRUD app. I combine <span className="font-bold text-[#111018]">solid full-stack engineering</span> with real <span className="italic font-bold">AI system experience</span> — shipped to production, used by real users.
               </p>
               <p>
-                I&apos;ve built RAG pipelines, multi-agent systems, and AI-powered SaaS{" "}
-                <span className="text-white/65 font-medium">from scratch</span>. I think in
-                systems, ship fast, and care deeply about code quality and user experience.
+                I&apos;ve built RAG pipelines, multi-agent systems, and AI-powered SaaS <span className="font-bold">from scratch</span>. I think in systems, ship fast, and care deeply about code quality and user experience.
               </p>
               <p>
-                Whether it&apos;s architecting a scalable backend, designing a beautiful UI,
-                or integrating an LLM into a product — I can{" "}
-                <span className="text-white/65 font-medium">own the entire stack</span>{" "}
-                and deliver.
+                Whether it&apos;s architecting a scalable backend, designing a beautiful UI, or integrating an LLM into a product — I can <span className="font-bold bg-purple-500/20 px-1">own the entire stack</span> and deliver.
               </p>
             </div>
 
             {/* Divider */}
-            <div className="h-px bg-white/[0.07]" />
-
-            {/* Key differentiators — inline tags */}
-            <div className="flex flex-col gap-3">
-              {[
-                { label: "Full-Stack",        detail: "Next.js · Node.js · MongoDB · TypeScript" },
-                { label: "AI / ML",           detail: "LLMs · RAG · CrewAI · LangChain · Agents" },
-                { label: "Startup Mindset",   detail: "Ships fast · Self-driven · Thinks in systems" },
-              ].map(({ label, detail }) => (
-                <div key={label} className="flex items-center gap-4">
-                  <span className="text-[10px] font-mono text-white/68 tracking-widest uppercase w-28 shrink-0">
-                    {label}
-                  </span>
-                  <span className="text-[11px] font-mono text-white/58 tracking-wide">
-                    {detail}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <div className="h-px w-full bg-black/10 my-8" />
 
             {/* CTA */}
-            <motion.a
+            <a
               href="#contact"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="group inline-flex items-center gap-2 px-6 py-3 bg-white text-[#0E0B1A] text-sm font-bold rounded-full w-fit transition-all hover:bg-white/90"
+              className="group inline-flex items-center gap-2 px-8 py-4 bg-[#111018] text-white text-sm font-bold rounded-sm transition-transform hover:-translate-y-1 shadow-lg relative z-10"
             >
               Let&apos;s work together
-              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </motion.a>
-          </motion.div>
+              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            </a>
+          </div>
 
-          {/* ── Right: proof list ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: EASE, delay: 0.2 }}
-          >
-            <div className="flex flex-col">
-              {proof.map(({ emoji, title, sub, stat }, i) => (
-                <motion.div
-                  key={title}
-                  initial={{ opacity: 0, x: 16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, ease: EASE, delay: 0.2 + i * 0.07 }}
-                  className="group flex items-center gap-5 py-5 border-b border-white/[0.06] hover:border-white/[0.13] cursor-default transition-all duration-300"
-                >
-                  {/* Emoji icon */}
-                  <div className="w-10 h-10 rounded-xl border border-white/[0.07] bg-white/[0.02] flex items-center justify-center text-[16px] shrink-0 group-hover:border-white/[0.15] group-hover:bg-white/[0.04] transition-all">
-                    {emoji}
-                  </div>
+          {/* ── Right: Evidence Tags (Stacked) ── */}
+          <div className="flex flex-col gap-6 relative z-20">
+            {proof.map(({ emoji, title, sub, stat }, i) => (
+              <div
+                key={title}
+                className="hire-evidence-tag group flex flex-wrap sm:flex-nowrap items-center gap-6 p-5 sm:p-6 bg-[#232132] shadow-xl border border-white/5 transition-transform hover:scale-[1.02] hover:z-30 cursor-default"
+                style={{ 
+                  clipPath: i % 2 === 0 
+                    ? "polygon(1% 0, 100% 2%, 99% 100%, 0 98%)" 
+                    : "polygon(0 2%, 99% 0, 100% 98%, 2% 100%)",
+                }}
+              >
+                {/* Tape accent */}
+                <div className="absolute top-1/2 -left-3 -translate-y-1/2 w-6 h-12 bg-white/10 backdrop-blur-sm rotate-[15deg] shadow-sm z-0" />
 
-                  {/* Text */}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-semibold text-white/78 group-hover:text-white/85 transition-colors tracking-tight">
-                      {title}
-                    </p>
-                    <p className="text-[10px] font-mono text-white/78 mt-0.5 tracking-wide truncate">
-                      {sub}
-                    </p>
-                  </div>
+                {/* Emoji Box */}
+                <div className="w-14 h-14 shrink-0 bg-[#111018] flex items-center justify-center text-2xl shadow-inner border border-white/5 relative z-10"
+                     style={{ clipPath: "polygon(5% 0, 100% 5%, 95% 100%, 0 95%)" }}>
+                  {emoji}
+                </div>
 
-                  {/* Stat */}
-                  <span
-                    className="font-black text-white/52 group-hover:text-white/75 transition-colors leading-none tracking-tight shrink-0"
-                    style={{ fontSize: "clamp(1.4rem, 2.5vw, 2rem)", letterSpacing: "-0.03em" }}
-                  >
+                {/* Text */}
+                <div className="flex-1 min-w-[200px] relative z-10">
+                  <p className="text-base sm:text-lg font-bold text-white tracking-tight mb-1 group-hover:text-purple-400 transition-colors">
+                    {title}
+                  </p>
+                  <p className="text-[10px] sm:text-xs font-mono text-white/50 tracking-widest uppercase">
+                    {sub}
+                  </p>
+                </div>
+
+                {/* Stat */}
+                <div className="shrink-0 relative z-10 mt-2 sm:mt-0 w-full sm:w-auto text-right sm:text-left border-t sm:border-t-0 border-white/10 pt-3 sm:pt-0">
+                  <span className="font-black text-3xl sm:text-4xl tracking-tighter text-white/30 group-hover:text-white transition-colors">
                     {stat}
                   </span>
-                </motion.div>
-              ))}
-
-              {/* Bottom border */}
-              <div className="h-px bg-white/[0.06]" />
-            </div>
-          </motion.div>
+                </div>
+              </div>
+            ))}
+          </div>
 
         </div>
       </div>

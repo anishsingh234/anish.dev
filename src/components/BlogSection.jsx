@@ -1,181 +1,218 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Clock } from "lucide-react";
 import { blogs } from "@/data/blogs";
 import PDFModal from "@/components/PDFModal";
-import { EASE } from "./home/SharedComponents";
 
-// ── Blog row ──────────────────────────────────────────────────
-const BlogRow = ({ blog, index, onOpen }) => {
-  const isEven = index % 2 === 0;
+gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+// Helper to generate a random rotation between -2 and 2 degrees
+const getRandomRotation = () => Math.random() * 4 - 2;
+
+// ── Journal Card ──────────────────────────────────────────────────
+const JournalCard = ({ blog, index, onOpen }) => {
+  // Alternate card colors
+  const colors = ["bg-[#E8E6E1] text-[#111018]", "bg-[#232132] text-white", "bg-[#1E1A2D] text-white"];
+  const theme = colors[index % colors.length];
+  const isDark = theme.includes("text-[#111018]");
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 32 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.7, ease: EASE, delay: index * 0.06 }}
+    <article
       onClick={() => onOpen(blog)}
-      className="group cursor-pointer"
+      className={`journal-card cursor-pointer group relative flex flex-col p-6 sm:p-8 transition-transform hover:scale-[1.02] hover:z-20 ${theme}`}
+      style={{
+        boxShadow: "0 15px 35px rgba(0,0,0,0.4)",
+        clipPath: index % 2 === 0 
+          ? "polygon(1% 0, 99% 2%, 100% 99%, 0 100%)" 
+          : "polygon(0 2%, 100% 0, 98% 100%, 2% 99%)",
+        transform: `rotate(${getRandomRotation()}deg)`
+      }}
     >
-      {/* Top border */}
-      <div className="h-px bg-white/[0.07] group-hover:bg-white/[0.14] transition-colors duration-500" />
+      {/* ── Image ── */}
+      <div className="relative w-full aspect-[16/10] mb-6 border border-black/10 shadow-inner overflow-hidden transform group-hover:-rotate-1 transition-transform duration-500">
+        <Image
+          src={blog.cover}
+          alt={blog.title}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+          sizes="(max-width: 768px) 100vw, 50vw"
+          loading="eager"
+        />
+        {/* Tape accent */}
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 bg-white/40 backdrop-blur-sm rotate-[4deg] z-10" style={{ boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }} />
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 py-10 lg:py-12">
-
-        {/* ── Text col ── */}
-        <div className={`flex flex-col justify-between gap-6 ${isEven ? "order-1 pr-0 lg:pr-16" : "order-1 lg:order-2 lg:pl-16"}`}>
-
-          {/* Index + meta */}
-          <div className="flex items-center justify-between">
-            <span
-              className="font-black text-white/[0.05] leading-none select-none"
-              style={{ fontSize: "clamp(3rem, 6vw, 5.5rem)", letterSpacing: "-0.04em" }}
-            >
-              _{String(index + 1).padStart(2, "0")}.
-            </span>
-            <div className="flex items-center gap-4">
-              <span className="flex items-center gap-1.5 font-mono text-[10px] text-white/58 tracking-widest">
-                <Clock className="w-3 h-3" />
-                {blog.readTime}
-              </span>
-              <span className="font-mono text-[10px] text-white/48 tracking-widest">
-                {blog.date}
-              </span>
-            </div>
-          </div>
-
-          {/* Tags */}
-          <div className="flex flex-wrap gap-2">
-            {blog.tags.map((tag) => (
-              <span
-                key={tag}
-                className="text-[9px] font-mono text-white/68 tracking-widest uppercase border border-white/[0.07] rounded-full px-3 py-1 group-hover:border-white/15 group-hover:text-white/65 transition-colors duration-300"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          {/* Title */}
-          <h3
-            className="font-black text-white leading-[0.95] tracking-tight group-hover:text-white/90 transition-colors"
-            style={{ fontSize: "clamp(1.6rem, 3vw, 2.6rem)", letterSpacing: "-0.03em" }}
-          >
-            {blog.title}
-          </h3>
-
-          {/* Excerpt */}
-          <p className="text-sm text-white/58 leading-relaxed max-w-sm font-light line-clamp-3">
-            {blog.excerpt}
-          </p>
-
-          {/* Read CTA */}
-          <div className="flex items-center gap-2 text-white/68 group-hover:text-white/78 transition-colors duration-300">
-            <span className="text-[11px] font-mono tracking-widest uppercase">
-              Read writeup
-            </span>
-            <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
-          </div>
-        </div>
-
-        {/* ── Image col ── */}
-        <div className={`${isEven ? "order-2" : "order-2 lg:order-1"}`}>
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden border border-white/[0.07] group-hover:border-white/[0.13] transition-colors duration-500 bg-[#120F20]"
-          >
-            <Image
-              src={blog.cover}
-              alt={blog.title}
-              fill
-              className="object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
-              sizes="(max-width: 768px) 100vw, 50vw"
-              loading="eager"
-            />
-            {/* Vignette */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(8,10,16,0.55)_100%)] pointer-events-none" />
-            {/* Dark tint */}
-            <div className="absolute inset-0 bg-[#0E0B1A]/20 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
-          </motion.div>
+      {/* ── Meta ── */}
+      <div className="flex items-center justify-between mb-4">
+        <span className="font-black text-4xl opacity-10 font-mono tracking-tighter select-none">
+          _{String(index + 1).padStart(2, "0")}
+        </span>
+        <div className="flex items-center gap-4">
+          <span className={`flex items-center gap-1.5 font-mono text-[10px] tracking-widest ${isDark ? "text-[#111018]/60" : "text-white/60"}`}>
+            <Clock className="w-3 h-3" />
+            {blog.readTime}
+          </span>
+          <span className={`font-mono text-[10px] tracking-widest ${isDark ? "text-[#111018]/50" : "text-white/50"}`}>
+            {blog.date}
+          </span>
         </div>
       </div>
-    </motion.article>
+
+      {/* ── Title ── */}
+      <h3 className="font-black text-3xl sm:text-4xl leading-[1.1] tracking-tight mb-4 group-hover:underline decoration-4 underline-offset-4 decoration-purple-500/50">
+        {blog.title}
+      </h3>
+
+      {/* ── Tags ── */}
+      <div className="flex flex-wrap gap-2 mb-6">
+        {blog.tags.map((tag) => (
+          <span
+            key={tag}
+            className={`text-[9px] font-mono tracking-widest uppercase border rounded-sm px-2 py-1 ${
+              isDark ? "border-[#111018]/20 bg-[#111018]/5 text-[#111018]/80" : "border-white/20 bg-white/5 text-white/80"
+            }`}
+            style={{ clipPath: "polygon(5% 0, 100% 5%, 95% 100%, 0 95%)" }}
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+
+      {/* ── Excerpt (Journal style) ── */}
+      <div className="mt-auto">
+        <div className={`h-px w-full mb-4 ${isDark ? "bg-[#111018]/10" : "bg-white/10"}`} />
+        <p className={`text-sm sm:text-base leading-relaxed font-serif line-clamp-3 ${isDark ? "text-[#111018]/80" : "text-white/80"}`}>
+          {blog.excerpt}
+        </p>
+        
+        {/* Read CTA */}
+        <div className={`flex items-center justify-end mt-4 gap-1 font-bold text-sm ${isDark ? "text-purple-700" : "text-purple-400"}`}>
+          Read Clipping
+          <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+        </div>
+      </div>
+
+    </article>
   );
 };
 
 // ── Main export ───────────────────────────────────────────────
-const BlogSection = () => {
+export default function BlogSection() {
   const [activeBlog, setActiveBlog] = useState(null);
   const featuredBlogs = blogs.filter((b) => b.featured);
+  
+  const containerRef = useRef(null);
+  const headerRef = useRef(null);
+
+  useGSAP(() => {
+    // Animate the header SVG highlight
+    gsap.fromTo(
+      ".blog-header-highlight path",
+      { strokeDasharray: 500, strokeDashoffset: 500 },
+      {
+        strokeDashoffset: 0,
+        duration: 1.5,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: headerRef.current,
+          start: "top 80%",
+        },
+      }
+    );
+
+    // Stagger in the Journal Cards (Page Flip)
+    const cards = gsap.utils.toArray(".journal-card");
+    gsap.set(cards, { transformPerspective: 1000 });
+    
+    gsap.fromTo(cards, 
+      { opacity: 0, rotationX: -90, transformOrigin: "top center" },
+      {
+        opacity: 1, 
+        rotationX: 0, 
+        duration: 1,
+        stagger: 0.15,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top 70%",
+        }
+      }
+    );
+
+  }, { scope: containerRef });
 
   return (
     <>
-      <section id="blog" className="py-14 sm:py-18 lg:py-22 scroll-mt-20">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+      <section id="blog" ref={containerRef} className="relative py-20 sm:py-28 bg-[#111018] font-sans overflow-hidden">
+        
+        {/* Paper texture background */}
+        <svg className="pointer-events-none absolute inset-0 z-0 w-full h-full opacity-[0.15] mix-blend-overlay">
+          <filter id="blog-noise">
+            <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" />
+            <feColorMatrix type="matrix" values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 0.5 0" />
+          </filter>
+          <rect width="100%" height="100%" filter="url(#blog-noise)" />
+        </svg>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
 
           {/* ── Section header ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: EASE }}
-            className="flex items-end justify-between mb-10 sm:mb-14 flex-wrap gap-5"
-          >
-            <div>
-              <p className="text-[10px] font-mono text-white/58 tracking-[0.3em] uppercase mb-4">
+          <div ref={headerRef} className="flex flex-col md:flex-row items-end justify-between mb-16 gap-6">
+            <div className="relative">
+              <p className="text-[10px] font-mono text-purple-400/80 tracking-[0.3em] uppercase mb-4 font-bold">
                 ◆ &nbsp; Technical Writing
               </p>
               <h2
-                className="font-black text-white leading-none tracking-tight"
-                style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", letterSpacing: "-0.03em" }}
+                className="font-black text-white leading-none tracking-tight relative z-10"
+                style={{ fontSize: "clamp(3rem, 7vw, 5.5rem)", letterSpacing: "-0.03em" }}
               >
-                What I've
-                <br />
-                <span
-                  className="text-transparent"
-                  style={{ WebkitTextStroke: "1.5px rgba(167,139,250,0.45)" }}
-                >
-                  Written
+                My{" "}
+                <span className="text-transparent" style={{ WebkitTextStroke: "1.5px #E8E6E1" }}>
+                  Journal
                 </span>
               </h2>
+              
+              {/* SVG Highlight behind "Journal" */}
+              <svg className="blog-header-highlight absolute bottom-0 right-0 w-3/4 h-1/2 -z-10 overflow-visible opacity-60" viewBox="0 0 200 40" fill="none">
+                <path d="M10,25 C50,15 150,15 190,25 C170,35 70,35 20,30" stroke="#A78BFA" strokeWidth="12" strokeLinecap="round" />
+              </svg>
             </div>
+            
             <Link
               href="/blog"
-              className="group flex items-center gap-2 text-sm font-bold text-white/52 hover:text-white transition-colors"
+              className="group paper-card flex items-center gap-2 font-bold text-white border-2 border-white/20 px-6 py-3 transition-colors hover:bg-white/5"
+              style={{ clipPath: "polygon(2% 0, 100% 2%, 98% 100%, 0 98%)" }}
             >
-              View all posts
-              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              View Archives
+              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </Link>
-          </motion.div>
+          </div>
 
-          {/* ── Blog rows ── */}
-          <div>
+          {/* ── Grid Layout for Blogs ── */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 md:gap-12">
             {featuredBlogs.map((blog, i) => (
-              <BlogRow
+              <JournalCard
                 key={blog.id}
                 blog={blog}
                 index={i}
                 onOpen={setActiveBlog}
               />
             ))}
-            {/* Bottom border */}
-            <div className="h-px bg-white/[0.07]" />
           </div>
 
         </div>
       </section>
 
+      {/* ── PDF Reader Modal ── */}
       {activeBlog && (
         <PDFModal blog={activeBlog} onClose={() => setActiveBlog(null)} />
       )}
     </>
   );
-};
-
-export default BlogSection;
+}

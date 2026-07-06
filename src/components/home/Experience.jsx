@@ -1,7 +1,12 @@
 "use client";
-import { motion } from "framer-motion";
+
+import { useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { ArrowUpRight } from "lucide-react";
-import { EASE } from "./SharedComponents";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export const experiences = [
   {
@@ -48,163 +53,195 @@ export const experiences = [
   },
 ];
 
-function ExperienceRow({ exp, index }) {
+function TimelineCard({ exp, index }) {
   const isWork = exp.type === "work";
+  const isEven = index % 2 === 0;
+
+  // Paper Craft styling based on type
+  const bg = isWork ? "bg-[#232132]" : "bg-[#E8E6E1]";
+  const textPrimary = isWork ? "text-white" : "text-[#111018]";
+  const textSecondary = isWork ? "text-white/70" : "text-[#111018]/70";
+  const border = isWork ? "border-white/10" : "border-[#111018]/20";
+  
+  // Random slight rotation for physical feel
+  const rotation = (index % 2 === 0 ? 1 : -1) * (Math.random() * 2 + 1);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 32 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.7, ease: EASE, delay: index * 0.08 }}
-      className="group"
-    >
-      {/* Top border */}
-      <div className="h-px bg-white/[0.07] group-hover:bg-white/[0.13] transition-colors duration-500" />
+    <div className={`timeline-row relative w-full flex flex-col md:flex-row items-center justify-between mb-20 md:mb-32 ${isEven ? "md:flex-row-reverse" : ""}`}>
+      
+      {/* ── Spacer for desktop grid ── */}
+      <div className="hidden md:block w-[45%]" />
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 py-10 lg:py-12">
+      {/* ── Center Node ── */}
+      <div className="absolute left-6 md:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full border-4 border-[#111018] bg-purple-500 z-20 shadow-[0_0_0_4px_rgba(167,139,250,0.2)]" />
 
-        {/* ── Left: all content ── */}
-        <div className="flex flex-col gap-6">
+      {/* ── Card Content ── */}
+      <div className="w-[85%] md:w-[45%] ml-auto md:ml-0">
+        <div 
+          className={`timeline-card relative w-full p-8 md:p-10 ${bg} ${textPrimary} shadow-2xl transition-transform hover:scale-[1.02] hover:z-30`}
+          style={{ 
+            clipPath: isEven 
+              ? "polygon(2% 0, 100% 2%, 98% 100%, 0 98%)" 
+              : "polygon(0 2%, 98% 0, 100% 98%, 2% 100%)",
+            transform: `rotate(${rotation}deg)`
+          }}
+        >
+          {/* Tape accent */}
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-white/30 backdrop-blur-md rotate-[-3deg] z-10 shadow-sm" />
 
-          {/* Top row: index + period + type badge */}
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-5">
-              <span
-                className="font-black text-white/[0.1] leading-none select-none"
-                style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)", letterSpacing: "-0.04em" }}
-              >
-                _{exp.index}.
-              </span>
-              <span
-                className={`text-[9px] font-mono tracking-widest uppercase px-3 py-1.5 rounded-full border ${
-                  isWork
-                    ? "text-purple-300/70 border-purple-400/20 bg-purple-500/[0.08]"
-                    : "text-white/52 border-white/[0.09] bg-white/[0.03]"
-                }`}
-              >
-                {isWork ? "Work" : "Education"}
-              </span>
-            </div>
-            <span className="font-mono text-[11px] text-white/68 tracking-widest">
+          {/* Red Stamp */}
+          <div className="absolute top-6 right-6 opacity-30 transform rotate-12 pointer-events-none select-none border-4 border-red-500 text-red-500 font-bold uppercase tracking-widest px-3 py-1 text-xl lg:text-2xl">
+            {isWork ? "HIRED" : "ENROLLED"}
+          </div>
+
+          <div className="flex items-center gap-4 mb-4">
+            <span className="font-black text-5xl opacity-10 font-mono select-none">
+              _{exp.index}
+            </span>
+            <span className={`text-[10px] font-mono tracking-widest uppercase px-3 py-1 border ${border} rounded-sm`}>
               {exp.period}
             </span>
           </div>
 
-          {/* Role + company */}
-          <div>
-            <h3
-              className="font-black text-white leading-none tracking-tight mb-3 group-hover:text-white/90 transition-colors"
-              style={{ fontSize: "clamp(1.5rem, 3.5vw, 2.6rem)", letterSpacing: "-0.03em" }}
-            >
-              {exp.role}
-            </h3>
-            <div className="flex items-center gap-3 flex-wrap">
-              <span className={`text-[13px] font-semibold ${isWork ? "text-purple-300/75" : "text-white/72"}`}>
-                {exp.company}
-              </span>
-              {exp.location && (
-                <>
-                  <span className="text-white/48 text-xs">·</span>
-                  <span className="text-[12px] font-mono text-white/68 tracking-wide">
-                    {exp.location}
-                  </span>
-                </>
-              )}
-            </div>
+          <h3 className="font-black text-3xl sm:text-4xl leading-[1.1] tracking-tight mb-2">
+            {exp.role}
+          </h3>
+          
+          <div className={`text-sm sm:text-base font-bold mb-6 ${isWork ? "text-purple-400" : "text-purple-700"}`}>
+            {exp.company}
+            {exp.location && <span className={`ml-2 font-normal ${textSecondary}`}>· {exp.location}</span>}
           </div>
 
-          {/* Bullets */}
           {exp.bullets.length > 0 && (
-            <ul className="space-y-2.5">
+            <ul className={`space-y-3 mb-6 font-serif ${textSecondary}`}>
               {exp.bullets.map((b, i) => (
-                <li key={i} className="flex items-start gap-3 text-[13px] text-white/65 leading-relaxed font-light group-hover:text-white/72 transition-colors">
-                  <span className="text-white/48 mt-[5px] shrink-0 text-[7px] font-black">◆</span>
+                <li key={i} className="flex items-start gap-3 text-sm leading-relaxed">
+                  <span className="mt-[6px] shrink-0 text-[8px] font-black opacity-50">◆</span>
                   {b}
                 </li>
               ))}
             </ul>
           )}
 
-          {/* Tech tags */}
           {exp.tech.length > 0 && (
-            <div className="flex flex-wrap gap-2 pt-1">
+            <div className="flex flex-wrap gap-2 pt-4 border-t border-black/5">
               {exp.tech.map((t) => (
                 <span
                   key={t}
-                  className="text-[9px] font-mono text-white/68 tracking-widest uppercase border border-white/[0.07] rounded-full px-3 py-1 hover:border-white/15 hover:text-white/65 transition-colors"
+                  className={`text-[10px] font-mono tracking-widest uppercase px-2 py-1 ${
+                    isWork ? "bg-white/10" : "bg-black/5"
+                  }`}
                 >
                   {t}
                 </span>
               ))}
             </div>
           )}
-        </div>
 
-        {/* ── Right: arrow (only for work) ── */}
-        {isWork && (
-          <div className="hidden lg:flex items-start pt-12">
-            <div className="w-10 h-10 rounded-full border border-white/[0.08] flex items-center justify-center group-hover:border-white/25 group-hover:bg-white/[0.04] transition-all duration-300">
-              <ArrowUpRight className="w-4 h-4 text-white/58 group-hover:text-white/78 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
-            </div>
-          </div>
-        )}
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
 export default function Experience() {
+  const sectionRef = useRef(null);
+  const lineRef = useRef(null);
+
+  useGSAP(() => {
+    // 1. Draw the central timeline SVG line
+    gsap.fromTo(lineRef.current,
+      { height: "0%" },
+      {
+        height: "100%",
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 60%",
+          end: "bottom 80%",
+          scrub: 1,
+        }
+      }
+    );
+
+    // 2. Animate cards throwing onto the screen
+    const rows = gsap.utils.toArray(".timeline-row");
+    
+    rows.forEach((row) => {
+      const card = row.querySelector(".timeline-card");
+      const node = row.querySelector(".rounded-full");
+      
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: row,
+          start: "top 80%",
+          toggleActions: "play none none reverse"
+        }
+      });
+
+      gsap.set(card, { transformPerspective: 1000 });
+
+      tl.fromTo(node, 
+        { scale: 0, opacity: 0 }, 
+        { scale: 1, opacity: 1, duration: 0.4, ease: "power2.out" }
+      )
+      .fromTo(card,
+        { opacity: 0, rotationX: -90, transformOrigin: "top center" },
+        { opacity: 1, rotationX: 0, duration: 0.8, ease: "power3.out" },
+        "-=0.2"
+      );
+    });
+
+  }, { scope: sectionRef });
+
   return (
-    <section id="experience" className="py-14 sm:py-18 lg:py-22 scroll-mt-20 border-t border-white/[0.06]">
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+    <section id="experience" ref={sectionRef} className="relative py-20 sm:py-32 bg-[#0E0B1A] font-sans overflow-hidden border-t border-white/5">
+      
+      {/* Paper texture background */}
+      <svg className="pointer-events-none absolute inset-0 z-0 w-full h-full opacity-[0.12] mix-blend-overlay">
+        <filter id="exp-noise">
+          <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" />
+          <feColorMatrix type="matrix" values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 0.5 0" />
+        </filter>
+        <rect width="100%" height="100%" filter="url(#exp-noise)" />
+      </svg>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
 
         {/* ── Section header ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: EASE }}
-          className="flex items-end justify-between mb-10 sm:mb-14 flex-wrap gap-5"
-        >
-          <div>
-            <p className="text-[10px] font-mono text-white/58 tracking-[0.3em] uppercase mb-4">
-              ◆ &nbsp; Background
-            </p>
-            <h2
-              className="font-black text-white leading-none tracking-tight"
-              style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", letterSpacing: "-0.03em" }}
-            >
-              Where I've
-              <br />
-              <span
-                className="text-transparent"
-                style={{ WebkitTextStroke: "1.5px rgba(167,139,250,0.45)" }}
-              >
-                Worked & Studied
-              </span>
-            </h2>
-          </div>
-
-          {/* Availability badge */}
-          <div className="flex items-center gap-3 px-4 py-2.5 border border-white/[0.09] rounded-full bg-white/[0.02]">
-            <span className="relative flex h-2 w-2">
+        <div className="flex flex-col items-center text-center mb-24">
+          <p className="text-[10px] font-mono text-purple-400/80 tracking-[0.3em] uppercase mb-4 font-bold">
+            ◆ &nbsp; Background
+          </p>
+          <h2 className="font-black text-white leading-none tracking-tight mb-8" style={{ fontSize: "clamp(3rem, 7vw, 5.5rem)", letterSpacing: "-0.03em" }}>
+            The <span className="text-transparent" style={{ WebkitTextStroke: "1.5px #A78BFA" }}>Journey</span>
+          </h2>
+          
+          <div className="flex items-center gap-3 px-6 py-3 border-2 border-white/10 bg-white/5 shadow-lg transform rotate-2">
+            <span className="relative flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
             </span>
-            <span className="text-[11px] font-mono text-emerald-400/75 tracking-widest uppercase">
-              Open to full-time roles
+            <span className="text-xs font-mono text-emerald-400/90 tracking-widest uppercase font-bold">
+              Available for Full-time Roles
             </span>
           </div>
-        </motion.div>
+        </div>
 
-        {/* ── Experience rows ── */}
-        <div>
+        {/* ── Timeline Container ── */}
+        <div className="relative w-full pb-20">
+          
+          {/* Background vertical line (faded) */}
+          <div className="absolute left-8 md:left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 bg-white/5" />
+          
+          {/* Animated active vertical line */}
+          <div ref={lineRef} className="absolute left-8 md:left-1/2 -translate-x-1/2 top-0 w-1 bg-purple-500 shadow-[0_0_15px_rgba(167,139,250,0.5)] origin-top" />
+
+          {/* Experience Rows */}
           {experiences.map((exp, i) => (
-            <ExperienceRow key={i} exp={exp} index={i} />
+            <TimelineCard key={i} exp={exp} index={i} />
           ))}
-          {/* Bottom border */}
-          <div className="h-px bg-white/[0.07]" />
+          
         </div>
 
       </div>
