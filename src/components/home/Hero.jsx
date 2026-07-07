@@ -43,7 +43,7 @@ export default function Hero() {
       // 1. Initial "Drawing" Animation (Delayed to sync with Preloader exit)
       const tl = gsap.timeline({
         defaults: { ease: "power3.out" },
-        delay: 2.2,
+        delay: 3.2, // Wait for Preloader to finish sketching (2.2s) + pause (0.3s) + swipe (0.9s)
       });
 
       // 1. Drop in collage letters with gravity and bounce
