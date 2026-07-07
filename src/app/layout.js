@@ -44,14 +44,48 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata = {
   metadataBase: new URL("https://anish-ai.vercel.app"),
-  title: "Who I Actually Am",
+  title: "Who I Actually Am | Anish Singh",
   description:
     "Full stack developer specializing in React, Next.js, Node.js, and AI/ML integration. Building modern web applications with clean code and great user experience.",
+  keywords: [
+    "Anish Singh",
+    "Full Stack Developer",
+    "React",
+    "Next.js",
+    "Node.js",
+    "AI",
+    "Machine Learning",
+    "Portfolio",
+    "Web Developer",
+    "Software Engineer",
+  ],
+  authors: [{ name: "Anish Singh", url: "https://anish-ai.vercel.app" }],
+  creator: "Anish Singh",
+  publisher: "Anish Singh",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   icons: {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "Who I Actually Am",
+    title: "Who I Actually Am | Anish Singh",
     description: "Full stack developer specializing in React, Next.js, Node.js, and AI/ML integration. Building modern web applications with clean code and great user experience.",
     url: "https://anish-ai.vercel.app/", // Replace with your actual portfolio URL
     siteName: "Anish Singh",
@@ -68,7 +102,7 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Who I Actually Am",
+    title: "Who I Actually Am | Anish Singh",
     description: "Full stack developer specializing in React, Next.js, Node.js, and AI/ML integration.",
     images: ["/namaste-og.png"], 
   },
