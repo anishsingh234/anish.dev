@@ -5,15 +5,15 @@ import ProjectList from "@/components/projects";
 export default function ProjectsPage() {
   return (
     <div className="relative w-full min-h-screen bg-[#111018] font-sans">
-      {/* Paper texture overlay */}
-      <svg className="pointer-events-none fixed inset-0 z-[1] w-full h-full opacity-[0.15] mix-blend-overlay">
-        <filter id="projects-noise">
-          <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" />
-          <feColorMatrix type="matrix" values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 0.5 0" />
-        </filter>
-        <rect width="100%" height="100%" filter="url(#projects-noise)" />
-      </svg>
-      
+      {/* Lightweight static noise texture — replaces expensive SVG feTurbulence filter */}
+      <div
+        className="pointer-events-none fixed inset-0 z-[1] opacity-[0.12] mix-blend-overlay"
+        style={{
+          backgroundImage: `url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXWBgYGHh4d5eXlzc3Oeli3teleVlZWQkJCLi4ubm5unp6edHR0teleeli3teleVlZWMjIx5eXlzc3Otra2jo6MAAAA4teleelTD/AAAAGnRSTlMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC2fNK/AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAQUlEQVRIie3NMQEAIAzAMMC/5+GAmw5rJM3OxhhsGAYRERERERERERERERERERERERERERERERERERERERERERERkT4f7B8BYQpDAAAAAElFTkSuQmCC")`,
+          backgroundRepeat: "repeat",
+        }}
+      />
+
       <div className="relative z-10 pt-24 pb-20 px-4 sm:px-6">
         <ProjectList projects={projectsData} />
       </div>
