@@ -1,11 +1,5 @@
 "use client";
-import { useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 import { ArrowUpRight } from "lucide-react";
-
-gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const proof = [
   {
@@ -41,64 +35,9 @@ const proof = [
 ];
 
 export default function WhyHireMe() {
-  const containerRef = useRef(null);
-
-  useGSAP(() => {
-    // 1. Draw SVG Highlight on Title
-    gsap.fromTo(
-      ".hire-title-highlight path",
-      { strokeDasharray: 300, strokeDashoffset: 300 },
-      {
-        strokeDashoffset: 0,
-        duration: 1.2,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".hire-title-highlight",
-          start: "top 85%",
-        },
-      }
-    );
-
-    // 2. Animate the parchment note landing
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 70%",
-      }
-    });
-
-    gsap.set(".hire-pitch-note, .hire-evidence-tag", { transformPerspective: 1000 });
-
-    tl.fromTo(".hire-pitch-note",
-      { opacity: 0, rotationX: -90, transformOrigin: "top center" },
-      { opacity: 1, rotationX: 0, rotation: -2, duration: 1, ease: "power3.out" }
-    );
-
-    // 3. Stagger in the evidence tags (flutter)
-    const tags = gsap.utils.toArray(".hire-evidence-tag");
-    gsap.fromTo(tags,
-      { y: -30, opacity: 0, rotationZ: () => Math.random() * 20 - 10, rotationX: 45 },
-      {
-        y: 0, 
-        opacity: 1, 
-        rotationZ: () => Math.random() * 6 - 3, 
-        rotationX: 0,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 50%",
-        }
-      }
-    );
-
-  }, { scope: containerRef });
-
   return (
     <section
       id="why-hire-me"
-      ref={containerRef}
       className="relative py-20 sm:py-32 bg-[#05050A] font-sans overflow-hidden border-t border-white/5"
     >
       {/* Subtle Paper texture background */}

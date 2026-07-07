@@ -1,9 +1,8 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Github } from "lucide-react";
-import { motion, useSpring, useTransform, useMotionValue } from "framer-motion";
 
 export const featuredProjects = [
   {
@@ -125,73 +124,26 @@ function StoryBlock({ label, text, isDarkText }) {
   );
 }
 
-// ── Project Card Sub-Component (Framer Motion) ───────────────
+// ── Project Card Sub-Component ───────────────────────────────
 function ProjectCard({ project }) {
   const isDarkText = project.textColor === "text-[#111018]";
   const cardRef = useRef(null);
-
-  // 3D Parallax Hover Setup using Framer Motion
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const mouseXSpring = useSpring(x, { stiffness: 150, damping: 15 });
-  const mouseYSpring = useSpring(y, { stiffness: 150, damping: 15 });
-
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["12deg", "-12deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-12deg", "12deg"]);
+  const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0 });
 
   const handleMouseMove = (e) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-
-    // Convert to values between -0.5 and 0.5
-    const xPct = mouseX / width - 0.5;
-    const yPct = mouseY / height - 0.5;
-
-    x.set(xPct);
-    y.set(yPct);
+    const xPct = (e.clientX - rect.left) / rect.width - 0.5;
+    const yPct = (e.clientY - rect.top) / rect.height - 0.5;
+    setTilt({ rotateX: yPct * -24, rotateY: xPct * 24 });
   };
 
   const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
-  // Variants for staggering children in and out perfectly on scroll
-  const containerVariants = {
-    hidden: { opacity: 0, y: 100, scale: 0.95 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.8,
-        ease: [0.25, 1, 0.5, 1], // Smooth spring-like ease
-        when: "beforeChildren",
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const childVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
-    },
+    setTilt({ rotateX: 0, rotateY: 0 });
   };
 
   return (
-    <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: false, amount: 0.2 }} // 'once: false' ensures it triggers in reverse scroll!
-      variants={containerVariants}
+    <div
       className={`relative w-full rounded-sm border-t-8 ${project.accentColor} ${project.bgColor} ${project.textColor}`}
       style={{
         boxShadow: "0 25px 50px -12px rgba(0,0,0,0.5)",
@@ -201,52 +153,48 @@ function ProjectCard({ project }) {
         {/* Meta / Info Column */}
         <div className="flex-1 flex flex-col justify-between">
           <div>
-            <motion.div
-              variants={childVariants}
-              className="flex items-center justify-between mb-6"
-            >
+            <div className="flex items-center justify-between mb-6">
               <span
                 className={`font-bebas text-7xl opacity-10 tracking-wide select-none ${isDarkText ? "text-black" : "text-white"}`}
               >
                 _{project.index}
               </span>
               {project.demo && <LiveBadge />}
-            </motion.div>
+            </div>
 
-            <motion.div variants={childVariants}>
+            <div>
               <span
                 className={`font-mono uppercase tracking-[0.2em] font-bold text-xs ${isDarkText ? "text-[#111018]/60" : "text-white/60"}`}
               >
                 {project.tag}
               </span>
-            </motion.div>
+            </div>
 
-            <motion.h3
-              variants={childVariants}
+            <h3
               className="font-bebas text-5xl sm:text-6xl tracking-wide mt-1 mb-5"
             >
               {project.name}
-            </motion.h3>
+            </h3>
 
             <div className="flex flex-col gap-4">
-              <motion.div variants={childVariants}>
+              <div>
                 <StoryBlock
                   label="The Problem"
                   text={project.problem}
                   isDarkText={isDarkText}
                 />
-              </motion.div>
-              <motion.div variants={childVariants}>
+              </div>
+              <div>
                 <StoryBlock
                   label="The Solution"
                   text={project.solution}
                   isDarkText={isDarkText}
                 />
-              </motion.div>
+              </div>
             </div>
           </div>
 
-          <motion.div variants={childVariants} className="mt-6">
+          <div className="mt-6">
             <div className="flex flex-wrap gap-2 mb-4">
               {project.tech.map((t) => (
                 <span
@@ -294,25 +242,24 @@ function ProjectCard({ project }) {
                 </a>
               )}
             </div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Image Column with Framer Motion 3D Hover */}
-        <motion.div
-          variants={childVariants}
+        {/* Image Column with CSS 3D Hover */}
+        <div
           ref={cardRef}
           className="flex-1 flex items-center justify-center mt-8 lg:mt-0 w-full"
           style={{ perspective: 1200 }}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
         >
-          <motion.div
+          <div
             style={{
-              rotateX,
-              rotateY,
+              transform: `rotateX(${tilt.rotateX}deg) rotateY(${tilt.rotateY}deg)`,
               transformStyle: "preserve-3d",
+              transition: "transform 0.15s ease-out",
             }}
-            className="relative w-full aspect-[16/10] bg-[#111018]/10 p-2 sm:p-4 shadow-2xl transition-shadow"
+            className="relative w-full aspect-[16/10] bg-[#111018]/10 p-2 sm:p-4 shadow-2xl"
           >
             {/* "Tape" accent pop out */}
             <div
@@ -332,10 +279,10 @@ function ProjectCard({ project }) {
                 className="object-contain p-2"
               />
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -348,11 +295,7 @@ export default function Projects() {
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
         {/* ── Header ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.5 }} // Re-animates when scrolling back up
-          transition={{ duration: 0.8 }}
+        <div
           className="flex flex-col md:flex-row items-end justify-between mb-20 gap-6"
         >
           <div className="relative">
@@ -371,21 +314,17 @@ export default function Projects() {
                 Projects
               </span>
             </h2>
-            {/* Animated SVG underline */}
+            {/* Static SVG underline */}
             <svg
               className="absolute -bottom-6 left-0 w-[120%] h-8 overflow-visible"
               viewBox="0 0 200 20"
               fill="none"
             >
-              <motion.path
+              <path
                 d="M0,10 Q50,0 100,10 T200,10"
                 stroke="#A78BFA"
                 strokeWidth="4"
                 strokeLinecap="round"
-                initial={{ pathLength: 0 }}
-                whileInView={{ pathLength: 1 }}
-                viewport={{ once: false }}
-                transition={{ duration: 1.5, ease: "easeInOut" }}
               />
             </svg>
           </div>
@@ -401,7 +340,7 @@ export default function Projects() {
             View Archive
             <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
           </Link>
-        </motion.div>
+        </div>
 
         {/* ── Cards Container ── */}
         <div className="relative flex flex-col gap-12">

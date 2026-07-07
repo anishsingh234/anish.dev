@@ -1,12 +1,6 @@
 "use client";
-import { useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 import { Github, Linkedin, Mail, ArrowUp } from "lucide-react";
 import Link from "next/link";
-
-gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const navLinks = [
   { label: "Home",       href: "/"            },
@@ -25,38 +19,7 @@ const socialLinks = [
 const techStack = ["next.js", "tailwind", "gsap", "vercel"];
 
 export default function Footer() {
-  const containerRef = useRef(null);
   const year = new Date().getFullYear();
-
-  useGSAP(() => {
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 75%",
-      }
-    });
-
-    gsap.set(containerRef.current, { transformPerspective: 1500 });
-    
-    // Animate the entire footer unfolding from the top edge
-    tl.fromTo(containerRef.current,
-      { rotationX: -90, transformOrigin: "top center", opacity: 0 },
-      { rotationX: 0, opacity: 1, duration: 1.2, ease: "power3.out" }
-    )
-    // Stagger in the overlapping index cards
-    .fromTo(".footer-card",
-      { opacity: 0, y: -40, rotationZ: () => Math.random() * 10 - 5 },
-      { opacity: 1, y: 0, rotationZ: (i) => [-2, 1, -1][i], duration: 1, stagger: 0.15, ease: "power2.out" },
-      "-=0.6"
-    )
-    // Fade in bottom bar
-    .fromTo(".footer-bottom",
-      { opacity: 0 },
-      { opacity: 1, duration: 0.5 },
-      "-=0.4"
-    );
-
-  }, { scope: containerRef });
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -64,7 +27,6 @@ export default function Footer() {
 
   return (
     <footer 
-      ref={containerRef}
       className="relative bg-[#0A0812] text-white pt-24 pb-0 mt-20 font-sans overflow-hidden"
       style={{
         // Jagged torn paper top edge

@@ -1,12 +1,7 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Mail, Github, Linkedin, CheckCircle2, ArrowUpRight } from "lucide-react";
 import Form from "@/components/contact/Form";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
-
-gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const socials = [
   {
@@ -29,39 +24,6 @@ const socials = [
 
 export default function Contact() {
   const [copied, setCopied] = useState(false);
-  const containerRef = useRef(null);
-
-  useGSAP(() => {
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 70%",
-      }
-    });
-
-    // 1. Unfold the entire contact section (Page Flip)
-    gsap.set(".contact-wrapper", { transformPerspective: 1500 });
-    tl.fromTo(".contact-wrapper",
-      { rotationX: -90, transformOrigin: "top center", opacity: 0 },
-      { rotationX: 0, opacity: 1, duration: 1.2, ease: "power3.out" }
-    );
-
-    // 2. Flutter in the header
-    tl.fromTo(".contact-header",
-      { y: -30, opacity: 0, rotationZ: -2 },
-      { y: 0, opacity: 1, rotationZ: 0, duration: 0.8, ease: "power2.out" },
-      "-=0.6"
-    );
-
-    // 3. Stagger flutter the form elements and social links
-    const elements = gsap.utils.toArray(".form-element, .social-pin");
-    tl.fromTo(elements,
-      { y: 30, opacity: 0, rotationZ: () => Math.random() * 6 - 3 },
-      { y: 0, opacity: 1, rotationZ: 0, duration: 0.8, stagger: 0.1, ease: "power2.out" },
-      "-=0.6"
-    );
-
-  }, { scope: containerRef });
 
   const copyEmail = () => {
     navigator.clipboard.writeText("anishsingh210204@gmail.com");
@@ -72,7 +34,6 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      ref={containerRef}
       className="relative bg-transparent py-20 sm:py-28 overflow-hidden font-sans border-t-2 border-white/5"
     >
 

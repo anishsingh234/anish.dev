@@ -1,16 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Clock } from "lucide-react";
 import { blogs } from "@/data/blogs";
 import PDFModal from "@/components/PDFModal";
-
-gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 // Helper to generate a random rotation between -2 and 2 degrees
 const getRandomRotation = () => Math.random() * 4 - 2;
@@ -106,50 +101,10 @@ const JournalCard = ({ blog, index, onOpen }) => {
 export default function BlogSection() {
   const [activeBlog, setActiveBlog] = useState(null);
   const featuredBlogs = blogs.filter((b) => b.featured);
-  
-  const containerRef = useRef(null);
-  const headerRef = useRef(null);
-
-  useGSAP(() => {
-    // Animate the header SVG highlight
-    gsap.fromTo(
-      ".blog-header-highlight path",
-      { strokeDasharray: 500, strokeDashoffset: 500 },
-      {
-        strokeDashoffset: 0,
-        duration: 1.5,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: headerRef.current,
-          start: "top 80%",
-        },
-      }
-    );
-
-    // Stagger in the Journal Cards (Page Flip)
-    const cards = gsap.utils.toArray(".journal-card");
-    gsap.set(cards, { transformPerspective: 1000 });
-    
-    gsap.fromTo(cards, 
-      { opacity: 0, rotationX: -90, transformOrigin: "top center" },
-      {
-        opacity: 1, 
-        rotationX: 0, 
-        duration: 1,
-        stagger: 0.15,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 70%",
-        }
-      }
-    );
-
-  }, { scope: containerRef });
 
   return (
     <>
-      <section id="blog" ref={containerRef} className="relative py-20 sm:py-28 bg-[#111018] font-sans overflow-hidden">
+      <section id="blog" className="relative py-20 sm:py-28 bg-[#111018] font-sans overflow-hidden">
         
         {/* Paper texture background */}
         <svg className="pointer-events-none absolute inset-0 z-0 w-full h-full opacity-[0.15] mix-blend-overlay">
@@ -163,7 +118,7 @@ export default function BlogSection() {
         <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
 
           {/* ── Section header ── */}
-          <div ref={headerRef} className="flex flex-col md:flex-row items-end justify-between mb-16 gap-6">
+          <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-6">
             <div className="relative">
               <p className="text-[10px] font-mono text-purple-400/80 tracking-[0.3em] uppercase mb-4 font-bold">
                 ◆ &nbsp; Technical Writing

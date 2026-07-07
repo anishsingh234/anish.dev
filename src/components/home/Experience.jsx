@@ -1,12 +1,6 @@
 "use client";
 
-import { useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 import { ArrowUpRight } from "lucide-react";
-
-gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export const experiences = [
   {
@@ -158,63 +152,9 @@ function TimelineCard({ exp, index }) {
 }
 
 export default function Experience() {
-  const sectionRef = useRef(null);
-  const lineRef = useRef(null);
-
-  useGSAP(
-    () => {
-      // 1. Draw the central timeline SVG line
-      gsap.fromTo(
-        lineRef.current,
-        { height: "0%" },
-        {
-          height: "100%",
-          ease: "none",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 60%",
-            end: "bottom 80%",
-            scrub: 1,
-          },
-        },
-      );
-
-      // 2. Animate cards throwing onto the screen
-      const rows = gsap.utils.toArray(".timeline-row");
-
-      rows.forEach((row) => {
-        const card = row.querySelector(".timeline-card");
-        const node = row.querySelector(".rounded-full");
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: row,
-            start: "top 80%",
-            toggleActions: "play none none reverse",
-          },
-        });
-
-        gsap.set(card, { transformPerspective: 1000 });
-
-        tl.fromTo(
-          node,
-          { scale: 0, opacity: 0 },
-          { scale: 1, opacity: 1, duration: 0.4, ease: "power2.out" },
-        ).fromTo(
-          card,
-          { opacity: 0, rotationX: -90, transformOrigin: "top center" },
-          { opacity: 1, rotationX: 0, duration: 0.8, ease: "power3.out" },
-          "-=0.2",
-        );
-      });
-    },
-    { scope: sectionRef },
-  );
-
   return (
     <section
       id="experience"
-      ref={sectionRef}
       className="relative py-20 sm:py-32 bg-[#151420] font-sans overflow-hidden border-t-2 border-white/5"
     >
       {/* Local noise for demo */}
@@ -259,10 +199,9 @@ export default function Experience() {
           {/* Background vertical line (faded) */}
           <div className="absolute left-8 md:left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 bg-white/5" />
 
-          {/* Animated active vertical line */}
+          {/* Static active vertical line */}
           <div
-            ref={lineRef}
-            className="absolute left-8 md:left-1/2 -translate-x-1/2 top-0 w-1 bg-purple-500 shadow-[0_0_15px_rgba(167,139,250,0.5)] origin-top"
+            className="absolute left-8 md:left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 bg-purple-500 shadow-[0_0_15px_rgba(167,139,250,0.5)]"
           />
 
           {/* Experience Rows */}
@@ -274,3 +213,4 @@ export default function Experience() {
     </section>
   );
 }
+

@@ -1,11 +1,5 @@
 "use client";
-import { useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 import { Mail, ArrowUpRight } from "lucide-react";
-
-gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const stats = [
   { value: "12+", label: "Projects", sub: "Full-Stack & AI" },
@@ -16,71 +10,9 @@ const stats = [
 ];
 
 export default function AboutSection() {
-  const containerRef = useRef(null);
-
-  useGSAP(
-    () => {
-      // 1. Draw SVG Highlight on Name
-      gsap.fromTo(
-        ".about-name-highlight path",
-        { strokeDasharray: 300, strokeDashoffset: 300 },
-        {
-          strokeDashoffset: 0,
-          duration: 1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: ".about-name-highlight",
-            start: "top 80%",
-          },
-        },
-      );
-
-      // 2. Physical Card Throw Animations
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 60%",
-        },
-      });
-
-      gsap.set(".about-letter, .about-stats-card", {
-        transformPerspective: 1000,
-      });
-
-      // Throw the Letter on desk first (Page Flip)
-      tl.fromTo(
-        ".about-letter",
-        { opacity: 0, rotationX: -90, transformOrigin: "top center" },
-        {
-          opacity: 1,
-          rotationX: 0,
-          rotation: -2,
-          duration: 1,
-          ease: "power3.out",
-        },
-      )
-        // Snap the ID card on top (Flutter down)
-        .fromTo(
-          ".about-stats-card",
-          { y: -30, opacity: 0, rotationZ: 10, rotationX: 45 },
-          {
-            y: 0,
-            opacity: 1,
-            rotationZ: 3,
-            rotationX: 0,
-            duration: 0.8,
-            ease: "power2.out",
-          },
-          "-=0.5",
-        );
-    },
-    { scope: containerRef },
-  );
-
   return (
     <section
       id="about"
-      ref={containerRef}
       className="relative py-20 sm:py-32 bg-transparent font-sans overflow-hidden border-t-2 border-white/5"
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 relative z-10">
