@@ -185,3 +185,19 @@
     scrollbar-width: none;
   }
 }
+
+/* ─── WhyHireMe responsive clip-paths (CSS-only, no SSR issues) ─────────── */
+@media (min-width: 640px) {
+  .hire-clip-parchment {
+    clip-path: polygon(2% 1%, 100% 0, 99% 99%, 0 100%);
+  }
+  .hire-clip-even {
+    clip-path: polygon(1% 0, 100% 2%, 99% 100%, 0 98%);
+  }
+  .hire-clip-odd {
+    clip-path: polygon(0 2%, 99% 0, 100% 98%, 2% 100%);
+  }
+  .hire-clip-emoji {
+    clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%);
+  }
+}
