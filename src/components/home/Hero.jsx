@@ -225,7 +225,9 @@ export default function Hero() {
 
           {/* Resume - Neon Sticky Note */}
           <a
-            href="/resume"
+            href="/resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
             className="paper-card group relative bg-[#ffeb3b] text-[#111018] px-8 py-4 font-bold text-lg inline-flex items-center gap-3 transition-transform hover:-translate-y-2 origin-bottom-right"
             style={{
               boxShadow: "6px 6px 15px rgba(0,0,0,0.4)",
