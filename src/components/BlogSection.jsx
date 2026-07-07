@@ -41,8 +41,7 @@ const JournalCard = ({ blog, index, onOpen }) => {
           alt={blog.title}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-          sizes="(max-width: 768px) 100vw, 50vw"
-          loading="eager"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
         {/* Tape accent */}
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 bg-white/40 backdrop-blur-sm rotate-[4deg] z-10" style={{ boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }} />
