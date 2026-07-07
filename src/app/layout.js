@@ -6,7 +6,14 @@ import CustomCursor from "@/components/home/CustomCursor";
 import { Analytics } from '@vercel/analytics/react';
 
 import { Dancing_Script, Great_Vibes } from "next/font/google";
-import { Bebas_Neue, Caveat } from 'next/font/google';
+import { Bebas_Neue, Caveat, JetBrains_Mono } from 'next/font/google';
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  variable: "--font-jetbrains",
+  display: "swap",
+});
 
 const bebas = Bebas_Neue({
   weight: '400',
@@ -59,6 +66,7 @@ export const metadata = {
     "Portfolio",
     "Web Developer",
     "Software Engineer",
+    "anish-ai",
   ],
   authors: [{ name: "Anish Singh", url: "https://anish-ai.vercel.app" }],
   creator: "Anish Singh",
@@ -120,6 +128,7 @@ export default function RootLayout({ children }) {
           greatVibes.variable,
           bebas.variable,
           caveat.variable,
+          jetbrainsMono.variable,
           "bg-background text-foreground font-sans paper-bg"
         )}
       >

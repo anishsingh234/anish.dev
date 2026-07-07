@@ -355,11 +355,6 @@ export default function BubbleSkills() {
   }, []);
 
   return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap');
-      `}</style>
-
       <div
         ref={sceneRef}
         className="absolute inset-0 z-0 overflow-hidden"
@@ -375,6 +370,5 @@ export default function BubbleSkills() {
           }}
         />
       </div>
-    </>
   );
 }
