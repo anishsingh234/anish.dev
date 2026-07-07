@@ -90,7 +90,7 @@ export default function RootLayout({ children }) {
       >
         {children}
         <Analytics />
-        <CustomCursor />
+        {/* <CustomCursor /> */}
       </body>
     </html>
   );

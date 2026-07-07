@@ -4,6 +4,11 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Search, X, Github, ArrowUpRight, Mail, Download } from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 /* ─── NAV DATA ────────────────────────────────────────────────────────────── */
 const navItems = [
@@ -45,6 +50,7 @@ function LiveClock() {
 function TornStripNav({ activeSection, pathname, onSearchOpen }) {
   const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
+  const navRef = useRef(null);
 
   // Scroll detection to float down slightly or add shadow
   useEffect(() => {
@@ -53,8 +59,21 @@ function TornStripNav({ activeSection, pathname, onSearchOpen }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useGSAP(() => {
+    // Drop in the torn strip after the preloader finishes (approx 2.5s)
+    gsap.from(navRef.current, {
+      y: -100,
+      rotationZ: -5,
+      opacity: 0,
+      duration: 1.2,
+      ease: "back.out(1.2)",
+      delay: 2.5, 
+    });
+  }, { scope: navRef });
+
   return (
     <nav
+      ref={navRef}
       className="hidden lg:flex fixed top-0 left-1/2 -translate-x-1/2 z-[100] font-sans items-center"
       style={{ transform: `translateX(-50%) translateY(${scrolled ? 10 : 20}px)`, transition: "transform 0.4s ease" }}
     >
@@ -140,6 +159,17 @@ function ArchiveSearch({ open, onClose, onNavigate }) {
     return () => window.removeEventListener("keydown", h);
   }, [open, onClose]);
 
+  const cardRef = useRef(null);
+
+  useGSAP(() => {
+    if (open && cardRef.current) {
+      gsap.fromTo(cardRef.current,
+        { y: -50, opacity: 0, rotationZ: -3, scale: 0.95 },
+        { y: 0, opacity: 1, rotationZ: 0, scale: 1, duration: 0.5, ease: "back.out(1.5)" }
+      );
+    }
+  }, [open]);
+
   if (!open) return null;
 
   return (
@@ -151,6 +181,7 @@ function ArchiveSearch({ open, onClose, onNavigate }) {
       
       {/* Giant Paper Card */}
       <div
+        ref={cardRef}
         onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-2xl bg-[#E8E6E1] text-[#111018] shadow-[15px_20px_40px_rgba(0,0,0,0.6)]"
         style={{ 
@@ -218,9 +249,24 @@ function ArchiveSearch({ open, onClose, onNavigate }) {
 
 /* ─── MOBILE NAV (THE UNFOLDING MAP) ──────────────────────────────────────── */
 function MobileNav({ open, onClose, onMenuOpen, activeSection, onSearchOpen }) {
+  const containerRef = useRef(null);
+
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
+  useGSAP(() => {
+    if (open && containerRef.current) {
+      gsap.from(".mobile-flap", {
+        y: -40,
+        opacity: 0,
+        rotationZ: () => Math.random() * 4 - 2,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "back.out(1.2)"
+      });
+    }
   }, [open]);
 
   return (
@@ -261,12 +307,13 @@ function MobileNav({ open, onClose, onMenuOpen, activeSection, onSearchOpen }) {
       {/* Container overlay */}
       {open && (
         <div 
+          ref={containerRef}
           className="lg:hidden fixed inset-0 bg-[#0A0812]/90 flex flex-col pt-10 px-4 z-[150]"
         >
           <div className="h-full overflow-y-auto pb-20">
             
             {/* Flap 1 (Top) */}
-            <div className="w-full bg-[#E8E6E1] text-[#111018] p-6 shadow-xl mb-[-2px] border-b-2 border-black/20" style={{ clipPath: "polygon(1% 0, 99% 0, 100% 100%, 0 100%)" }}>
+            <div className="mobile-flap w-full bg-[#E8E6E1] text-[#111018] p-6 shadow-xl mb-[-2px] border-b-2 border-black/20" style={{ clipPath: "polygon(1% 0, 99% 0, 100% 100%, 0 100%)" }}>
               <p className="font-mono text-xs font-bold text-red-600 tracking-widest uppercase mb-6">Directory</p>
               <div className="flex flex-col gap-4">
                 {navItems.slice(0, 4).map((item) => (
@@ -278,7 +325,7 @@ function MobileNav({ open, onClose, onMenuOpen, activeSection, onSearchOpen }) {
             </div>
 
             {/* Flap 2 (Middle) */}
-            <div className="w-full bg-[#D3D1C8] text-[#111018] p-6 shadow-xl mb-[-2px] border-b-2 border-black/20" style={{ clipPath: "polygon(0 0, 100% 0, 99% 100%, 1% 100%)" }}>
+            <div className="mobile-flap w-full bg-[#D3D1C8] text-[#111018] p-6 shadow-xl mb-[-2px] border-b-2 border-black/20" style={{ clipPath: "polygon(0 0, 100% 0, 99% 100%, 1% 100%)" }}>
               <div className="flex flex-col gap-4">
                 {navItems.slice(4).map((item) => (
                   <Link key={item.label} href={item.href} onClick={onClose} className="text-3xl font-black uppercase tracking-tighter">
@@ -289,7 +336,7 @@ function MobileNav({ open, onClose, onMenuOpen, activeSection, onSearchOpen }) {
             </div>
 
             {/* Flap 3 (Bottom) */}
-            <div className="w-full bg-[#232132] text-white p-6 shadow-xl pb-10" style={{ clipPath: "polygon(0 0, 100% 0, 95% 100%, 5% 100%)" }}>
+            <div className="mobile-flap w-full bg-[#232132] text-white p-6 shadow-xl pb-10" style={{ clipPath: "polygon(0 0, 100% 0, 95% 100%, 5% 100%)" }}>
                <p className="font-mono text-xs font-bold text-emerald-400 tracking-widest uppercase mb-6">Network</p>
                <div className="flex flex-col gap-4">
                  <a href="https://github.com/anishsingh234" className="flex items-center gap-4 text-xl font-bold uppercase"><Github/> Github</a>

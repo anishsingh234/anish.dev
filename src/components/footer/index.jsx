@@ -1,6 +1,12 @@
 "use client";
+import { useRef } from "react";
 import { Github, Linkedin, Mail, ArrowUp } from "lucide-react";
 import Link from "next/link";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const navLinks = [
   { label: "Home",       href: "/"            },
@@ -19,14 +25,69 @@ const socialLinks = [
 const techStack = ["next.js", "tailwind", "gsap", "vercel"];
 
 export default function Footer() {
+  const footerRef = useRef(null);
   const year = new Date().getFullYear();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  useGSAP(() => {
+    // 1. Watermark slides up
+    gsap.from(".footer-watermark span", {
+      y: "100%",
+      opacity: 0,
+      rotation: 2,
+      duration: 1.5,
+      ease: "power4.out",
+      scrollTrigger: {
+        trigger: footerRef.current,
+        start: "top 90%",
+      }
+    });
+
+    // 2. Cards Stagger
+    gsap.from(".footer-card", {
+      y: 80,
+      opacity: 0,
+      rotationZ: () => Math.random() * 8 - 4,
+      duration: 1,
+      stagger: 0.15,
+      ease: "back.out(1.5)",
+      scrollTrigger: {
+        trigger: footerRef.current,
+        start: "top 75%",
+      }
+    });
+
+    // 3. Bottom Bar
+    gsap.from(".footer-bottom", {
+      y: 30,
+      opacity: 0,
+      duration: 1,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: ".footer-bottom",
+        start: "top 95%",
+      }
+    });
+
+    // 4. Scroll To Top Button
+    gsap.from(".footer-scroll-top", {
+      scale: 0,
+      rotation: 45,
+      duration: 0.6,
+      ease: "back.out(2)",
+      scrollTrigger: {
+        trigger: footerRef.current,
+        start: "top 60%",
+      }
+    });
+  }, { scope: footerRef });
+
   return (
     <footer 
+      ref={footerRef}
       className="relative bg-[#0A0812] text-white pt-24 pb-0 mt-20 font-sans overflow-hidden"
       style={{
         // Jagged torn paper top edge
@@ -44,7 +105,7 @@ export default function Footer() {
 
       {/* ── Giant background stamped watermark ── */}
       <div
-        className="absolute bottom-0 left-0 right-0 flex items-end justify-center pointer-events-none select-none overflow-hidden opacity-5 z-0"
+        className="footer-watermark absolute bottom-0 left-0 right-0 flex items-end justify-center pointer-events-none select-none overflow-hidden opacity-5 z-0"
         aria-hidden
       >
         <span
@@ -192,7 +253,7 @@ export default function Footer() {
       {/* ── Scroll to top Stamp ── */}
       <button
         onClick={scrollToTop}
-        className="group absolute bottom-12 right-6 md:right-12 w-14 h-14 bg-purple-600 text-white flex items-center justify-center shadow-[4px_6px_12px_rgba(0,0,0,0.5)] transition-transform hover:-translate-y-1 z-50 border-2 border-black"
+        className="footer-scroll-top group absolute bottom-12 right-6 md:right-12 w-14 h-14 bg-purple-600 text-white flex items-center justify-center shadow-[4px_6px_12px_rgba(0,0,0,0.5)] transition-transform hover:-translate-y-1 z-50 border-2 border-black"
         style={{ clipPath: "polygon(10% 0, 100% 10%, 90% 100%, 0 90%)" }}
       >
         <ArrowUp className="w-6 h-6 group-hover:-translate-y-1 transition-transform" />

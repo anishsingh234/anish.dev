@@ -1,11 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Clock } from "lucide-react";
 import { blogs } from "@/data/blogs";
 import PDFModal from "@/components/PDFModal";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 // Helper to generate a random rotation between -2 and 2 degrees
 const getRandomRotation = () => Math.random() * 4 - 2;
@@ -101,10 +106,58 @@ const JournalCard = ({ blog, index, onOpen }) => {
 export default function BlogSection() {
   const [activeBlog, setActiveBlog] = useState(null);
   const featuredBlogs = blogs.filter((b) => b.featured);
+  const sectionRef = useRef(null);
+
+  useGSAP(() => {
+    // Header Animation Timeline
+    const headerTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top 80%",
+        toggleActions: "play none none reverse",
+      }
+    });
+
+    headerTl.from(".blog-header-text", {
+      y: 60,
+      opacity: 0,
+      duration: 1,
+      ease: "power3.out",
+    })
+    .fromTo(".blog-header-highlight path", 
+      { strokeDasharray: 400, strokeDashoffset: 400 },
+      { strokeDashoffset: 0, duration: 0.8, ease: "power2.inOut" },
+      "-=0.4" // Start drawing highlighter slightly before text finishes moving
+    )
+    .from(".blog-archive-btn", {
+      x: 30,
+      opacity: 0,
+      rotation: 5,
+      duration: 0.8,
+      ease: "back.out(2)"
+    }, "-=0.6");
+
+    // Journal Cards Staggered Animation
+    gsap.from(".journal-card-wrapper", {
+      y: 120,
+      opacity: 0,
+      rotationX: 30,
+      rotationZ: () => (Math.random() * 4 - 2), // random drop rotation
+      scale: 0.8,
+      duration: 1.2,
+      ease: "back.out(1.2)",
+      stagger: 0.15,
+      scrollTrigger: {
+        trigger: ".blog-grid",
+        start: "top 85%",
+        toggleActions: "play none none reverse",
+      }
+    });
+  }, { scope: sectionRef });
 
   return (
     <>
-      <section id="blog" className="relative py-20 sm:py-28 bg-[#111018] font-sans overflow-hidden">
+      <section id="blog" ref={sectionRef} className="relative py-20 sm:py-28 bg-[#111018] font-sans overflow-hidden">
         
         {/* Paper texture background */}
         <svg className="pointer-events-none absolute inset-0 z-0 w-full h-full opacity-[0.15] mix-blend-overlay">
@@ -118,8 +171,8 @@ export default function BlogSection() {
         <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
 
           {/* ── Section header ── */}
-          <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-6">
-            <div className="relative">
+          <div className="blog-header flex flex-col md:flex-row items-end justify-between mb-16 gap-6 overflow-hidden sm:overflow-visible">
+            <div className="blog-header-text relative">
               <p className="text-[10px] font-mono text-purple-400/80 tracking-[0.3em] uppercase mb-4 font-bold">
                 ◆ &nbsp; Technical Writing
               </p>
@@ -141,7 +194,7 @@ export default function BlogSection() {
             
             <Link
               href="/blog"
-              className="group paper-card flex items-center gap-2 font-bold text-white border-2 border-white/20 px-6 py-3 transition-colors hover:bg-white/5"
+              className="blog-archive-btn group paper-card flex items-center gap-2 font-bold text-white border-2 border-white/20 px-6 py-3 transition-colors hover:bg-white/5"
               style={{ clipPath: "polygon(2% 0, 100% 2%, 98% 100%, 0 98%)" }}
             >
               View Archives
@@ -150,14 +203,15 @@ export default function BlogSection() {
           </div>
 
           {/* ── Grid Layout for Blogs ── */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 md:gap-12">
+          <div className="blog-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 md:gap-12">
             {featuredBlogs.map((blog, i) => (
-              <JournalCard
-                key={blog.id}
-                blog={blog}
-                index={i}
-                onOpen={setActiveBlog}
-              />
+              <div key={blog.id} className="journal-card-wrapper" style={{ perspective: "1000px" }}>
+                <JournalCard
+                  blog={blog}
+                  index={i}
+                  onOpen={setActiveBlog}
+                />
+              </div>
             ))}
           </div>
 

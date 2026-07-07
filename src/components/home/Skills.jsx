@@ -1,4 +1,10 @@
 "use client";
+import { useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const GROUPS = [
   {
@@ -93,40 +99,143 @@ const getRandomRotation = () => Math.random() * 10 - 5;
 
 // The SVG Marker Circle
 const RedMarker = () => (
-  <svg 
-    className="marker-circle absolute -inset-2 w-[calc(100%+1rem)] h-[calc(100%+1rem)] pointer-events-none z-10" 
-    viewBox="0 0 100 40" 
+  <svg
+    className="marker-circle absolute -inset-2 w-[calc(100%+1rem)] h-[calc(100%+1rem)] pointer-events-none z-10"
+    viewBox="0 0 100 40"
     preserveAspectRatio="none"
   >
-    <path 
-      d="M10,20 C10,5 90,5 90,20 C90,35 10,35 10,20 C10,10 90,10 90,20" 
-      fill="none" 
-      stroke="#EF4444" 
-      strokeWidth="3" 
-      strokeLinecap="round" 
+    <path
+      d="M10,20 C10,5 90,5 90,20 C90,35 10,35 10,20 C10,10 90,10 90,20"
+      fill="none"
+      stroke="#EF4444"
+      strokeWidth="3"
+      strokeLinecap="round"
       className="opacity-80"
     />
   </svg>
 );
 
 export default function Skills() {
+  const sectionRef = useRef(null);
+
+  useGSAP(
+    () => {
+      // 1. Header Animation Timeline
+      const headerTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        }
+      });
+
+      headerTl.from(".skills-title-wrapper", {
+        y: 60,
+        opacity: 0,
+        duration: 1,
+        ease: "power3.out",
+      })
+      .to(".skills-header-underline path", {
+        strokeDashoffset: 0,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: "power2.inOut"
+      }, "-=0.4")
+      .from(".skills-desc-note", {
+        x: -40,
+        opacity: 0,
+        rotationZ: 5,
+        duration: 0.8,
+        ease: "back.out(1.5)"
+      }, "-=0.6");
+
+      // 2. Folder and Stickers Animation
+      const folders = gsap.utils.toArray(".skill-folder");
+
+      folders.forEach((folder, index) => {
+        const tab = folder.querySelector(".folder-tab");
+        const stickers = folder.querySelectorAll(".skill-sticker");
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: folder,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+        });
+
+        // Folder container slides up
+        tl.from(folder, {
+          y: 100,
+          opacity: 0,
+          rotationZ: index % 2 === 0 ? -2 : 2,
+          duration: 0.8,
+          ease: "power3.out",
+        })
+          // Tab pops out from behind the body
+          .from(
+            tab,
+            {
+              yPercent: 100,
+              opacity: 0,
+              duration: 0.5,
+              ease: "back.out(2)",
+            },
+            "-=0.4",
+          )
+          // Stickers get slapped onto the folder
+          .from(
+            stickers,
+            {
+              scale: 0,
+              opacity: 0,
+              rotationZ: () => Math.random() * 40 - 20, // start with extreme random rotation
+              duration: 0.5,
+              stagger: 0.05,
+              ease: "back.out(2)",
+            },
+            "-=0.3",
+          );
+      });
+    },
+    { scope: sectionRef },
+  );
+
   return (
     <>
       {/* Devicon CDN */}
       {/* eslint-disable-next-line @next/next/no-head-element */}
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
+      />
 
-      <section id="skills" className="relative bg-transparent font-sans overflow-hidden border-t-2 border-white/5">
-        
+      <section
+        id="skills"
+        ref={sectionRef}
+        className="relative bg-transparent font-sans overflow-hidden border-t-2 border-white/5"
+      >
         {/* ── Intro Header ── */}
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-20 pb-10 relative z-10">
-          <p className="text-2xl font-caveat text-purple-400 mb-2 transform -rotate-2">
-            Tech Arsenal
-          </p>
-          <h2 className="font-bebas text-white leading-none tracking-wide mb-8" style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}>
-            The <span className="text-transparent" style={{ WebkitTextStroke: "2px #A78BFA" }}>Dossier</span>
-          </h2>
-          <p className="text-white/80 font-sans max-w-xl text-lg bg-black/40 p-4 border-l-4 border-purple-500 rounded-r-lg">
+        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-20 pb-10 relative z-10 overflow-hidden sm:overflow-visible">
+          
+          <div className="skills-title-wrapper relative inline-block">
+            <p className="text-2xl font-caveat text-purple-400 mb-2 transform -rotate-2 origin-left">
+              Tech Arsenal
+            </p>
+            <h2 className="font-bebas text-white leading-none tracking-wide mb-8 relative z-10" style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}>
+              The <span className="text-transparent relative inline-block" style={{ WebkitTextStroke: "2px #A78BFA" }}>
+                Dossier
+                {/* SVG scribble underline */}
+                <svg className="skills-header-underline absolute -bottom-4 left-0 w-[110%] h-8 overflow-visible -z-10" viewBox="0 0 200 20" fill="none">
+                  <path d="M5,15 Q50,0 100,10 T195,15" stroke="#A78BFA" strokeWidth="6" strokeLinecap="round" opacity="0.8" strokeDasharray="300" strokeDashoffset="300" />
+                  <path d="M15,20 Q60,5 110,15 T185,18" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round" opacity="0.4" strokeDasharray="300" strokeDashoffset="300" />
+                </svg>
+              </span>
+            </h2>
+          </div>
+
+          <p className="skills-desc-note text-white/80 font-sans max-w-xl text-lg bg-black/40 p-4 border-l-4 border-purple-500 rounded-r-lg relative transform -rotate-1 shadow-lg">
+            <span className="absolute -top-3 left-6 w-12 h-4 bg-white/20 backdrop-blur-sm rotate-3 shadow-sm" />
             A comprehensive collection of the tools, languages, and frameworks I use to build intelligent systems and scalable web applications.
           </p>
         </div>
@@ -137,28 +246,30 @@ export default function Skills() {
             {GROUPS.map((group, i) => {
               const isDark = group.textColor === "text-[#111018]";
               return (
-                <div key={group.label} className="relative">
+                <div key={group.label} className="skill-folder relative">
                   {/* Folder Tab */}
-                  <div 
-                    className="w-48 h-12 flex items-center justify-center"
-                    style={{ 
+                  <div
+                    className="folder-tab w-48 h-12 flex items-center justify-center relative z-0"
+                    style={{
                       backgroundColor: group.color,
                       clipPath: "polygon(0 100%, 10% 0, 90% 0, 100% 100%)",
-                      boxShadow: "0 -5px 10px rgba(0,0,0,0.2)"
+                      boxShadow: "0 -5px 10px rgba(0,0,0,0.2)",
                     }}
                   >
-                    <span className={`font-mono text-xs font-bold uppercase tracking-widest ${group.textColor}`}>
+                    <span
+                      className={`font-mono text-xs font-bold uppercase tracking-widest ${group.textColor}`}
+                    >
                       {group.label}
                     </span>
                   </div>
-                  
+
                   {/* Folder Body */}
-                  <div 
-                    className="w-full rounded-b-xl rounded-tr-xl p-8 relative"
-                    style={{ 
+                  <div
+                    className="folder-body w-full rounded-b-xl rounded-tr-xl p-8 relative z-10"
+                    style={{
                       backgroundColor: group.color,
                       boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
-                      clipPath: "polygon(0 0, 100% 0, 99% 100%, 1% 99%)"
+                      clipPath: "polygon(0 0, 100% 0, 99% 100%, 1% 99%)",
                     }}
                   >
                     {/* Top Secret Stamp */}
@@ -166,7 +277,9 @@ export default function Skills() {
                       CONFIDENTIAL
                     </div>
 
-                    <h3 className={`text-4xl font-bebas tracking-wide mb-6 ${group.textColor}`}>
+                    <h3
+                      className={`text-4xl font-bebas tracking-wide mb-6 ${group.textColor}`}
+                    >
                       {group.label}
                     </h3>
 
@@ -175,19 +288,21 @@ export default function Skills() {
                       {group.skills.map((skill) => (
                         <div
                           key={skill.name}
-                          className={`relative flex items-center gap-2 px-3 py-2 shadow-lg transition-transform hover:scale-110 hover:z-50 cursor-default ${
-                            isDark ? "bg-[#111018] text-white border-2 border-white/10" : "bg-white text-[#111018] border-2 border-black/10"
+                          className={`skill-sticker relative flex items-center gap-2 px-3 py-2 shadow-lg transition-transform hover:scale-110 hover:z-50 cursor-default ${
+                            isDark
+                              ? "bg-[#111018] text-white border-2 border-white/10"
+                              : "bg-white text-[#111018] border-2 border-black/10"
                           }`}
-                          style={{ 
+                          style={{
                             transform: `rotate(${getRandomRotation()}deg)`,
-                            clipPath: "polygon(2% 2%, 98% 0, 100% 98%, 0 100%)"
+                            clipPath: "polygon(2% 2%, 98% 0, 100% 98%, 0 100%)",
                           }}
                         >
                           <i className={`${skill.icon} text-xl`} />
                           <span className="font-mono text-sm font-bold select-none">
                             {skill.name}
                           </span>
-                          
+
                           {/* Red Marker for highlighted skills */}
                           {skill.hi && <RedMarker />}
                         </div>
@@ -202,4 +317,4 @@ export default function Skills() {
       </section>
     </>
   );
-}
+}

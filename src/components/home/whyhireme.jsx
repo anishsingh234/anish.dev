@@ -1,5 +1,11 @@
 "use client";
+import { useRef } from "react";
 import { ArrowUpRight } from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const proof = [
   {
@@ -35,9 +41,70 @@ const proof = [
 ];
 
 export default function WhyHireMe() {
+  const sectionRef = useRef(null);
+
+  useGSAP(() => {
+    // 1. Header Animation Timeline
+    const headerTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top 80%",
+        toggleActions: "play none none reverse",
+      }
+    });
+
+    headerTl.from(".hire-header-text", {
+      y: 60,
+      opacity: 0,
+      duration: 1,
+      ease: "power3.out",
+    })
+    .fromTo(".hire-title-highlight path", {
+      strokeDasharray: 300,
+      strokeDashoffset: 300
+    }, {
+      strokeDashoffset: 0,
+      duration: 0.8,
+      ease: "power2.inOut"
+    }, "-=0.4");
+
+    // 2. Pitch Note (Left)
+    gsap.from(".hire-pitch-note", {
+      x: -80,
+      y: 50,
+      opacity: 0,
+      rotationZ: -8,
+      duration: 1.2,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: ".hire-pitch-note",
+        start: "top 85%",
+        toggleActions: "play none none reverse",
+      }
+    });
+
+    // 3. Evidence Tags (Right - Staggered)
+    gsap.from(".hire-evidence-tag", {
+      x: 80,
+      opacity: 0,
+      rotationZ: () => Math.random() * 10 - 5,
+      y: 30,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: "back.out(1.5)",
+      scrollTrigger: {
+        trigger: ".hire-pitch-note", // trigger along with the left note
+        start: "top 80%",
+        toggleActions: "play none none reverse",
+      }
+    });
+
+  }, { scope: sectionRef });
+
   return (
     <section
       id="why-hire-me"
+      ref={sectionRef}
       className="relative py-20 sm:py-32 bg-[#05050A] font-sans overflow-hidden border-t border-white/5"
     >
       {/* Subtle Paper texture background */}
@@ -52,25 +119,26 @@ export default function WhyHireMe() {
       <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 relative z-10">
 
         {/* ── Section header ── */}
-        <div className="mb-16 sm:mb-20">
-          <p className="text-[10px] font-mono text-purple-400/80 tracking-[0.3em] uppercase mb-4 font-bold">
-            ◆ &nbsp; The Verdict
-          </p>
-          <h2
-            className="font-black text-white leading-none tracking-tight relative inline-block"
-            style={{ fontSize: "clamp(3rem, 7vw, 5.5rem)", letterSpacing: "-0.03em" }}
-          >
-            The case
-            <br />
-            <span className="text-transparent relative z-10" style={{ WebkitTextStroke: "1.5px #E8E6E1" }}>
-              for hiring me.
-            </span>
-            
-            {/* SVG Highlight behind text */}
-            <svg className="hire-title-highlight absolute bottom-0 left-0 w-full h-1/2 -z-10 overflow-visible opacity-70" viewBox="0 0 200 40" preserveAspectRatio="none">
-              <path d="M5,30 C50,20 150,20 195,30" stroke="#A78BFA" strokeWidth="15" strokeLinecap="round" fill="none" />
-            </svg>
-          </h2>
+        <div className="mb-16 sm:mb-20 overflow-hidden sm:overflow-visible">
+          <div className="hire-header-text relative inline-block">
+            <p className="text-[10px] font-mono text-purple-400/80 tracking-[0.3em] uppercase mb-4 font-bold">
+              ◆ &nbsp; The Verdict
+            </p>
+            <h2
+              className="font-black text-white leading-none tracking-tight relative inline-block z-10"
+              style={{ fontSize: "clamp(3rem, 7vw, 5.5rem)", letterSpacing: "-0.03em" }}
+            >
+              The case
+              <br />
+              <span className="text-transparent relative z-10 inline-block" style={{ WebkitTextStroke: "1.5px #E8E6E1" }}>
+                for hiring me.
+                {/* SVG Highlight behind text */}
+                <svg className="hire-title-highlight absolute bottom-0 left-0 w-full h-[60%] -z-10 overflow-visible opacity-70" viewBox="0 0 200 40" preserveAspectRatio="none">
+                  <path d="M5,30 C50,20 150,20 195,30" stroke="#A78BFA" strokeWidth="15" strokeLinecap="round" fill="none" strokeDasharray="300" strokeDashoffset="300" />
+                </svg>
+              </span>
+            </h2>
+          </div>
         </div>
 
         {/* ── Two column body ── */}

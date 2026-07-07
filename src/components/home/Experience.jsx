@@ -1,6 +1,12 @@
 "use client";
 
+import { useRef } from "react";
 import { ArrowUpRight } from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 export const experiences = [
   {
@@ -68,7 +74,7 @@ function TimelineCard({ exp, index }) {
       <div className="hidden md:block w-[45%]" />
 
       {/* ── Center Node ── */}
-      <div className="absolute left-6 md:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full border-4 border-[#111018] bg-purple-500 z-20 shadow-[0_0_0_4px_rgba(167,139,250,0.2)]" />
+      <div className="timeline-node absolute left-6 md:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full border-4 border-[#111018] bg-purple-500 z-20 shadow-[0_0_0_4px_rgba(167,139,250,0.2)]" />
 
       {/* ── Card Content ── */}
       <div className="w-[85%] md:w-[45%] ml-auto md:ml-0">
@@ -152,9 +158,96 @@ function TimelineCard({ exp, index }) {
 }
 
 export default function Experience() {
+  const sectionRef = useRef(null);
+  const containerRef = useRef(null);
+
+  useGSAP(() => {
+    // 1. Header Animation Timeline
+    const headerTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top 80%",
+        toggleActions: "play none none reverse",
+      }
+    });
+
+    headerTl.from(".exp-title-wrapper", {
+      y: 60,
+      opacity: 0,
+      duration: 1,
+      ease: "power3.out",
+    })
+    .to(".exp-header-underline path", {
+      strokeDashoffset: 0,
+      duration: 0.8,
+      ease: "power2.inOut"
+    }, "-=0.4")
+    .from(".exp-badge", {
+      y: 40,
+      opacity: 0,
+      rotationZ: -5,
+      duration: 0.8,
+      ease: "back.out(2)"
+    }, "-=0.6");
+
+    // 2. Timeline Line Draw Animation
+    gsap.fromTo(".timeline-line-active", 
+      { scaleY: 0, transformOrigin: "top center" },
+      {
+        scaleY: 1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top 50%",
+          end: "bottom 40%",
+          scrub: true,
+        }
+      }
+    );
+
+    // 3. Timeline Nodes and Cards
+    const rows = gsap.utils.toArray(".timeline-row");
+    
+    rows.forEach((row, i) => {
+      const node = row.querySelector(".timeline-node");
+      const card = row.querySelector(".timeline-card");
+      
+      const isEven = i % 2 === 0;
+      // Cards come in from their respective sides
+      const xOffset = isEven ? 60 : -60; 
+      
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: row,
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        }
+      });
+
+      // Node pops in
+      tl.from(node, {
+        scale: 0,
+        opacity: 0,
+        duration: 0.5,
+        ease: "back.out(2.5)"
+      })
+      // Card slides and rotates in
+      .from(card, {
+        x: xOffset,
+        y: 40,
+        opacity: 0,
+        rotationZ: isEven ? -8 : 8, // More dramatic paper drop
+        duration: 0.8,
+        ease: "power3.out"
+      }, "-=0.2");
+    });
+
+  }, { scope: sectionRef });
+
   return (
     <section
       id="experience"
+      ref={sectionRef}
       className="relative py-20 sm:py-32 bg-[#151420] font-sans overflow-hidden border-t-2 border-white/5"
     >
       {/* Local noise for demo */}
@@ -166,24 +259,30 @@ export default function Experience() {
       </svg>
       <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
         {/* ── Section header ── */}
-        <div className="flex flex-col items-center text-center mb-24">
-          <p className="text-2xl font-caveat text-purple-400 mb-2 transform rotate-2">
-            Background
-          </p>
-          <h2
-            className="font-bebas text-white leading-none tracking-wide mb-8"
-            style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}
-          >
-            The{" "}
-            <span
-              className="text-transparent"
-              style={{ WebkitTextStroke: "2px #A78BFA" }}
+        <div className="exp-header flex flex-col items-center text-center mb-24 overflow-hidden sm:overflow-visible">
+          <div className="exp-title-wrapper relative inline-block">
+            <p className="text-2xl font-caveat text-purple-400 mb-2 transform rotate-2">
+              Background
+            </p>
+            <h2
+              className="font-bebas text-white leading-none tracking-wide mb-8 relative z-10"
+              style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}
             >
-              Journey
-            </span>
-          </h2>
+              The{" "}
+              <span
+                className="text-transparent relative inline-block"
+                style={{ WebkitTextStroke: "2px #A78BFA" }}
+              >
+                Journey
+                {/* SVG scribble underline */}
+                <svg className="exp-header-underline absolute -bottom-4 left-0 w-[110%] h-8 overflow-visible -z-10" viewBox="0 0 200 20" fill="none">
+                  <path d="M10,15 C50,0 150,0 190,15" stroke="#A78BFA" strokeWidth="6" strokeLinecap="round" opacity="0.8" strokeDasharray="250" strokeDashoffset="250" />
+                </svg>
+              </span>
+            </h2>
+          </div>
 
-          <div className="flex items-center gap-3 px-6 py-3 border-2 border-white/10 bg-white/5 shadow-lg transform rotate-2">
+          <div className="exp-badge flex items-center gap-3 px-6 py-3 border-2 border-white/10 bg-white/5 shadow-lg transform rotate-2">
             <span className="relative flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
@@ -195,13 +294,13 @@ export default function Experience() {
         </div>
 
         {/* ── Timeline Container ── */}
-        <div className="relative w-full pb-20">
+        <div ref={containerRef} className="relative w-full pb-20">
           {/* Background vertical line (faded) */}
           <div className="absolute left-8 md:left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 bg-white/5" />
 
           {/* Static active vertical line */}
           <div
-            className="absolute left-8 md:left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 bg-purple-500 shadow-[0_0_15px_rgba(167,139,250,0.5)]"
+            className="timeline-line-active absolute left-8 md:left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 bg-purple-500 shadow-[0_0_15px_rgba(167,139,250,0.5)]"
           />
 
           {/* Experience Rows */}
@@ -213,4 +312,3 @@ export default function Experience() {
     </section>
   );
 }
-

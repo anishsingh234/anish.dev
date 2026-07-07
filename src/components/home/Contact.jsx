@@ -1,7 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Mail, Github, Linkedin, CheckCircle2, ArrowUpRight } from "lucide-react";
 import Form from "@/components/contact/Form";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const socials = [
   {
@@ -24,6 +29,7 @@ const socials = [
 
 export default function Contact() {
   const [copied, setCopied] = useState(false);
+  const sectionRef = useRef(null);
 
   const copyEmail = () => {
     navigator.clipboard.writeText("anishsingh210204@gmail.com");
@@ -31,30 +37,85 @@ export default function Contact() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  useGSAP(() => {
+    // 1. Header Timeline
+    const headerTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top 80%",
+        toggleActions: "play none none reverse",
+      }
+    });
+
+    headerTl.from(".contact-title-wrapper", {
+      y: 60,
+      opacity: 0,
+      duration: 1,
+      ease: "power3.out",
+    })
+    .to(".contact-header-highlight path", {
+      strokeDashoffset: 0,
+      duration: 0.8,
+      ease: "power2.inOut"
+    }, "-=0.4");
+
+    // 2. Left side pins
+    gsap.from(".social-pin", {
+      y: 50,
+      opacity: 0,
+      rotationZ: () => Math.random() * 10 - 5,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: "back.out(1.5)",
+      scrollTrigger: {
+        trigger: ".contact-wrapper",
+        start: "top 75%",
+        toggleActions: "play none none reverse",
+      }
+    });
+
+    // 3. Form Envelope (Right)
+    gsap.from(".contact-form-envelope", {
+      x: 80,
+      opacity: 0,
+      rotationZ: 3,
+      duration: 1,
+      ease: "back.out(1.2)",
+      scrollTrigger: {
+        trigger: ".contact-wrapper",
+        start: "top 75%",
+        toggleActions: "play none none reverse",
+      }
+    });
+
+  }, { scope: sectionRef });
+
   return (
     <section
       id="contact"
+      ref={sectionRef}
       className="relative bg-transparent py-20 sm:py-28 overflow-hidden font-sans border-t-2 border-white/5"
     >
 
       <div className="contact-wrapper max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 relative z-10">
 
         {/* ── Section header ── */}
-        <div className="contact-header mb-16 relative w-fit">
-          <p className="text-2xl font-caveat text-purple-400 mb-2 transform -rotate-2">
-            Open Comms
-          </p>
-          <h2 className="font-bebas text-white leading-none tracking-wide" style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}>
-            Direct{" "}
-            <span className="text-transparent" style={{ WebkitTextStroke: "2px #A78BFA" }}>
-              Line.
-            </span>
-          </h2>
-          
-          {/* Hand drawn highlight */}
-          <svg className="absolute -bottom-4 left-0 w-[110%] h-6 overflow-visible -z-10" viewBox="0 0 200 20" fill="none">
-            <path d="M0,10 Q50,5 100,10 T200,10" stroke="#A78BFA" strokeWidth="6" strokeLinecap="round" opacity="0.4" />
-          </svg>
+        <div className="contact-header mb-16 relative w-fit overflow-hidden sm:overflow-visible">
+          <div className="contact-title-wrapper relative inline-block">
+            <p className="text-2xl font-caveat text-purple-400 mb-2 transform -rotate-2">
+              Open Comms
+            </p>
+            <h2 className="font-bebas text-white leading-none tracking-wide relative z-10" style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}>
+              Direct{" "}
+              <span className="text-transparent relative inline-block" style={{ WebkitTextStroke: "2px #A78BFA" }}>
+                Line.
+                {/* Hand drawn highlight */}
+                <svg className="contact-header-highlight absolute -bottom-4 left-0 w-[110%] h-6 overflow-visible -z-10" viewBox="0 0 200 20" fill="none">
+                  <path d="M0,10 Q50,5 100,10 T200,10" stroke="#A78BFA" strokeWidth="6" strokeLinecap="round" opacity="0.4" strokeDasharray="300" strokeDashoffset="300" />
+                </svg>
+              </span>
+            </h2>
+          </div>
         </div>
 
         {/* ── Envelope Layout (Two columns) ── */}
@@ -138,7 +199,7 @@ export default function Contact() {
           </div>
 
           {/* ── Right: Physical Form Envelope ── */}
-          <div className="social-pin relative p-8 sm:p-12 bg-[#E8E6E1] shadow-[15px_20px_40px_rgba(0,0,0,0.5)] border-t-8 border-purple-600"
+          <div className="contact-form-envelope relative p-8 sm:p-12 bg-[#E8E6E1] shadow-[15px_20px_40px_rgba(0,0,0,0.5)] border-t-8 border-purple-600"
                style={{ clipPath: "polygon(0 0, 100% 1%, 99% 100%, 1% 99%)" }}>
             
             {/* Stamp overlay */}

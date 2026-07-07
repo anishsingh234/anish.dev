@@ -1,5 +1,11 @@
 "use client";
+import { useRef } from "react";
 import { Mail, ArrowUpRight } from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const stats = [
   { value: "12+", label: "Projects", sub: "Full-Stack & AI" },
@@ -10,14 +16,79 @@ const stats = [
 ];
 
 export default function AboutSection() {
+  const sectionRef = useRef(null);
+
+  useGSAP(() => {
+    // 1. Header Animation Timeline
+    const headerTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top 80%",
+        toggleActions: "play none none reverse",
+      }
+    });
+
+    headerTl.from(".about-title-wrapper", {
+      y: 60,
+      opacity: 0,
+      duration: 1,
+      ease: "power3.out",
+    })
+    .from(".about-blob", {
+      scale: 0,
+      opacity: 0,
+      duration: 0.6,
+      ease: "back.out(2)"
+    }, "-=0.4")
+    .from(".about-title-text", {
+      x: -20,
+      opacity: 0,
+      duration: 0.5,
+      ease: "power2.out"
+    }, "-=0.4");
+
+    // 2. Cards Animation Timeline
+    const cardsTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".about-letter",
+        start: "top 75%",
+        toggleActions: "play none none reverse",
+      }
+    });
+
+    cardsTl.from(".about-letter", {
+      x: -80,
+      y: 50,
+      opacity: 0,
+      rotationZ: -10,
+      duration: 1,
+      ease: "power3.out"
+    })
+    .to(".about-name-highlight path", {
+      strokeDashoffset: 0,
+      duration: 0.8,
+      ease: "power2.inOut"
+    }, "-=0.2")
+    .from(".about-stats-card", {
+      x: 80,
+      y: -20,
+      opacity: 0,
+      rotationZ: 15,
+      duration: 1,
+      ease: "back.out(1.2)"
+    }, "-=0.6");
+
+  }, { scope: sectionRef });
+
   return (
     <section
       id="about"
+      ref={sectionRef}
       className="relative py-20 sm:py-32 bg-transparent font-sans overflow-hidden border-t-2 border-white/5"
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 relative z-10">
         {/* ── Section header ── */}
-        <div className="mb-16 sm:mb-24 text-center">
+        <div className="about-title-wrapper mb-16 sm:mb-24 text-center overflow-hidden sm:overflow-visible">
           <p className="text-2xl font-caveat text-purple-400 mb-2 transform -rotate-2">
             Profile
           </p>
@@ -29,11 +100,11 @@ export default function AboutSection() {
             <span className="relative inline-block mt-2 sm:mt-0">
               {/* Purple Blob Background */}
               <span 
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[70%] bg-[#8B5CF6] rounded-[100%] -z-10" 
+                className="about-blob absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[70%] bg-[#8B5CF6] rounded-[100%] -z-10" 
                 style={{ transform: "translate(-50%, -50%) rotate(-2deg)" }}
               />
               <span
-                className="text-transparent relative z-10"
+                className="about-title-text text-transparent relative z-10 inline-block"
                 style={{ WebkitTextStroke: "2px #E8E6E1" }}
               >
                 Actually Am
@@ -87,6 +158,8 @@ export default function AboutSection() {
                         stroke="#A78BFA"
                         strokeWidth="4"
                         strokeLinecap="round"
+                        strokeDasharray="300"
+                        strokeDashoffset="300"
                       />
                     </svg>
                   </span>{" "}
