@@ -250,12 +250,12 @@ export default function Experience() {
       ref={sectionRef}
       className="relative py-20 sm:py-32 bg-[#151420] font-sans overflow-hidden border-t-2 border-white/5"
     >
-      {/* Local noise for demo */}
-      <svg className="pointer-events-none absolute inset-0 w-full h-full opacity-[0.08] mix-blend-overlay z-0">
-        <filter id="exp-demo-noise">
+      {/* SVG Noise Overlay */}
+      <svg className="hidden md:block pointer-events-none absolute inset-0 z-0 w-full h-full opacity-10 mix-blend-overlay">
+        <filter id="exp-noise">
           <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch" />
         </filter>
-        <rect width="100%" height="100%" filter="url(#exp-demo-noise)" />
+        <rect width="100%" height="100%" filter="url(#exp-noise)" />
       </svg>
       <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
         {/* ── Section header ── */}

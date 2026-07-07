@@ -154,11 +154,11 @@ function ProjectCard({ project, index }) {
         boxShadow: "0 25px 50px -12px rgba(0,0,0,0.5)",
       }}
     >
-      <div className="p-6 lg:p-10 flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
+      <div className="p-5 sm:p-6 lg:p-10 flex flex-col lg:flex-row gap-6 lg:gap-12 items-center h-full">
         {/* Meta / Info Column */}
-        <div className="flex-1 flex flex-col justify-between">
+        <div className="flex-1 flex flex-col justify-between w-full">
           <div>
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4">
               <span
                 className={`font-bebas text-7xl opacity-10 tracking-wide select-none ${isDarkText ? "text-black" : "text-white"}`}
               >
@@ -176,12 +176,12 @@ function ProjectCard({ project, index }) {
             </div>
 
             <h3
-              className="font-bebas text-5xl sm:text-6xl tracking-wide mt-1 mb-5"
+              className="font-bebas text-4xl sm:text-5xl lg:text-6xl tracking-wide mt-1 mb-4"
             >
               {project.name}
             </h3>
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
               <div>
                 <StoryBlock
                   label="The Problem"
@@ -224,7 +224,7 @@ function ProjectCard({ project, index }) {
                   href={project.demo}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`group flex items-center gap-2 px-6 py-3 font-bold text-sm transition-all duration-300 ${
+                  className={`group flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 font-bold text-xs sm:text-sm transition-all duration-300 ${
                     isDarkText
                       ? "bg-[#111018] text-white hover:bg-black"
                       : "bg-white text-[#111018] hover:bg-gray-200 text-black"
@@ -240,7 +240,7 @@ function ProjectCard({ project, index }) {
                   href={project.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center gap-2 px-6 py-3 font-bold text-sm border-2 border-transparent hover:border-current transition-all duration-300 opacity-80 hover:opacity-100"
+                  className="group flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 font-bold text-xs sm:text-sm border-2 border-transparent hover:border-current transition-all duration-300 opacity-80 hover:opacity-100"
                 >
                   <Github className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   Source
@@ -250,10 +250,10 @@ function ProjectCard({ project, index }) {
           </div>
         </div>
 
-        {/* Image Column with CSS 3D Hover */}
+        {/* Image Column with CSS 3D Hover (Hidden on very small mobile to save space, visible on sm+) */}
         <div
           ref={cardRef}
-          className="flex-1 flex items-center justify-center mt-8 lg:mt-0 w-full"
+          className="hidden sm:flex flex-1 items-center justify-center mt-6 lg:mt-0 w-full"
           style={{ perspective: 1200 }}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
@@ -366,7 +366,7 @@ export default function Projects() {
       <div className="max-w-6xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
         {/* ── Header ── */}
         <div
-          className="projects-header flex flex-col md:flex-row items-end justify-between mb-24 lg:mb-32 gap-10 relative z-20"
+          className="projects-header flex flex-col md:flex-row items-start md:items-end justify-between mb-16 lg:mb-24 gap-8 md:gap-10 relative z-20"
         >
           <div className="relative">
             <p className="text-3xl font-caveat text-purple-400 mb-4 transform -rotate-3 origin-left inline-block">
@@ -433,7 +433,7 @@ export default function Projects() {
         </div>
 
         {/* ── 3D Card Stack Container (Pinned) ── */}
-        <div ref={containerRef} className="relative w-full" style={{ height: "70vh", perspective: "1500px" }}>
+        <div ref={containerRef} className="relative w-full h-[85vh] md:h-[75vh] lg:h-[70vh]" style={{ perspective: "1500px" }}>
           {featuredProjects.map((project, i) => (
             <div 
               key={project.id} 

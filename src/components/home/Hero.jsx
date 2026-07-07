@@ -17,7 +17,7 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 // SVG filter for paper texture noise
 const PaperTexture = () => (
-  <svg className="pointer-events-none fixed inset-0 z-50 w-full h-full opacity-[0.15] mix-blend-overlay">
+  <svg className="hidden md:block pointer-events-none fixed inset-0 z-50 w-full h-full opacity-[0.15] mix-blend-overlay">
     <filter id="noise">
       <feTurbulence
         type="fractalNoise"
