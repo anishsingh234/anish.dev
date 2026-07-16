@@ -1,0 +1,101 @@
+/* Curved Loop Marquee */
+
+.curved-loop-jacket {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  /* No min-height - sits inline as a section divider, not full-screen */
+}
+
+.curved-loop-svg {
+  width: 100%;
+  aspect-ratio: 100 / 12;
+  overflow: visible;
+  display: block;
+  font-size: 6rem;
+  fill: #e8e6e1;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* Paper-theme overrides */
+
+/* Artistic, Vibrant Paper Theme (Risograph / Screen-print offset) */
+.curved-loop-paper {
+  /* Bold, impactful font suited for print */
+  font-family: 'Arial Black', 'Impact', sans-serif;
+  text-transform: uppercase;
+  font-weight: 900;
+  font-size: 4.5rem;
+  
+  /* Primary ink: Vibrant Yellow */
+  fill: #FFEB3B;
+  
+  /* The "misregistered print" offset effect: Vibrant Magenta */
+  filter: drop-shadow(4px 4px 0px #E91E63);
+  
+  opacity: 0.95;
+  letter-spacing: 0.03em;
+}
+
+/* Add a subtle paper texture overlay specifically for the SVG */
+.curved-loop-jacket {
+  position: relative;
+}
+
+.curved-loop-jacket::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.08;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* Stamp / monospace variant */
+.curved-loop-stamp {
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  text-transform: uppercase;
+  font-weight: 900;
+  font-size: 5.5rem;
+  fill: #ff3366;
+  opacity: 0.15;
+  mix-blend-mode: screen;
+}
+
+/* Responsive sizing */
+@media (max-width: 768px) {
+  .curved-loop-svg {
+    font-size: 3.5rem;
+    aspect-ratio: 100 / 16;
+  }
+
+  .curved-loop-paper {
+    font-size: 3rem;
+  }
+
+  .curved-loop-stamp {
+    font-size: 3.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .curved-loop-svg {
+    font-size: 2.5rem;
+    aspect-ratio: 100 / 20;
+  }
+
+  .curved-loop-paper {
+    font-size: 2.2rem;
+  }
+
+  .curved-loop-stamp {
+    font-size: 2.5rem;
+  }
+}
