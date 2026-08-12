@@ -48,11 +48,17 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap",
 });
 
+const SITE_TITLE = "Anish Singh — Full Stack Developer & AI Engineer";
+const SITE_DESCRIPTION =
+  "Full stack developer specializing in React, Next.js, Node.js, and AI/ML integration. Building production-grade web applications and intelligent systems.";
+
 export const metadata = {
   metadataBase: new URL("https://anish-ai.vercel.app"),
-  title: "Who I Actually Am | Anish Singh",
-  description:
-    "Full stack developer specializing in React, Next.js, Node.js, and AI/ML integration. Building modern web applications with clean code and great user experience.",
+  title: {
+    default: SITE_TITLE,
+    template: "%s | Anish Singh",
+  },
+  description: SITE_DESCRIPTION,
   keywords: [
     "Anish Singh",
     "Full Stack Developer",
@@ -92,13 +98,13 @@ export const metadata = {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "Who I Actually Am | Anish Singh",
-    description: "Full stack developer specializing in React, Next.js, Node.js, and AI/ML integration. Building modern web applications with clean code and great user experience.",
-    url: "https://anish-ai.vercel.app/", // Replace with your actual portfolio URL
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: "https://anish-ai.vercel.app/",
     siteName: "Anish Singh",
     images: [
       {
-        url: "/namaste-og.png", // Make sure you save the image you attached in the public folder as namaste-og.png
+        url: "/namaste-og.png",
         width: 1200,
         height: 630,
         alt: "Anish Singh Portfolio Greeting",
@@ -109,9 +115,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Who I Actually Am | Anish Singh",
-    description: "Full stack developer specializing in React, Next.js, Node.js, and AI/ML integration.",
-    images: ["/namaste-og.png"], 
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: ["/namaste-og.png"],
   },
 };
 

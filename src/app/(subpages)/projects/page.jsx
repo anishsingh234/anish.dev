@@ -1,26 +1,27 @@
 // page.jsx — Server Component: exports metadata and renders the Client Component.
 import ProjectsPageClient from "./ProjectsPageClient";
 
+const PAGE_TITLE = "Projects";
+const PAGE_DESCRIPTION =
+  "Selected projects by Anish Singh: AI chatbots, RAG pipelines, and full-stack healthcare platforms built with Next.js, LLMs, and MongoDB — shipped to production, used by real users.";
+
 export const metadata = {
-  title: "Projects | Anish Singh — Full Stack Developer & AI Engineer",
-  description:
-    "Selected projects by Anish Singh: AI chatbots, RAG pipelines, and full-stack healthcare platforms built with Next.js, LLMs, and MongoDB — shipped to production, used by real users.",
+  title: PAGE_TITLE,
+  description: PAGE_DESCRIPTION,
   alternates: {
     canonical: "/projects",
   },
   openGraph: {
-    title: "Projects | Anish Singh",
-    description:
-      "AI SaaS, RAG systems, and full-stack platforms built with Next.js, LLMs, and MongoDB.",
+    title: `${PAGE_TITLE} | Anish Singh`,
+    description: PAGE_DESCRIPTION,
     url: "https://anish-ai.vercel.app/projects",
     siteName: "Anish Singh",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Projects | Anish Singh",
-    description:
-      "AI SaaS, RAG systems, and full-stack platforms built with Next.js, LLMs, and MongoDB.",
+    title: `${PAGE_TITLE} | Anish Singh`,
+    description: PAGE_DESCRIPTION,
   },
 };
 
