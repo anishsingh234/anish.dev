@@ -12,6 +12,7 @@ import {
   Code2,
   Rocket,
 } from "lucide-react";
+import TextLoop from "@/components/_animations/TextLoop";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -391,6 +392,16 @@ export default function Hero() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* ── Marquee Loop ── */}
+      <div className="relative py-6 sm:py-10 overflow-hidden">
+        <TextLoop
+          text="Developer ✦ AI Engineer ✦ Creator ✦ Problem Solver"
+          shape="wave"
+          speed={90}
+          direction="forward"
+        />
       </div>
     </section>
   );

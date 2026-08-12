@@ -166,23 +166,22 @@ export default function BlogSection() {
           {/* ── Section header ── */}
           <div className="blog-header flex flex-col md:flex-row items-end justify-between mb-16 gap-6 overflow-hidden sm:overflow-visible">
             <div className="blog-header-text relative">
-              <p className="text-[10px] font-mono text-purple-400/80 tracking-[0.3em] uppercase mb-4 font-bold">
-                ◆ &nbsp; Technical Writing
+              <p className="text-2xl font-caveat text-purple-400 mb-2 transform -rotate-2 origin-left">
+                Technical Writing
               </p>
               <h2
-                className="font-black text-white leading-none tracking-tight relative z-10"
-                style={{ fontSize: "clamp(3rem, 7vw, 5.5rem)", letterSpacing: "-0.03em" }}
+                className="font-bebas text-white leading-none tracking-wide relative z-10"
+                style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}
               >
                 My{" "}
-                <span className="text-transparent" style={{ WebkitTextStroke: "1.5px #E8E6E1" }}>
+                <span className="text-transparent relative inline-block" style={{ WebkitTextStroke: "2px #A78BFA" }}>
                   Journal
+                  {/* SVG scribble underline */}
+                  <svg className="blog-header-highlight absolute -bottom-4 left-0 w-[110%] h-8 overflow-visible -z-10" viewBox="0 0 200 20" fill="none">
+                    <path d="M5,15 Q50,0 100,10 T195,15" stroke="#A78BFA" strokeWidth="6" strokeLinecap="round" opacity="0.8" />
+                  </svg>
                 </span>
               </h2>
-              
-              {/* SVG Highlight behind "Journal" */}
-              <svg className="blog-header-highlight absolute bottom-0 right-0 w-3/4 h-1/2 -z-10 overflow-visible opacity-60" viewBox="0 0 200 40" fill="none">
-                <path d="M10,25 C50,15 150,15 190,25 C170,35 70,35 20,30" stroke="#A78BFA" strokeWidth="12" strokeLinecap="round" />
-              </svg>
             </div>
             
             <Link

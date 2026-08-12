@@ -330,67 +330,21 @@ export default function Projects() {
       }
     });
 
-    // 2. Complex 3D Stack Pinning — desktop only. Pinning + 3D scrub reads as
-    // scroll-jacking on touch devices and costs more on weaker mobile GPUs,
-    // so mobile gets a plain stacked layout with a lighter entrance instead.
+    // 2. Cards drop in like paper cut-outs as each scrolls into view —
+    // alternating tilt direction keeps the collage feel without the
+    // scroll-jacking cost of a pinned scrub.
     const cards = gsap.utils.toArray(".project-card-wrapper");
-    const mm = gsap.matchMedia();
 
-    mm.add("(min-width: 768px)", () => {
-      // Set initial paper-like rotations
-      cards.forEach((card, i) => {
-        if (i > 0) {
-          gsap.set(card, { opacity: 0, scale: 0.85, yPercent: 120, rotationX: 45 });
-        }
-      });
-
-      // Pin the container and scrub through the cards
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          pin: true,
-          start: "top 10%",
-          end: () => "+=" + (cards.length * window.innerHeight), // Huge scroll area for smooth scrub
-          scrub: 1,
-        }
-      });
-
-      cards.forEach((card, index) => {
-        if (index === 0) return;
-
-        // Bring new card in
-        tl.to(card, {
-          yPercent: 0,
-          rotationX: 0,
-          opacity: 1,
-          scale: 1,
-          ease: "power2.inOut",
-          duration: 1,
-        }, index * 1); // Sequence it
-
-        // Dim and push back all previous cards
-        const previousCards = cards.slice(0, index);
-        tl.to(previousCards, {
-          scale: (i) => 1 - ((index - i) * 0.05),
-          yPercent: (i) => -((index - i) * 4),
-          opacity: (i) => 1 - ((index - i) * 0.2),
-          ease: "power2.inOut",
-          duration: 1
-        }, index * 1);
-      });
-    });
-
-    mm.add("(max-width: 767px)", () => {
-      gsap.set(cards, { position: "relative", opacity: 1, scale: 1, yPercent: 0, rotationX: 0 });
-
-      gsap.from(cards, {
-        y: 60,
+    cards.forEach((card, i) => {
+      gsap.from(card, {
+        y: 80,
         opacity: 0,
-        duration: 0.8,
-        stagger: 0.15,
+        scale: 0.94,
+        rotationZ: i % 2 === 0 ? -3 : 3,
+        duration: 1,
         ease: "power3.out",
         scrollTrigger: {
-          trigger: containerRef.current,
+          trigger: card,
           start: "top 85%",
           toggleActions: "play none none reverse",
         }
@@ -474,13 +428,12 @@ export default function Projects() {
           </Link>
         </div>
 
-        {/* ── 3D Card Stack Container (Pinned) ── */}
-        <div ref={containerRef} className="relative w-full h-auto md:h-[75vh] lg:h-[70vh]" style={{ perspective: "1500px" }}>
+        {/* ── Project Cards ── */}
+        <div ref={containerRef} className="relative w-full flex flex-col gap-10 sm:gap-16">
           {featuredProjects.map((project, i) => (
-            <div 
-              key={project.id} 
-              className="project-card-wrapper absolute top-0 left-0 w-full h-full flex items-center justify-center will-change-transform"
-              style={{ zIndex: i }}
+            <div
+              key={project.id}
+              className="project-card-wrapper w-full will-change-transform"
             >
               <ProjectCard project={project} index={i} />
             </div>

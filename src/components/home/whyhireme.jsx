@@ -124,33 +124,30 @@ export default function WhyHireMe() {
         {/* ── Section header ── */}
         <div className="mb-10 sm:mb-16 md:mb-20 overflow-hidden sm:overflow-visible">
           <div className="hire-header-text relative inline-block">
-            <p className="text-[10px] font-mono text-purple-400/80 tracking-[0.3em] uppercase mb-3 sm:mb-4 font-bold">
-              ◆ &nbsp; The Verdict
+            <p className="text-2xl font-caveat text-purple-400 mb-2 transform -rotate-2 origin-left">
+              The Verdict
             </p>
             <h2
-              className="font-black text-white leading-[1.05] tracking-tight relative inline-block z-10"
-              style={{
-                fontSize: "clamp(2.2rem, 7vw, 5.5rem)",
-                letterSpacing: "-0.03em",
-              }}
+              className="font-bebas text-white leading-none tracking-wide relative inline-block z-10"
+              style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}
             >
               The case
               <br />
               <span
                 className="text-transparent relative z-10 inline-block"
-                style={{ WebkitTextStroke: "1px #E8E6E1" }}
+                style={{ WebkitTextStroke: "2px #A78BFA" }}
               >
                 for hiring me.
-                {/* SVG Highlight behind text */}
+                {/* SVG scribble underline */}
                 <svg
-                  className="hire-title-highlight absolute bottom-0 left-0 w-full h-[60%] -z-10 overflow-visible opacity-70"
-                  viewBox="0 0 200 40"
-                  preserveAspectRatio="none"
+                  className="hire-title-highlight absolute -bottom-4 left-0 w-[110%] h-8 overflow-visible -z-10"
+                  viewBox="0 0 200 20"
+                  fill="none"
                 >
                   <path
-                    d="M5,30 C50,20 150,20 195,30"
+                    d="M10,15 C50,0 150,0 190,15"
                     stroke="#A78BFA"
-                    strokeWidth="15"
+                    strokeWidth="6"
                     strokeLinecap="round"
                     fill="none"
                     strokeDasharray="300"

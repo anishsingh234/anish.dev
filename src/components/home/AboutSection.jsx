@@ -33,19 +33,7 @@ export default function AboutSection() {
       opacity: 0,
       duration: 1,
       ease: "power3.out",
-    })
-    .from(".about-blob", {
-      scale: 0,
-      opacity: 0,
-      duration: 0.6,
-      ease: "back.out(2)"
-    }, "-=0.4")
-    .from(".about-title-text", {
-      x: -20,
-      opacity: 0,
-      duration: 0.5,
-      ease: "power2.out"
-    }, "-=0.4");
+    });
 
     // 2. Cards Animation Timeline
     const cardsTl = gsap.timeline({
@@ -89,26 +77,41 @@ export default function AboutSection() {
       <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 relative z-10">
         {/* ── Section header ── */}
         <div className="about-title-wrapper mb-16 sm:mb-24 text-center overflow-hidden sm:overflow-visible">
-          <p className="text-2xl font-caveat text-purple-400 mb-2 transform -rotate-2">
+          <p className="text-2xl font-caveat text-purple-400 mb-2 transform -rotate-2 origin-center inline-block">
             Profile
           </p>
           <h2
-            className="font-bebas text-white leading-none tracking-wide"
-            style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}
+            className="font-bebas text-white leading-[0.85] tracking-wide relative z-10 uppercase"
+            style={{ fontSize: "clamp(4.5rem, 11vw, 9rem)" }}
           >
-            Who I{" "}
-            <span className="relative inline-block mt-2 sm:mt-0">
-              {/* Purple Blob Background */}
-              <span 
-                className="about-blob absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[70%] bg-[#8B5CF6] rounded-[100%] -z-10" 
-                style={{ transform: "translate(-50%, -50%) rotate(-2deg)" }}
-              />
-              <span
-                className="about-title-text text-transparent relative z-10 inline-block"
-                style={{ WebkitTextStroke: "2px #E8E6E1" }}
+            Who I
+            <br />
+            <span
+              className="text-transparent relative inline-block mt-2 sm:mt-4"
+              style={{ WebkitTextStroke: "2px #A78BFA" }}
+            >
+              Actually Am
+              {/* Complex double underline SVG */}
+              <svg
+                className="absolute -bottom-6 sm:-bottom-8 left-0 w-[120%] h-12 overflow-visible -z-10"
+                viewBox="0 0 200 20"
+                fill="none"
               >
-                Actually Am
-              </span>
+                <path
+                  d="M0,10 Q50,-5 100,10 T200,5"
+                  stroke="#A78BFA"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                  opacity="0.8"
+                />
+                <path
+                  d="M10,18 Q60,5 110,15 T190,12"
+                  stroke="#A78BFA"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  opacity="0.4"
+                />
+              </svg>
             </span>
           </h2>
         </div>
