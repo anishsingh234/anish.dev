@@ -362,7 +362,6 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const isHome = pathname === "/";
-  const isAnimations = pathname === "/animations";
 
   // Cmd+K shortcut
   useEffect(() => {
@@ -397,26 +396,21 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Hide nav chrome on pages with their own navigation (e.g. Animation Studio) */}
-      {!isAnimations && (
-        <>
-          {/* Desktop — Torn Strip */}
-          <TornStripNav
-            activeSection={activeSection}
-            pathname={pathname}
-            onSearchOpen={() => setPaletteOpen(true)}
-          />
+      {/* Desktop — Torn Strip */}
+      <TornStripNav
+        activeSection={activeSection}
+        pathname={pathname}
+        onSearchOpen={() => setPaletteOpen(true)}
+      />
 
-          {/* Mobile — Unfolding Map */}
-          <MobileNav
-            open={mobileOpen}
-            onClose={() => setMobileOpen(false)}
-            onMenuOpen={() => setMobileOpen(true)}
-            activeSection={activeSection}
-            onSearchOpen={() => setPaletteOpen(true)}
-          />
-        </>
-      )}
+      {/* Mobile — Unfolding Map */}
+      <MobileNav
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        onMenuOpen={() => setMobileOpen(true)}
+        activeSection={activeSection}
+        onSearchOpen={() => setPaletteOpen(true)}
+      />
 
       {/* Command palette — The Archive Card */}
       <ArchiveSearch

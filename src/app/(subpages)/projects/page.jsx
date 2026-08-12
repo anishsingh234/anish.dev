@@ -1,22 +1,29 @@
-"use client";
-import { projectsData } from "../../data";
-import ProjectList from "@/components/projects";
+// page.jsx — Server Component: exports metadata and renders the Client Component.
+import ProjectsPageClient from "./ProjectsPageClient";
+
+export const metadata = {
+  title: "Projects | Anish Singh — Full Stack Developer & AI Engineer",
+  description:
+    "Selected projects by Anish Singh: AI chatbots, RAG pipelines, and full-stack healthcare platforms built with Next.js, LLMs, and MongoDB — shipped to production, used by real users.",
+  alternates: {
+    canonical: "/projects",
+  },
+  openGraph: {
+    title: "Projects | Anish Singh",
+    description:
+      "AI SaaS, RAG systems, and full-stack platforms built with Next.js, LLMs, and MongoDB.",
+    url: "https://anish-ai.vercel.app/projects",
+    siteName: "Anish Singh",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Projects | Anish Singh",
+    description:
+      "AI SaaS, RAG systems, and full-stack platforms built with Next.js, LLMs, and MongoDB.",
+  },
+};
 
 export default function ProjectsPage() {
-  return (
-    <div className="relative w-full min-h-screen bg-[#111018] font-sans">
-      {/* Lightweight static noise texture — replaces expensive SVG feTurbulence filter */}
-      <div
-        className="pointer-events-none fixed inset-0 z-[1] opacity-[0.12] mix-blend-overlay"
-        style={{
-          backgroundImage: `url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXWBgYGHh4d5eXlzc3Oeli3teleVlZWQkJCLi4ubm5unp6edHR0teleeli3teleVlZWMjIx5eXlzc3Otra2jo6MAAAA4teleelTD/AAAAGnRSTlMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC2fNK/AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAQUlEQVRIie3NMQEAIAzAMMC/5+GAmw5rJM3OxhhsGAYRERERERERERERERERERERERERERERERERERERERERERERkT4f7B8BYQpDAAAAAElFTkSuQmCC")`,
-          backgroundRepeat: "repeat",
-        }}
-      />
-
-      <div className="relative z-10 pt-24 pb-20 px-4 sm:px-6">
-        <ProjectList projects={projectsData} />
-      </div>
-    </div>
-  );
+  return <ProjectsPageClient />;
 }

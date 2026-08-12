@@ -154,6 +154,13 @@
   .pause {
     animation-play-state: paused;
   }
+
+  /* Static noise texture — replaces expensive live SVG feTurbulence filters.
+     Same base64 PNG already used on the /projects page. */
+  .paper-noise {
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXWBgYGHh4d5eXlzc3Oeli3teleVlZWQkJCLi4ubm5unp6edHR0teleeli3teleVlZWMjIx5eXlzc3Otra2jo6MAAAA4teleelTD/AAAAGnRSTlMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC2fNK/AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAQUlEQVRIie3NMQEAIAzAMMC/5+GAmw5rJM3OxhhsGAYRERERERERERERERERERERERERERERERERERERERERERkT4f7B8BYQpDAAAAAElFTkSuQmCC");
+    background-repeat: repeat;
+  }
 }
 
 /* ─── ANIMATIONS ──────────────────────────────────────────────────────────── */

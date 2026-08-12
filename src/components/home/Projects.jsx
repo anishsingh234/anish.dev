@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Github } from "lucide-react";
@@ -134,16 +134,36 @@ function ProjectCard({ project, index }) {
   const isDarkText = project.textColor === "text-[#111018]";
   const cardRef = useRef(null);
   const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0 });
+  const rafRef = useRef(null);
+  const pointerRef = useRef({ x: 0, y: 0 });
 
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  // Throttled to once per animation frame — raw mousemove fires far more
+  // often than the screen can repaint, so every extra setState was wasted.
   const handleMouseMove = (e) => {
     if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const xPct = (e.clientX - rect.left) / rect.width - 0.5;
-    const yPct = (e.clientY - rect.top) / rect.height - 0.5;
-    setTilt({ rotateX: yPct * -24, rotateY: xPct * 24 });
+    pointerRef.current = { x: e.clientX, y: e.clientY };
+    if (rafRef.current) return;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null;
+      if (!cardRef.current) return;
+      const rect = cardRef.current.getBoundingClientRect();
+      const xPct = (pointerRef.current.x - rect.left) / rect.width - 0.5;
+      const yPct = (pointerRef.current.y - rect.top) / rect.height - 0.5;
+      setTilt({ rotateX: yPct * -24, rotateY: xPct * 24 });
+    });
   };
 
   const handleMouseLeave = () => {
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
     setTilt({ rotateX: 0, rotateY: 0 });
   };
 
@@ -310,49 +330,71 @@ export default function Projects() {
       }
     });
 
-    // 2. Complex 3D Stack Pinning
+    // 2. Complex 3D Stack Pinning — desktop only. Pinning + 3D scrub reads as
+    // scroll-jacking on touch devices and costs more on weaker mobile GPUs,
+    // so mobile gets a plain stacked layout with a lighter entrance instead.
     const cards = gsap.utils.toArray(".project-card-wrapper");
-    
-    // Set initial paper-like rotations
-    cards.forEach((card, i) => {
-      if (i > 0) {
-        gsap.set(card, { opacity: 0, scale: 0.85, yPercent: 120, rotationX: 45 });
-      }
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 768px)", () => {
+      // Set initial paper-like rotations
+      cards.forEach((card, i) => {
+        if (i > 0) {
+          gsap.set(card, { opacity: 0, scale: 0.85, yPercent: 120, rotationX: 45 });
+        }
+      });
+
+      // Pin the container and scrub through the cards
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          pin: true,
+          start: "top 10%",
+          end: () => "+=" + (cards.length * window.innerHeight), // Huge scroll area for smooth scrub
+          scrub: 1,
+        }
+      });
+
+      cards.forEach((card, index) => {
+        if (index === 0) return;
+
+        // Bring new card in
+        tl.to(card, {
+          yPercent: 0,
+          rotationX: 0,
+          opacity: 1,
+          scale: 1,
+          ease: "power2.inOut",
+          duration: 1,
+        }, index * 1); // Sequence it
+
+        // Dim and push back all previous cards
+        const previousCards = cards.slice(0, index);
+        tl.to(previousCards, {
+          scale: (i) => 1 - ((index - i) * 0.05),
+          yPercent: (i) => -((index - i) * 4),
+          opacity: (i) => 1 - ((index - i) * 0.2),
+          ease: "power2.inOut",
+          duration: 1
+        }, index * 1);
+      });
     });
 
-    // Pin the container and scrub through the cards
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        pin: true,
-        start: "top 10%", 
-        end: () => "+=" + (cards.length * window.innerHeight), // Huge scroll area for smooth scrub
-        scrub: 1, 
-      }
-    });
+    mm.add("(max-width: 767px)", () => {
+      gsap.set(cards, { position: "relative", opacity: 1, scale: 1, yPercent: 0, rotationX: 0 });
 
-    cards.forEach((card, index) => {
-      if (index === 0) return; 
-
-      // Bring new card in
-      tl.to(card, {
-        yPercent: 0,
-        rotationX: 0,
-        opacity: 1,
-        scale: 1,
-        ease: "power2.inOut",
-        duration: 1,
-      }, index * 1); // Sequence it
-
-      // Dim and push back all previous cards
-      const previousCards = cards.slice(0, index);
-      tl.to(previousCards, {
-        scale: (i) => 1 - ((index - i) * 0.05), 
-        yPercent: (i) => -((index - i) * 4), 
-        opacity: (i) => 1 - ((index - i) * 0.2),
-        ease: "power2.inOut",
-        duration: 1
-      }, index * 1);
+      gsap.from(cards, {
+        y: 60,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top 85%",
+          toggleActions: "play none none reverse",
+        }
+      });
     });
 
   }, { scope: sectionRef });
@@ -433,7 +475,7 @@ export default function Projects() {
         </div>
 
         {/* ── 3D Card Stack Container (Pinned) ── */}
-        <div ref={containerRef} className="relative w-full h-[85vh] md:h-[75vh] lg:h-[70vh]" style={{ perspective: "1500px" }}>
+        <div ref={containerRef} className="relative w-full h-auto md:h-[75vh] lg:h-[70vh]" style={{ perspective: "1500px" }}>
           {featuredProjects.map((project, i) => (
             <div 
               key={project.id} 

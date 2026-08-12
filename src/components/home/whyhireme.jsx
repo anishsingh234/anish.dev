@@ -118,21 +118,7 @@ export default function WhyHireMe() {
       className="relative py-14 sm:py-20 md:py-32 bg-[#05050A] font-sans overflow-hidden border-t border-white/5"
     >
       {/* Subtle Paper texture background — hidden on mobile for performance */}
-      <svg className="hidden md:block pointer-events-none absolute inset-0 z-0 w-full h-full opacity-10 mix-blend-overlay">
-        <filter id="hire-noise">
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="0.7"
-            numOctaves="3"
-            stitchTiles="stitch"
-          />
-          <feColorMatrix
-            type="matrix"
-            values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 0.5 0"
-          />
-        </filter>
-        <rect width="100%" height="100%" filter="url(#hire-noise)" />
-      </svg>
+      <div className="hidden md:block pointer-events-none absolute inset-0 z-0 w-full h-full opacity-10 mix-blend-overlay paper-noise" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 lg:px-16 relative z-10">
         {/* ── Section header ── */}

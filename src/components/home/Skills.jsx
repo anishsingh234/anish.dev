@@ -203,13 +203,6 @@ export default function Skills() {
 
   return (
     <>
-      {/* Devicon CDN */}
-      {/* eslint-disable-next-line @next/next/no-head-element */}
-      <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
-      />
-
       <section
         id="skills"
         ref={sectionRef}

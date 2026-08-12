@@ -1,8 +1,6 @@
 import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import clsx from "clsx";
-import Footer from "@/components/footer";
-import CustomCursor from "@/components/home/CustomCursor";
 import { Analytics } from '@vercel/analytics/react';
 
 import { Dancing_Script, Great_Vibes } from "next/font/google";
@@ -117,9 +115,40 @@ export const metadata = {
   },
 };
 
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Anish Singh",
+  url: "https://anish-ai.vercel.app",
+  jobTitle: "Full Stack Developer & AI Engineer",
+  sameAs: [
+    "https://github.com/anishsingh234",
+    "https://linkedin.com/in/anish-ai",
+  ],
+  knowsAbout: [
+    "React",
+    "Next.js",
+    "Node.js",
+    "Artificial Intelligence",
+    "Machine Learning",
+    "RAG",
+  ],
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Devicon CDN — used by the Skills section's tech icons */}
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+        />
+      </head>
       <body
         suppressHydrationWarning
         className={clsx(
@@ -134,7 +163,6 @@ export default function RootLayout({ children }) {
       >
         {children}
         <Analytics />
-        {/* <CustomCursor /> */}
       </body>
     </html>
   );

@@ -15,23 +15,10 @@ import {
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-// SVG filter for paper texture noise
+// Static noise texture, scoped to the Hero section only (not fixed to the
+// viewport) so it stops costing anything once the user scrolls past it.
 const PaperTexture = () => (
-  <svg className="hidden md:block pointer-events-none fixed inset-0 z-50 w-full h-full opacity-[0.15] mix-blend-overlay">
-    <filter id="noise">
-      <feTurbulence
-        type="fractalNoise"
-        baseFrequency="0.8"
-        numOctaves="4"
-        stitchTiles="stitch"
-      />
-      <feColorMatrix
-        type="matrix"
-        values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 0.5 0"
-      />
-    </filter>
-    <rect width="100%" height="100%" filter="url(#noise)" />
-  </svg>
+  <div className="hidden md:block pointer-events-none absolute inset-0 z-50 w-full h-full opacity-[0.15] mix-blend-overlay paper-noise" />
 );
 
 export default function Hero() {
@@ -106,20 +93,42 @@ export default function Hero() {
           "-=0.4",
         );
 
-      // 2. Scrollytelling Pinned Sequence
+      // 2. Scrollytelling Sequence — pinned horizontal scrub on desktop,
+      // a simple stacked fade-in on mobile (pinning + horizontal scrub reads
+      // as janky/unresponsive scroll-jacking on touch devices).
       const panels = gsap.utils.toArray(".story-panel");
 
-      gsap.to(panels, {
-        xPercent: -100 * (panels.length - 1),
-        ease: "none",
-        scrollTrigger: {
-          trigger: storyWrapRef.current,
-          pin: true,
-          scrub: 1,
-          snap: 1 / (panels.length - 1),
-          start: "top top",
-          end: () => "+=" + storyWrapRef.current.offsetWidth,
-        },
+      const mm = gsap.matchMedia();
+
+      mm.add("(min-width: 768px)", () => {
+        gsap.to(panels, {
+          xPercent: -100 * (panels.length - 1),
+          ease: "none",
+          scrollTrigger: {
+            trigger: storyWrapRef.current,
+            pin: true,
+            scrub: 1,
+            snap: 1 / (panels.length - 1),
+            start: "top top",
+            end: () => "+=" + storyWrapRef.current.offsetWidth,
+          },
+        });
+      });
+
+      mm.add("(max-width: 767px)", () => {
+        panels.forEach((panel) => {
+          gsap.from(panel, {
+            opacity: 0,
+            y: 40,
+            duration: 0.8,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: panel,
+              start: "top 80%",
+              toggleActions: "play none none reverse",
+            },
+          });
+        });
       });
     },
     { scope: containerRef },
@@ -274,10 +283,10 @@ export default function Hero() {
       {/* ── Scrollytelling Chapters ── */}
       <div
         ref={storyWrapRef}
-        className="h-screen flex flex-nowrap overflow-hidden bg-[#161520]"
+        className="flex flex-col overflow-visible md:h-screen md:flex-row md:flex-nowrap md:overflow-hidden bg-[#161520]"
       >
         {/* Chapter 1: The Developer */}
-        <div className="story-panel w-screen h-screen flex-shrink-0 flex items-center justify-center p-8 md:p-20 relative">
+        <div className="story-panel w-full h-auto py-16 md:w-screen md:h-screen md:py-0 flex-shrink-0 flex items-center justify-center p-8 md:p-20 relative">
           <div className="absolute top-10 left-10 md:top-20 md:left-20 text-[10vw] font-black text-white/[0.03] pointer-events-none">
             01
           </div>
@@ -307,7 +316,7 @@ export default function Hero() {
         </div>
 
         {/* Chapter 2: The AI Engineer */}
-        <div className="story-panel w-screen h-screen flex-shrink-0 flex items-center justify-center p-8 md:p-20 relative">
+        <div className="story-panel w-full h-auto py-16 md:w-screen md:h-screen md:py-0 flex-shrink-0 flex items-center justify-center p-8 md:p-20 relative">
           <div className="absolute top-10 left-10 md:top-20 md:left-20 text-[10vw] font-black text-white/[0.03] pointer-events-none">
             02
           </div>
@@ -337,7 +346,7 @@ export default function Hero() {
         </div>
 
         {/* Chapter 3: The Creator */}
-        <div className="story-panel w-screen h-screen flex-shrink-0 flex items-center justify-center p-8 md:p-20 relative">
+        <div className="story-panel w-full h-auto py-16 md:w-screen md:h-screen md:py-0 flex-shrink-0 flex items-center justify-center p-8 md:p-20 relative">
           <div className="absolute top-10 left-10 md:top-20 md:left-20 text-[10vw] font-black text-white/[0.03] pointer-events-none">
             03
           </div>

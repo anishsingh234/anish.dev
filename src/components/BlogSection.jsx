@@ -159,13 +159,7 @@ export default function BlogSection() {
       <section id="blog" ref={sectionRef} className="relative py-20 sm:py-28 bg-[#111018] font-sans overflow-hidden">
         
         {/* Paper texture background */}
-        <svg className="hidden md:block pointer-events-none absolute inset-0 z-0 w-full h-full opacity-[0.15] mix-blend-overlay">
-          <filter id="blog-noise">
-            <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" />
-            <feColorMatrix type="matrix" values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 0.5 0" />
-          </filter>
-          <rect width="100%" height="100%" filter="url(#blog-noise)" />
-        </svg>
+        <div className="hidden md:block pointer-events-none absolute inset-0 z-0 w-full h-full opacity-[0.15] mix-blend-overlay paper-noise" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
 

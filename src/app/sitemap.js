@@ -20,17 +20,5 @@ export default function sitemap() {
       changeFrequency: "weekly",
       priority: 0.5,
     },
-    {
-      url: `${baseUrl}/animations`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/yield`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
   ];
 }
