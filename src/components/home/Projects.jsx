@@ -6,6 +6,7 @@ import { ArrowUpRight, Github } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import SectionHeading from "@/components/_ui/SectionHeading";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -317,20 +318,7 @@ export default function Projects() {
   const containerRef = useRef(null);
 
   useGSAP(() => {
-    // 1. Header entrance
-    gsap.from(".projects-header", {
-      y: 60,
-      opacity: 0,
-      duration: 1.2,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 80%",
-        toggleActions: "play none none reverse",
-      }
-    });
-
-    // 2. Cards drop in like paper cut-outs as each scrolls into view —
+    // 1. Cards drop in like paper cut-outs as each scrolls into view —
     // alternating tilt direction keeps the collage feel without the
     // scroll-jacking cost of a pinned scrub.
     const cards = gsap.utils.toArray(".project-card-wrapper");
@@ -364,53 +352,13 @@ export default function Projects() {
         <div
           className="projects-header flex flex-col md:flex-row items-start md:items-end justify-between mb-16 lg:mb-24 gap-8 md:gap-10 relative z-20"
         >
-          <div className="relative">
-            <p className="text-3xl font-caveat text-purple-400 mb-4 transform -rotate-3 origin-left inline-block">
-              My Arsenal
-            </p>
-            <h2
-              className="font-bebas text-white leading-[0.85] tracking-wide relative z-10 uppercase"
-              style={{
-                fontSize: "clamp(4.5rem, 11vw, 9rem)",
-              }}
-            >
-              <div className="relative inline-block">
-                Selected
-                {/* Red stamp over "Selected" */}
-                <div className="absolute -top-4 -right-8 sm:-right-16 opacity-40 transform rotate-[15deg] pointer-events-none select-none border-4 border-[#ff3366] text-[#ff3366] font-bebas tracking-[0.2em] px-2 py-1 text-xl sm:text-3xl z-20 mix-blend-screen shadow-lg">
-                  TOP TIER
-                </div>
-              </div>
-              <br />
-              <span
-                className="text-transparent relative inline-block mt-2 sm:mt-4"
-                style={{ WebkitTextStroke: "2px #E8E6E1" }}
-              >
-                Projects
-                {/* Complex double underline SVG */}
-                <svg
-                  className="absolute -bottom-6 sm:-bottom-8 left-0 w-[120%] h-12 overflow-visible -z-10"
-                  viewBox="0 0 200 20"
-                  fill="none"
-                >
-                  <path
-                    d="M0,10 Q50,-5 100,10 T200,5"
-                    stroke="#A78BFA"
-                    strokeWidth="6"
-                    strokeLinecap="round"
-                    opacity="0.8"
-                  />
-                  <path
-                    d="M10,18 Q60,5 110,15 T190,12"
-                    stroke="#A78BFA"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    opacity="0.4"
-                  />
-                </svg>
-              </span>
-            </h2>
-          </div>
+          <SectionHeading
+            eyebrow="My Arsenal"
+            title="Selected"
+            accent="Projects"
+            stamp="TOP TIER"
+            stacked
+          />
 
           <Link
             href="/projects"

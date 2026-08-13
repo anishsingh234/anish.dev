@@ -4,6 +4,7 @@ import { Mail, ArrowUpRight } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import SectionHeading from "@/components/_ui/SectionHeading";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -19,23 +20,7 @@ export default function AboutSection() {
   const sectionRef = useRef(null);
 
   useGSAP(() => {
-    // 1. Header Animation Timeline
-    const headerTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 80%",
-        toggleActions: "play none none reverse",
-      }
-    });
-
-    headerTl.from(".about-title-wrapper", {
-      y: 60,
-      opacity: 0,
-      duration: 1,
-      ease: "power3.out",
-    });
-
-    // 2. Cards Animation Timeline
+    // 1. Cards Animation Timeline
     const cardsTl = gsap.timeline({
       scrollTrigger: {
         trigger: ".about-letter",
@@ -76,45 +61,14 @@ export default function AboutSection() {
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 relative z-10">
         {/* ── Section header ── */}
-        <div className="about-title-wrapper mb-16 sm:mb-24 text-center overflow-hidden sm:overflow-visible">
-          <p className="text-2xl font-caveat text-purple-400 mb-2 transform -rotate-2 origin-center inline-block">
-            Profile
-          </p>
-          <h2
-            className="font-bebas text-white leading-[0.85] tracking-wide relative z-10 uppercase"
-            style={{ fontSize: "clamp(4.5rem, 11vw, 9rem)" }}
-          >
-            Who I
-            <br />
-            <span
-              className="text-transparent relative inline-block mt-2 sm:mt-4"
-              style={{ WebkitTextStroke: "2px #A78BFA" }}
-            >
-              Actually Am
-              {/* Complex double underline SVG */}
-              <svg
-                className="absolute -bottom-6 sm:-bottom-8 left-0 w-[120%] h-12 overflow-visible -z-10"
-                viewBox="0 0 200 20"
-                fill="none"
-              >
-                <path
-                  d="M0,10 Q50,-5 100,10 T200,5"
-                  stroke="#A78BFA"
-                  strokeWidth="6"
-                  strokeLinecap="round"
-                  opacity="0.8"
-                />
-                <path
-                  d="M10,18 Q60,5 110,15 T190,12"
-                  stroke="#A78BFA"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  opacity="0.4"
-                />
-              </svg>
-            </span>
-          </h2>
-        </div>
+        <SectionHeading
+          eyebrow="Profile"
+          title="Who I"
+          accent="Actually Am"
+          stacked
+          align="center"
+          className="mb-16 sm:mb-24 w-full"
+        />
 
         {/* ── Overlapping Cards Grid ── */}
         <div className="relative flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-0 mt-10">

@@ -9,6 +9,7 @@ import PDFModal from "@/components/PDFModal";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import SectionHeading from "@/components/_ui/SectionHeading";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -108,33 +109,20 @@ export default function BlogSection() {
   const sectionRef = useRef(null);
 
   useGSAP(() => {
-    // Header Animation Timeline
-    const headerTl = gsap.timeline({
+    // Archive button entrance
+    gsap.from(".blog-archive-btn", {
+      x: 30,
+      opacity: 0,
+      rotation: 5,
+      duration: 0.8,
+      delay: 0.5,
+      ease: "back.out(2)",
       scrollTrigger: {
         trigger: sectionRef.current,
         start: "top 80%",
         toggleActions: "play none none reverse",
       }
     });
-
-    headerTl.from(".blog-header-text", {
-      y: 60,
-      opacity: 0,
-      duration: 1,
-      ease: "power3.out",
-    })
-    .fromTo(".blog-header-highlight path", 
-      { strokeDasharray: 400, strokeDashoffset: 400 },
-      { strokeDashoffset: 0, duration: 0.8, ease: "power2.inOut" },
-      "-=0.4" // Start drawing highlighter slightly before text finishes moving
-    )
-    .from(".blog-archive-btn", {
-      x: 30,
-      opacity: 0,
-      rotation: 5,
-      duration: 0.8,
-      ease: "back.out(2)"
-    }, "-=0.6");
 
     // Journal Cards Staggered Animation
     gsap.from(".journal-card-wrapper", {
@@ -165,25 +153,8 @@ export default function BlogSection() {
 
           {/* ── Section header ── */}
           <div className="blog-header flex flex-col md:flex-row items-end justify-between mb-16 gap-6 overflow-hidden sm:overflow-visible">
-            <div className="blog-header-text relative">
-              <p className="text-2xl font-caveat text-purple-400 mb-2 transform -rotate-2 origin-left">
-                Technical Writing
-              </p>
-              <h2
-                className="font-bebas text-white leading-none tracking-wide relative z-10"
-                style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}
-              >
-                My{" "}
-                <span className="text-transparent relative inline-block" style={{ WebkitTextStroke: "2px #A78BFA" }}>
-                  Journal
-                  {/* SVG scribble underline */}
-                  <svg className="blog-header-highlight absolute -bottom-4 left-0 w-[110%] h-8 overflow-visible -z-10" viewBox="0 0 200 20" fill="none">
-                    <path d="M5,15 Q50,0 100,10 T195,15" stroke="#A78BFA" strokeWidth="6" strokeLinecap="round" opacity="0.8" />
-                  </svg>
-                </span>
-              </h2>
-            </div>
-            
+            <SectionHeading eyebrow="Technical Writing" title="My" accent="Journal" />
+
             <Link
               href="/blog"
               className="blog-archive-btn group paper-card flex items-center gap-2 font-bold text-white border-2 border-white/20 px-6 py-3 transition-colors hover:bg-white/5"

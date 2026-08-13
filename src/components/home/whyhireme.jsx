@@ -4,6 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import SectionHeading from "@/components/_ui/SectionHeading";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -47,37 +48,7 @@ export default function WhyHireMe() {
     () => {
       const mobile = window.innerWidth < 640;
 
-      // 1. Header Animation Timeline
-      const headerTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          toggleActions: "play none none reverse",
-        },
-      });
-
-      headerTl
-        .from(".hire-header-text", {
-          y: 60,
-          opacity: 0,
-          duration: 1,
-          ease: "power3.out",
-        })
-        .fromTo(
-          ".hire-title-highlight path",
-          {
-            strokeDasharray: 300,
-            strokeDashoffset: 300,
-          },
-          {
-            strokeDashoffset: 0,
-            duration: 0.8,
-            ease: "power2.inOut",
-          },
-          "-=0.4",
-        );
-
-      // 2. Pitch Note (Left) — reduced x on mobile to prevent overflow
+      // 1. Pitch Note (Left) — reduced x on mobile to prevent overflow
       gsap.from(".hire-pitch-note", {
         x: mobile ? -30 : -80,
         y: mobile ? 30 : 50,
@@ -92,7 +63,7 @@ export default function WhyHireMe() {
         },
       });
 
-      // 3. Evidence Tags (Right - Staggered) — reduced x on mobile
+      // 2. Evidence Tags (Right - Staggered) — reduced x on mobile
       gsap.from(".hire-evidence-tag", {
         x: mobile ? 30 : 80,
         opacity: 0,
@@ -122,42 +93,13 @@ export default function WhyHireMe() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 lg:px-16 relative z-10">
         {/* ── Section header ── */}
-        <div className="mb-10 sm:mb-16 md:mb-20 overflow-hidden sm:overflow-visible">
-          <div className="hire-header-text relative inline-block">
-            <p className="text-2xl font-caveat text-purple-400 mb-2 transform -rotate-2 origin-left">
-              The Verdict
-            </p>
-            <h2
-              className="font-bebas text-white leading-none tracking-wide relative inline-block z-10"
-              style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}
-            >
-              The case
-              <br />
-              <span
-                className="text-transparent relative z-10 inline-block"
-                style={{ WebkitTextStroke: "2px #A78BFA" }}
-              >
-                for hiring me.
-                {/* SVG scribble underline */}
-                <svg
-                  className="hire-title-highlight absolute -bottom-4 left-0 w-[110%] h-8 overflow-visible -z-10"
-                  viewBox="0 0 200 20"
-                  fill="none"
-                >
-                  <path
-                    d="M10,15 C50,0 150,0 190,15"
-                    stroke="#A78BFA"
-                    strokeWidth="6"
-                    strokeLinecap="round"
-                    fill="none"
-                    strokeDasharray="300"
-                    strokeDashoffset="300"
-                  />
-                </svg>
-              </span>
-            </h2>
-          </div>
-        </div>
+        <SectionHeading
+          eyebrow="The Verdict"
+          title="The case"
+          accent="for hiring me."
+          stacked
+          className="mb-10 sm:mb-16 md:mb-20"
+        />
 
         {/* ── Two column body ── */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-8 sm:gap-12 lg:gap-20 items-start">

@@ -5,6 +5,7 @@ import { ArrowUpRight } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import SectionHeading from "@/components/_ui/SectionHeading";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -162,33 +163,20 @@ export default function Experience() {
   const containerRef = useRef(null);
 
   useGSAP(() => {
-    // 1. Header Animation Timeline
-    const headerTl = gsap.timeline({
+    // 1. Availability badge entrance
+    gsap.from(".exp-badge", {
+      y: 40,
+      opacity: 0,
+      rotationZ: -5,
+      duration: 0.8,
+      delay: 0.5,
+      ease: "back.out(2)",
       scrollTrigger: {
         trigger: sectionRef.current,
         start: "top 80%",
         toggleActions: "play none none reverse",
       }
     });
-
-    headerTl.from(".exp-title-wrapper", {
-      y: 60,
-      opacity: 0,
-      duration: 1,
-      ease: "power3.out",
-    })
-    .to(".exp-header-underline path", {
-      strokeDashoffset: 0,
-      duration: 0.8,
-      ease: "power2.inOut"
-    }, "-=0.4")
-    .from(".exp-badge", {
-      y: 40,
-      opacity: 0,
-      rotationZ: -5,
-      duration: 0.8,
-      ease: "back.out(2)"
-    }, "-=0.6");
 
     // 2. Timeline Line Draw Animation
     gsap.fromTo(".timeline-line-active", 
@@ -255,27 +243,13 @@ export default function Experience() {
       <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
         {/* ── Section header ── */}
         <div className="exp-header flex flex-col items-center text-center mb-24 overflow-hidden sm:overflow-visible">
-          <div className="exp-title-wrapper relative inline-block">
-            <p className="text-2xl font-caveat text-purple-400 mb-2 transform rotate-2">
-              Background
-            </p>
-            <h2
-              className="font-bebas text-white leading-none tracking-wide mb-8 relative z-10"
-              style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}
-            >
-              The{" "}
-              <span
-                className="text-transparent relative inline-block"
-                style={{ WebkitTextStroke: "2px #A78BFA" }}
-              >
-                Journey
-                {/* SVG scribble underline */}
-                <svg className="exp-header-underline absolute -bottom-4 left-0 w-[110%] h-8 overflow-visible -z-10" viewBox="0 0 200 20" fill="none">
-                  <path d="M10,15 C50,0 150,0 190,15" stroke="#A78BFA" strokeWidth="6" strokeLinecap="round" opacity="0.8" strokeDasharray="250" strokeDashoffset="250" />
-                </svg>
-              </span>
-            </h2>
-          </div>
+          <SectionHeading
+            eyebrow="Background"
+            title="The"
+            accent="Journey"
+            align="center"
+            className="mb-8 w-full"
+          />
 
           <div className="exp-badge flex items-center gap-3 px-6 py-3 border-2 border-white/10 bg-white/5 shadow-lg transform rotate-2">
             <span className="relative flex h-3 w-3">

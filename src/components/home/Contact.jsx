@@ -5,6 +5,7 @@ import Form from "@/components/contact/Form";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import SectionHeading from "@/components/_ui/SectionHeading";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -38,28 +39,7 @@ export default function Contact() {
   };
 
   useGSAP(() => {
-    // 1. Header Timeline
-    const headerTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 80%",
-        toggleActions: "play none none reverse",
-      }
-    });
-
-    headerTl.from(".contact-title-wrapper", {
-      y: 60,
-      opacity: 0,
-      duration: 1,
-      ease: "power3.out",
-    })
-    .to(".contact-header-highlight path", {
-      strokeDashoffset: 0,
-      duration: 0.8,
-      ease: "power2.inOut"
-    }, "-=0.4");
-
-    // 2. Left side pins
+    // 1. Left side pins
     gsap.from(".social-pin", {
       y: 50,
       opacity: 0,
@@ -74,7 +54,7 @@ export default function Contact() {
       }
     });
 
-    // 3. Form Envelope (Right)
+    // 2. Form Envelope (Right)
     gsap.from(".contact-form-envelope", {
       x: 80,
       opacity: 0,
@@ -100,23 +80,12 @@ export default function Contact() {
       <div className="contact-wrapper max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 relative z-10">
 
         {/* ── Section header ── */}
-        <div className="contact-header mb-16 relative w-fit overflow-hidden sm:overflow-visible">
-          <div className="contact-title-wrapper relative inline-block">
-            <p className="text-2xl font-caveat text-purple-400 mb-2 transform -rotate-2">
-              Open Comms
-            </p>
-            <h2 className="font-bebas text-white leading-none tracking-wide relative z-10" style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}>
-              Direct{" "}
-              <span className="text-transparent relative inline-block" style={{ WebkitTextStroke: "2px #A78BFA" }}>
-                Line.
-                {/* Hand drawn highlight */}
-                <svg className="contact-header-highlight absolute -bottom-4 left-0 w-[110%] h-6 overflow-visible -z-10" viewBox="0 0 200 20" fill="none">
-                  <path d="M0,10 Q50,5 100,10 T200,10" stroke="#A78BFA" strokeWidth="6" strokeLinecap="round" opacity="0.4" strokeDasharray="300" strokeDashoffset="300" />
-                </svg>
-              </span>
-            </h2>
-          </div>
-        </div>
+        <SectionHeading
+          eyebrow="Open Comms"
+          title="Direct"
+          accent="Line."
+          className="mb-16"
+        />
 
         {/* ── Envelope Layout (Two columns) ── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">

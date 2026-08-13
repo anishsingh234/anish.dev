@@ -3,6 +3,7 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import SectionHeading from "@/components/_ui/SectionHeading";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -120,34 +121,20 @@ export default function Skills() {
 
   useGSAP(
     () => {
-      // 1. Header Animation Timeline
-      const headerTl = gsap.timeline({
+      // 1. Description note entrance
+      gsap.from(".skills-desc-note", {
+        x: -40,
+        opacity: 0,
+        rotationZ: 5,
+        duration: 0.8,
+        delay: 0.5,
+        ease: "back.out(1.5)",
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top 80%",
           toggleActions: "play none none reverse",
         }
       });
-
-      headerTl.from(".skills-title-wrapper", {
-        y: 60,
-        opacity: 0,
-        duration: 1,
-        ease: "power3.out",
-      })
-      .to(".skills-header-underline path", {
-        strokeDashoffset: 0,
-        duration: 0.8,
-        stagger: 0.2,
-        ease: "power2.inOut"
-      }, "-=0.4")
-      .from(".skills-desc-note", {
-        x: -40,
-        opacity: 0,
-        rotationZ: 5,
-        duration: 0.8,
-        ease: "back.out(1.5)"
-      }, "-=0.6");
 
       // 2. Folder and Stickers Animation
       const folders = gsap.utils.toArray(".skill-folder");
@@ -211,21 +198,12 @@ export default function Skills() {
         {/* ── Intro Header ── */}
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-20 pb-10 relative z-10 overflow-hidden sm:overflow-visible">
           
-          <div className="skills-title-wrapper relative inline-block">
-            <p className="text-2xl font-caveat text-purple-400 mb-2 transform -rotate-2 origin-left">
-              Tech Arsenal
-            </p>
-            <h2 className="font-bebas text-white leading-none tracking-wide mb-8 relative z-10" style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}>
-              The <span className="text-transparent relative inline-block" style={{ WebkitTextStroke: "2px #A78BFA" }}>
-                Dossier
-                {/* SVG scribble underline */}
-                <svg className="skills-header-underline absolute -bottom-4 left-0 w-[110%] h-8 overflow-visible -z-10" viewBox="0 0 200 20" fill="none">
-                  <path d="M5,15 Q50,0 100,10 T195,15" stroke="#A78BFA" strokeWidth="6" strokeLinecap="round" opacity="0.8" strokeDasharray="300" strokeDashoffset="300" />
-                  <path d="M15,20 Q60,5 110,15 T185,18" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round" opacity="0.4" strokeDasharray="300" strokeDashoffset="300" />
-                </svg>
-              </span>
-            </h2>
-          </div>
+          <SectionHeading
+            eyebrow="Tech Arsenal"
+            title="The"
+            accent="Dossier"
+            className="mb-8"
+          />
 
           <p className="skills-desc-note text-white/80 font-sans max-w-xl text-lg bg-black/40 p-4 border-l-4 border-purple-500 rounded-r-lg relative transform -rotate-1 shadow-lg">
             <span className="absolute -top-3 left-6 w-12 h-4 bg-white/20 backdrop-blur-sm rotate-3 shadow-sm" />
