@@ -1,187 +1,164 @@
 "use client";
-import { useState, useRef } from "react";
-import { Mail, Github, Linkedin, CheckCircle2, ArrowUpRight } from "lucide-react";
+
+import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import { ArrowUpRight, Check, Copy, FileDown } from "lucide-react";
 import Form from "@/components/contact/Form";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
-import SectionHeading from "@/components/_ui/SectionHeading";
+import { RunningHead } from "@/components/paper/PageHead";
+import { Underline, Bulb, Spiral, CoffeeRing } from "@/components/paper/Doodles";
+import Tape from "@/components/paper/Tape";
+import Stamp from "@/components/paper/Stamp";
+import { CONTACT } from "@/components/paper/pages";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+// Three.js only loads on tablet/desktop, and only as this page approaches.
+const NotebookScene = dynamic(() => import("./NotebookScene"), { ssr: false });
 
-const socials = [
-  {
-    label: "GitHub",
-    sub: "anishsingh234",
-    href: "https://github.com/anishsingh234",
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-      </svg>
-    ),
-  },
-  {
-    label: "LinkedIn",
-    sub: "linkedin.com/in/anish-ai",
-    href: "https://linkedin.com/in/anish-ai",
-    icon: <Linkedin className="w-5 h-5" />,
-  },
-];
-
-export default function Contact() {
+function ContactSlip() {
   const [copied, setCopied] = useState(false);
-  const sectionRef = useRef(null);
-
-  const copyEmail = () => {
-    navigator.clipboard.writeText("anishsingh210204@gmail.com");
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(CONTACT.email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2200);
+    } catch {
+      window.location.href = `mailto:${CONTACT.email}`;
+    }
   };
 
-  useGSAP(() => {
-    // 1. Left side pins
-    gsap.from(".social-pin", {
-      y: 50,
-      opacity: 0,
-      rotationZ: () => Math.random() * 10 - 5,
-      duration: 0.8,
-      stagger: 0.15,
-      ease: "back.out(1.5)",
-      scrollTrigger: {
-        trigger: ".contact-wrapper",
-        start: "top 75%",
-        toggleActions: "play none none reverse",
-      }
-    });
-
-    // 2. Form Envelope (Right)
-    gsap.from(".contact-form-envelope", {
-      x: 80,
-      opacity: 0,
-      rotationZ: 3,
-      duration: 1,
-      ease: "back.out(1.2)",
-      scrollTrigger: {
-        trigger: ".contact-wrapper",
-        start: "top 75%",
-        toggleActions: "play none none reverse",
-      }
-    });
-
-  }, { scope: sectionRef });
+  const rows = [
+    { k: "github", v: "anishsingh234", href: CONTACT.github },
+    { k: "linkedin", v: "in/anish-ai", href: CONTACT.linkedin },
+  ];
 
   return (
-    <section
-      id="contact"
-      ref={sectionRef}
-      className="relative bg-transparent py-20 sm:py-28 overflow-hidden font-sans border-t-2 border-white/5"
-    >
+    <div className="drop">
+      <div className="paper torn-bottom relative px-6 sm:px-8 pt-8 pb-12 [--r:-1.5deg]">
+        <Tape at="top" w={86} rotate={2} />
+        <div className="flex items-start justify-between gap-4">
+          <h3 className="font-bebas text-[2rem] leading-none text-ink">Contact slip</h3>
+          <Stamp rotate={8} className="text-base text-pen-deep" decorative>
+            Say hi
+          </Stamp>
+        </div>
 
-      <div className="contact-wrapper max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 relative z-10">
-
-        {/* ── Section header ── */}
-        <SectionHeading
-          eyebrow="Open Comms"
-          title="Direct"
-          accent="Line."
-          className="mb-16"
-        />
-
-        {/* ── Envelope Layout (Two columns) ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
-
-          {/* ── Left: Pinned Information ── */}
-          <div className="flex flex-col gap-8">
-            
-            <div className="social-pin p-6 bg-[#E8E6E1] text-[#111018] shadow-lg relative transform -rotate-1" style={{ clipPath: "polygon(1% 0, 99% 1%, 100% 99%, 0 100%)" }}>
-              {/* Tape */}
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 bg-white/40 backdrop-blur-sm rotate-[4deg] z-10 shadow-sm" />
-              
-              <p className="text-lg font-serif font-medium leading-relaxed">
-                I am actively seeking <span className="font-bold bg-purple-200 px-1">Full-Stack & AI Engineering</span> opportunities. 
-                If you have an exciting role or a tough problem to solve, I'm ready to ship.
-              </p>
-            </div>
-
-            {/* Email Block */}
-            <div className="social-pin flex flex-col gap-3">
-              <span className="text-xs font-mono text-white/50 tracking-[0.25em] uppercase font-bold">
-                Email Dispatch
+        <dl className="mt-5 space-y-4">
+          <div className="border-b border-dotted border-ink/35 pb-3">
+            <dt className="font-caveat text-2xl leading-none text-cobalt">email</dt>
+            <dd className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-2">
+              <a href={`mailto:${CONTACT.email}`} className="pen-link break-all font-serif text-[1.08rem] text-ink">
+                {CONTACT.email}
+              </a>
+              <button
+                type="button"
+                onClick={copy}
+                className="paper paper-sticky min-h-9 inline-flex items-center gap-1.5 px-2.5 type-label text-[0.66rem] [--r:2deg]"
+              >
+                {copied ? <Check className="size-3.5" aria-hidden="true" /> : <Copy className="size-3.5" aria-hidden="true" />}
+                {copied ? "Copied" : "Copy"}
+              </button>
+              <span role="status" className="sr-only">
+                {copied ? "Email address copied" : ""}
               </span>
-              <div className="flex flex-wrap items-center gap-4">
-                <span className="text-xl font-bold text-white tracking-tight underline decoration-purple-500/50 decoration-2 underline-offset-4">
-                  anishsingh210204@gmail.com
-                </span>
-                <button
-                  onClick={copyEmail}
-                  className="flex items-center gap-2 px-4 py-2 bg-purple-500 text-white font-mono text-[10px] uppercase tracking-widest font-bold shadow-md transition-transform hover:-translate-y-1"
-                  style={{ clipPath: "polygon(5% 0, 100% 5%, 95% 100%, 0 95%)" }}
-                >
-                  {copied ? (
-                    <><CheckCircle2 className="w-4 h-4" /> Copied</>
-                  ) : (
-                    <><Mail className="w-4 h-4" /> Copy Address</>
-                  )}
-                </button>
+            </dd>
+          </div>
+          {rows.map((r) => (
+            <div key={r.k} className="border-b border-dotted border-ink/35 pb-3">
+              <dt className="font-caveat text-2xl leading-none text-cobalt">{r.k}</dt>
+              <dd className="mt-1">
+                <a href={r.href} target="_blank" rel="noopener noreferrer" className="pen-link inline-flex items-center gap-1 font-serif text-[1.08rem] text-ink">
+                  {r.v}
+                  <ArrowUpRight className="size-4" aria-hidden="true" />
+                </a>
+              </dd>
+            </div>
+          ))}
+          <div>
+            <dt className="font-caveat text-2xl leading-none text-cobalt">resume</dt>
+            <dd className="mt-2">
+              <a
+                href={CONTACT.resume}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="paper paper-sticky lift inline-flex min-h-11 items-center gap-2 px-4 type-label text-[0.72rem] [--r:-1deg]"
+              >
+                <FileDown className="size-4" aria-hidden="true" />
+                Download PDF
+              </a>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  );
+}
+
+export default function Contact() {
+  const sceneRef = useRef(null);
+  const [showScene, setShowScene] = useState(false);
+
+  useEffect(() => {
+    if (!window.matchMedia("(min-width: 768px)").matches || !sceneRef.current) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShowScene(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "700px 0px" }
+    );
+    io.observe(sceneRef.current);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <section id="contact" aria-labelledby="contact-title" className="relative px-4 sm:px-8 pt-20 pb-16 lg:pt-28 lg:pb-24">
+      <div className="mx-auto max-w-[1240px]">
+        <RunningHead page="09" flag="yellow" />
+
+        <div className="mt-12 lg:mt-16 grid gap-10 lg:grid-cols-12 items-center">
+          <div data-reveal className="lg:col-span-6 relative">
+            <h2
+              id="contact-title"
+              className="font-caveat font-bold text-ivory leading-[0.85] -rotate-2 text-[clamp(4.4rem,11vw,8.4rem)]"
+            >
+              One last page.
+            </h2>
+            <Underline draw className="mt-1 h-5 w-[min(100%,27rem)] text-pen" />
+            <p className="mt-8 font-bebas uppercase leading-[0.95] text-ivory text-[clamp(2.2rem,4.6vw,3.5rem)]">
+              Have an idea? <span className="text-marker">Let’s build it.</span>
+            </p>
+            <p className="mt-5 max-w-[34rem] font-serif text-[1.12rem] leading-[1.7] text-ivory/80">
+              Got an idea worth building, a tough problem, or just want to talk shop about web and AI? My inbox is
+              open.
+            </p>
+            <Bulb draw className="hidden sm:block absolute -top-4 right-2 lg:right-10 h-16 w-12 text-marker rotate-12 [--d:0.9s]" />
+          </div>
+
+          {/* The notebook, left open on the desk */}
+          <div data-reveal className="relative lg:col-span-6 [--d:0.1s]">
+            <CoffeeRing className="pointer-events-none absolute -left-6 -bottom-4 size-40 opacity-80 hidden md:block" />
+            <div ref={sceneRef} aria-hidden="true" className="relative hidden md:block aspect-[4/3] w-full">
+              {showScene && <NotebookScene className="absolute inset-0" />}
+            </div>
+            <Spiral draw className="hidden md:block absolute right-4 -top-2 size-12 text-ivory/40 [--d:0.6s]" />
+          </div>
+        </div>
+
+        <div className="mt-14 lg:mt-10 grid gap-12 lg:gap-16 lg:grid-cols-12 items-start">
+          <div data-reveal className="lg:col-span-5">
+            <ContactSlip />
+          </div>
+
+          <div data-reveal className="lg:col-span-7 [--d:0.1s]">
+            <div className="paper paper-lined relative px-6 pl-[4.2rem] sm:pl-20 pr-6 sm:pr-10 pt-8 pb-10 [--r:0.8deg] [--line:2rem] [--line-start:0.6rem] [--margin:3rem] sm:[--margin:3.6rem]">
+              <Tape at="tr" w={80} />
+              <h3 className="font-caveat text-[2.2rem] leading-[2rem] text-ink">Dear Anish,</h3>
+              <div className="mt-6">
+                <Form />
               </div>
             </div>
-
-            {/* Social rows */}
-            <div className="flex flex-col gap-4 mt-4">
-              {socials.map(({ label, sub, href, icon }, i) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="social-pin group flex items-center justify-between p-4 bg-white/5 hover:bg-white/10 transition-colors border-l-4 border-purple-500"
-                  style={{ transform: `rotate(${i % 2 === 0 ? 1 : -1}deg)` }}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="text-white">
-                      {icon}
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <span className="text-sm font-bold text-white tracking-tight uppercase">
-                        {label}
-                      </span>
-                      <span className="text-xs font-mono text-white/60 tracking-wide">
-                        {sub}
-                      </span>
-                    </div>
-                  </div>
-                  <ArrowUpRight className="w-5 h-5 text-white/40 group-hover:text-white group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
-                </a>
-              ))}
-            </div>
-
-            {/* Availability note */}
-            <div className="social-pin inline-flex items-center gap-3 px-4 py-3 bg-[#1A1825] border border-white/10 shadow-md w-fit mt-4" style={{ clipPath: "polygon(0 0, 100% 2%, 98% 100%, 2% 98%)" }}>
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-              </span>
-              <span className="text-xs font-mono text-white/80 tracking-widest uppercase font-bold">
-                Available · Jun 2026
-              </span>
-            </div>
           </div>
-
-          {/* ── Right: Physical Form Envelope ── */}
-          <div className="contact-form-envelope relative p-8 sm:p-12 bg-[#E8E6E1] shadow-[15px_20px_40px_rgba(0,0,0,0.5)] border-t-8 border-purple-600"
-               style={{ clipPath: "polygon(0 0, 100% 1%, 99% 100%, 1% 99%)" }}>
-            
-            {/* Stamp overlay */}
-            <div className="absolute top-8 right-8 opacity-20 transform rotate-12 pointer-events-none select-none border-4 border-red-600 text-red-600 font-bold uppercase tracking-widest p-2 text-2xl font-mono">
-              PRIORITY
-            </div>
-            
-            <p className="text-[10px] font-mono text-[#111018]/50 tracking-[0.25em] uppercase font-bold mb-8">
-              Write a Message
-            </p>
-            <Form />
-          </div>
-
         </div>
       </div>
     </section>

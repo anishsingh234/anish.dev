@@ -90,6 +90,23 @@ export const projectsData = [
     demoLink: null,
   },
 
+  {
+    id: 16,
+    name: "Wizora",
+    tag: "Micro-SaaS · Next.js",
+    featured: true,
+    description:
+      "Micro-SaaS for creating animated wish pages, built with Next.js.",
+    bullets: [
+      "Animated wish pages delivered as a micro-SaaS product",
+      "Built and deployed with Next.js",
+    ],
+    status: "Completed",
+    techStack: ["Next.js"],
+    GithubLink: null,
+    demoLink: "https://wizora.vercel.app/",
+  },
+
   // ===================== FULL STACK PROJECTS =====================
 
   {

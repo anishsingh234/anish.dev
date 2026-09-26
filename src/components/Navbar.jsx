@@ -1,351 +1,251 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, X, Github, ArrowUpRight, Mail, Download } from "lucide-react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import { Search, X, ArrowUpRight, Github, Linkedin, Mail, FileText } from "lucide-react";
+import { projectsData } from "@/app/data";
+import { PAGES, CONTACT } from "@/components/paper/pages";
+import { Squiggle } from "@/components/paper/Doodles";
+import Tape from "@/components/paper/Tape";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
-
-/* ─── NAV DATA ────────────────────────────────────────────────────────────── */
-const navItems = [
-  { label: "Home",        href: "/",            id: null          },
-  { label: "Projects",    href: "/#projects",   id: "projects"    },
-  { label: "Why Hire Me", href: "/#why-hire-me", id: "why-hire-me" },
-  { label: "Skills",      href: "/#skills",     id: "skills"      },
-  { label: "Experience",  href: "/#experience", id: "experience"  },
-  { label: "About",       href: "/#about",      id: "about"       },
-  { label: "Contact",     href: "/#contact",    id: "contact"     },
-];
-
-/* ─── LIVE CLOCK (TYPEWRITER STYLE) ───────────────────────────────────────── */
-function LiveClock() {
-  const [time, setTime] = useState("");
+/* ─── Handwritten local time, IST — updates each half minute ─────────────── */
+function DeskClock({ className = "" }) {
+  const [stamp, setStamp] = useState("");
   useEffect(() => {
-    const fmt = () =>
-      setTime(
-        new Date().toLocaleTimeString("en-IN", {
-          timeZone: "Asia/Kolkata",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-        })
-      );
-    fmt();
-    const t = setInterval(fmt, 1000);
+    const fmt = new Intl.DateTimeFormat("en-IN", {
+      timeZone: "Asia/Kolkata",
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+    const tick = () => setStamp(fmt.format(new Date()).replace(",", " ·").toLowerCase());
+    tick();
+    const t = setInterval(tick, 30000);
     return () => clearInterval(t);
   }, []);
   return (
-    <span className="font-mono text-sm text-[#111018] font-bold tracking-[0.2em] tabular-nums">
-      {time}
+    <span className={`font-caveat text-lg leading-none whitespace-nowrap ${className}`}>
+      {stamp && (
+        <>
+          <span className="sr-only">Local time for Anish: </span>
+          {stamp} <span className="text-graphite">ist</span>
+        </>
+      )}
     </span>
   );
 }
 
-/* ─── DESKTOP NAV (TORN PARCHMENT STRIP) ──────────────────────────────────────── */
-function TornStripNav({ activeSection, pathname, onSearchOpen }) {
-  const isHome = pathname === "/";
-  const [scrolled, setScrolled] = useState(false);
-  const navRef = useRef(null);
+/* ─── Scroll to a section on the home page, or route there ──────────────── */
+function useGoToSection() {
+  const pathname = usePathname();
+  const router = useRouter();
+  return useCallback(
+    (id) => {
+      const el = pathname === "/" && document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        history.replaceState(null, "", `#${id}`);
+      } else {
+        router.push(`/#${id}`);
+      }
+    },
+    [pathname, router]
+  );
+}
 
-  // Scroll detection to float down slightly or add shadow
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useGSAP(() => {
-    // Drop in the torn strip after the preloader finishes (approx 2.5s)
-    gsap.from(navRef.current, {
-      y: -100,
-      rotationZ: -5,
-      opacity: 0,
-      duration: 1.2,
-      ease: "back.out(1.2)",
-      delay: 2.5, 
-    });
-  }, { scope: navRef });
-
+/* ─── Desktop: a torn paper strip with index tabs peeking out beneath it ── */
+function PaperStrip({ active, onSearch }) {
+  const go = useGoToSection();
   return (
-    <nav
-      ref={navRef}
-      className="hidden lg:flex fixed top-0 left-1/2 -translate-x-1/2 z-[100] font-sans items-center"
-      style={{ transform: `translateX(-50%) translateY(${scrolled ? 10 : 20}px)`, transition: "transform 0.4s ease" }}
-    >
-      {/* Tape holding it up */}
-      <div className="absolute -top-3 left-10 w-12 h-6 bg-white/40 rotate-[-15deg] shadow-sm pointer-events-none z-10" />
-      <div className="absolute -top-4 right-10 w-16 h-6 bg-white/30 rotate-[8deg] shadow-sm pointer-events-none z-10" />
-
-      {/* The Torn Strip Background */}
-      <div 
-        className="relative flex items-center gap-1 sm:gap-2 px-6 py-4 bg-[#E8E6E1] text-[#111018] shadow-[8px_12px_0_rgba(0,0,0,0.8)] border border-[#111018]/10"
-        style={{ 
-          // Super jagged edges simulating a torn strip of paper
-          clipPath: "polygon(1% 4%, 4% 1%, 8% 3%, 12% 0%, 15% 4%, 20% 1%, 25% 3%, 30% 0%, 35% 4%, 40% 1%, 45% 3%, 50% 0%, 55% 4%, 60% 1%, 65% 3%, 70% 0%, 75% 4%, 80% 1%, 85% 3%, 90% 0%, 95% 4%, 98% 1%, 100% 5%, 98% 95%, 95% 98%, 90% 96%, 85% 99%, 80% 96%, 75% 99%, 70% 96%, 65% 99%, 60% 96%, 55% 99%, 50% 96%, 45% 99%, 40% 96%, 35% 99%, 30% 96%, 25% 99%, 20% 96%, 15% 99%, 12% 96%, 8% 99%, 4% 96%, 0% 98%)"
-        }}
-      >
-        {/* Brand */}
-        <Link href="/" className="mr-6 group">
-          <span className="font-black text-2xl tracking-tighter bg-[#111018] text-[#E8E6E1] px-3 py-1.5 rotate-[-2deg] inline-block shadow-[2px_3px_0_rgba(0,0,0,0.5)] group-hover:rotate-0 transition-transform">
+    <nav aria-label="Primary" className="hidden lg:flex flex-col items-center fixed top-3 left-1/2 -translate-x-1/2 z-[100]">
+      {/* the strip itself */}
+      <div className="drop relative z-10">
+        <Tape at="tl" w={60} rotate={-32} />
+        <Tape at="tr" w={60} rotate={30} />
+        <div className="paper torn-bottom flex items-center gap-5 pl-3 pr-5 pt-2.5 pb-4 [--r:-0.4deg]">
+          <Link
+            href="/"
+            className="bg-ink text-ivory font-bebas text-2xl leading-none px-2.5 pt-1.5 pb-1 -rotate-3 hover:rotate-0 transition-transform shadow-[var(--lift-0)]"
+            aria-label="Anish Singh — home"
+          >
             AK.
-          </span>
-        </Link>
+          </Link>
+          <p className="font-caveat text-[1.35rem] leading-none text-ink whitespace-nowrap">
+            anish’s working notebook
+            <Squiggle className="block h-2 w-24 text-pen" />
+          </p>
 
-        {/* Links */}
-        {navItems.slice(1, 8).map((item) => {
-          const isActive = item.id ? activeSection === item.id : isHome && !activeSection;
-          
-          return (
-            <Link key={item.label} href={item.href} className="relative group px-4 py-2 cursor-pointer">
-              <span className="relative z-10 font-mono text-xs sm:text-[13px] font-bold uppercase tracking-widest text-[#111018] group-hover:text-red-600 transition-colors">
-                {item.label}
-              </span>
-              
-              {/* Sharpie marker underline for active state */}
-              {isActive && (
-                <div className="absolute -bottom-0.5 left-0 w-full h-[4px] bg-red-600 rotate-[-2deg] opacity-80" />
-              )}
-            </Link>
-          );
-        })}
+          <button
+            type="button"
+            onClick={onSearch}
+            className="paper paper-sticky lift ml-6 ring-1 ring-ink/20 flex min-h-9 items-center gap-2 px-3 type-label text-[0.68rem] text-ink [--r:2deg]"
+          >
+            <Search className="size-3.5" aria-hidden="true" />
+            Search
+            <kbd className="font-mono text-[0.64rem] border border-ink/30 px-1">⌘K</kbd>
+          </button>
 
-        {/* Search Tab */}
-        <button onClick={onSearchOpen} className="group flex items-center gap-2 ml-4 px-4 py-2 border-l-2 border-black/20 pl-8">
-          <Search className="w-4 h-4 text-[#111018] group-hover:text-red-600 transition-colors" />
-          <kbd className="text-[11px] font-mono font-bold tracking-widest bg-black/10 px-2 py-0.5 border border-black/20">⌘K</kbd>
-        </button>
-
-        {/* Clock Tab */}
-        <div className="ml-2 pointer-events-none px-4 py-2 border-l-2 border-black/20 pl-8">
-          <LiveClock />
+          <DeskClock className="border-l border-ink/15 pl-4 text-ink" />
         </div>
       </div>
+
+      {/* index tabs, tucked under the torn edge; the current page hangs lower */}
+      <ul className="relative z-0 -mt-5 flex self-stretch items-start justify-between px-2">
+        {PAGES.map((p, i) => {
+          const isActive = active === p.id;
+          return (
+            <li key={p.id}>
+              <a
+                href={`/#${p.id}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  go(p.id);
+                }}
+                aria-current={isActive ? "location" : undefined}
+                className={`flag-${p.flag} block bg-[var(--flag)] text-[var(--flag-ink,#111)] px-2.5 pt-6 pb-1.5 type-label text-[0.68rem] shadow-[var(--lift-1)] ring-1 ring-ink/15 transition-transform duration-300 ease-[var(--ease-paper)] hover:translate-y-0.5 ${
+                  isActive ? "translate-y-2" : "-translate-y-1"
+                }`}
+                style={{ rotate: `${[-1.5, 1, -0.5, 1.5, -1, 0.8, -0.8][i]}deg` }}
+              >
+                {p.label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
     </nav>
   );
 }
 
-
-/* ─── COMMAND PALETTE (ARCHIVE CARD) ──────────────────────────────────────── */
-function ArchiveSearch({ open, onClose, onNavigate }) {
-  const [query, setQuery] = useState("");
-  const inputRef = useRef(null);
-
-  const filtered = navItems.filter((n) =>
-    n.label.toLowerCase().includes(query.toLowerCase())
-  );
+/* ─── Mobile: three paper chips, and a notebook index page as the menu ──── */
+function MobileBar({ active, onSearch }) {
+  const [open, setOpen] = useState(false);
+  const go = useGoToSection();
+  const menuBtn = useRef(null);
+  const closeBtn = useRef(null);
 
   useEffect(() => {
-    if (!open) {
-      setQuery("");
-      return;
-    }
-    setTimeout(() => inputRef.current?.focus(), 100);
-  }, [open]);
-
-  useEffect(() => {
-    const h = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        if (open) onClose();
-      }
-      if (e.key === "Escape") onClose();
+    if (!open) return;
+    const opener = menuBtn.current;
+    document.body.style.overflow = "hidden";
+    closeBtn.current?.focus();
+    const onKey = (e) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+      opener?.focus();
     };
-    window.addEventListener("keydown", h);
-    return () => window.removeEventListener("keydown", h);
-  }, [open, onClose]);
-
-  const cardRef = useRef(null);
-
-  useGSAP(() => {
-    if (open && cardRef.current) {
-      gsap.fromTo(cardRef.current,
-        { y: -50, opacity: 0, rotationZ: -3, scale: 0.95 },
-        { y: 0, opacity: 1, rotationZ: 0, scale: 1, duration: 0.5, ease: "back.out(1.5)" }
-      );
-    }
   }, [open]);
 
-  if (!open) return null;
-
-  return (
-    <div
-      className="fixed inset-0 z-[200] flex items-start justify-center pt-24 px-4 font-sans"
-      onClick={onClose}
-    >
-      <div className="absolute inset-0 bg-[#111018]/80 backdrop-blur-sm" />
-      
-      {/* Giant Paper Card */}
-      <div
-        ref={cardRef}
-        onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-2xl bg-[#E8E6E1] text-[#111018] shadow-[15px_20px_40px_rgba(0,0,0,0.6)]"
-        style={{ 
-          clipPath: "polygon(1% 0, 99% 1%, 100% 99%, 0 100%)",
-        }}
-      >
-        {/* Tape */}
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-8 bg-white/50 backdrop-blur-sm rotate-[2deg] shadow-sm" />
-        
-        {/* Header/Input */}
-        <div className="p-8 border-b-4 border-black/20">
-          <p className="font-mono text-xs text-red-600 font-bold tracking-widest uppercase mb-4 border-b-2 border-red-600 pb-1 inline-block">
-            ARCHIVE SEARCH DIRECTORY
-          </p>
-          <div className="flex items-center gap-4 bg-white/50 px-4 py-3 border-2 border-black/80 shadow-[inset_2px_4px_6px_rgba(0,0,0,0.1)]">
-            <Search className="w-6 h-6 text-black/40" />
-            <input
-              ref={inputRef}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="TYPE DESTINATION..."
-              className="flex-1 bg-transparent text-xl font-bold font-mono text-[#111018] placeholder:text-[#111018]/30 outline-none uppercase tracking-wide"
-            />
-            <kbd className="text-xs font-mono font-bold bg-[#111018] text-white px-2 py-1">ESC</kbd>
-          </div>
-        </div>
-
-        {/* Results */}
-        <div className="py-4 px-4 max-h-96 overflow-y-auto">
-          {filtered.length === 0 ? (
-            <p className="text-center text-[#111018]/40 py-10 font-mono font-bold uppercase tracking-widest">
-              NO RECORDS FOUND.
-            </p>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {filtered.map((item, i) => (
-                <button
-                  key={item.label}
-                  onClick={() => {
-                    onNavigate(item);
-                    onClose();
-                  }}
-                  className="group relative flex items-center justify-between p-4 bg-white/40 border-2 border-black/10 hover:border-black/50 transition-colors text-left"
-                  style={{ clipPath: "polygon(2% 0, 100% 2%, 98% 100%, 0 98%)" }}
-                >
-                  <div className="flex items-center gap-4">
-                    <span className="font-mono text-sm text-[#111018]/40 font-bold tabular-nums">
-                      {String(i + 1).padStart(2, "0")}.
-                    </span>
-                    <span className="font-bold text-lg text-[#111018] uppercase tracking-wide group-hover:translate-x-2 transition-transform">
-                      {item.label}
-                    </span>
-                  </div>
-                  <ArrowUpRight className="w-5 h-5 text-black/30 group-hover:text-black group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-
-/* ─── MOBILE NAV (THE UNFOLDING MAP) ──────────────────────────────────────── */
-function MobileNav({ open, onClose, onMenuOpen, activeSection, onSearchOpen }) {
-  const containerRef = useRef(null);
-
-  useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [open]);
-
-  useGSAP(() => {
-    if (open && containerRef.current) {
-      gsap.from(".mobile-flap", {
-        y: -40,
-        opacity: 0,
-        rotationZ: () => Math.random() * 4 - 2,
-        duration: 0.6,
-        stagger: 0.1,
-        ease: "back.out(1.2)"
-      });
-    }
-  }, [open]);
+  const chip =
+    "paper min-h-11 px-3 inline-flex items-center gap-1.5 type-label text-[0.7rem] active:translate-y-px";
 
   return (
     <>
-      {/* Mobile Trigger Button (Glued to top right) */}
-      <button
-        onClick={() => open ? onClose() : null}
-        className={`lg:hidden fixed top-4 right-4 z-[160] w-14 h-14 flex items-center justify-center bg-[#111018] text-white shadow-lg transition-transform ${!open && 'hidden'}`}
-        style={{ clipPath: "polygon(10% 0, 100% 10%, 90% 100%, 0 90%)" }}
-      >
-        <X className="w-8 h-8" />
-      </button>
-
-      <button
-        onClick={() => !open ? onMenuOpen() : null}
-        className={`lg:hidden fixed top-4 right-4 z-[140] w-14 h-14 flex items-center justify-center bg-purple-600 text-white shadow-lg transition-transform ${open ? 'hidden' : ''}`}
-        style={{ clipPath: "polygon(0 10%, 90% 0, 100% 90%, 10% 100%)" }}
-      >
-        <div className="flex flex-col gap-[6px]">
-          <span className="block w-6 h-1 bg-white" />
-          <span className="block w-4 h-1 bg-white" />
-          <span className="block w-6 h-1 bg-white" />
-        </div>
-      </button>
-
-      <button
-        onClick={() => {
-          onClose();
-          setTimeout(onSearchOpen, 500);
-        }}
-        className={`lg:hidden fixed top-4 right-20 z-[140] w-14 h-14 flex items-center justify-center bg-[#E8E6E1] text-[#111018] shadow-lg transition-transform ${open && 'hidden'}`}
-        style={{ clipPath: "polygon(5% 0, 95% 5%, 100% 95%, 0 100%)" }}
-      >
-        <Search className="w-6 h-6" />
-      </button>
-
-
-      {/* Container overlay */}
-      {open && (
-        <div 
-          ref={containerRef}
-          className="lg:hidden fixed inset-0 bg-[#0A0812]/90 flex flex-col pt-10 px-4 z-[150]"
+      <header className="lg:hidden fixed inset-x-0 top-0 z-[120] flex items-center justify-between px-4 pt-3 pb-6 pointer-events-none bg-gradient-to-b from-desk via-desk/80 to-transparent">
+        <Link
+          href="/"
+          aria-label="Anish Singh — home"
+          className="pointer-events-auto bg-ink text-ivory font-bebas text-[1.65rem] leading-none px-2.5 pt-1.5 pb-1 -rotate-3 shadow-[var(--lift-1)] ring-1 ring-ivory/10"
         >
-          <div className="h-full overflow-y-auto pb-20">
-            
-            {/* Flap 1 (Top) */}
-            <div className="mobile-flap w-full bg-[#E8E6E1] text-[#111018] p-6 shadow-xl mb-[-2px] border-b-2 border-black/20" style={{ clipPath: "polygon(1% 0, 99% 0, 100% 100%, 0 100%)" }}>
-              <p className="font-mono text-xs font-bold text-red-600 tracking-widest uppercase mb-6">Directory</p>
-              <div className="flex flex-col gap-4">
-                {navItems.slice(0, 4).map((item) => (
-                  <Link key={item.label} href={item.href} onClick={onClose} className="text-3xl font-black uppercase tracking-tighter">
-                    {item.label}
-                  </Link>
+          AK.
+        </Link>
+        <div className="pointer-events-auto flex items-center gap-2">
+          <button type="button" onClick={onSearch} className={`${chip} [--r:1.5deg]`}>
+            <Search className="size-3.5" aria-hidden="true" />
+            Search
+          </button>
+          <button
+            ref={menuBtn}
+            type="button"
+            onClick={() => setOpen(true)}
+            aria-expanded={open}
+            aria-controls="notebook-index"
+            className={`${chip} paper-sticky [--r:-2deg]`}
+          >
+            <span className="flex flex-col gap-[3px]" aria-hidden="true">
+              <span className="block h-[2px] w-3.5 bg-ink" />
+              <span className="block h-[2px] w-2.5 bg-ink" />
+              <span className="block h-[2px] w-3.5 bg-ink" />
+            </span>
+            Menu
+          </button>
+        </div>
+      </header>
+
+      {open && (
+        <div
+          className="lg:hidden fixed inset-0 z-[150] bg-desk/85 backdrop-blur-[2px] overflow-y-auto"
+          onClick={(e) => e.target === e.currentTarget && setOpen(false)}
+        >
+          <div
+            id="notebook-index"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Notebook index"
+            className="paper paper-lined mx-3 mt-3 mb-8 pb-8 [--r:-0.6deg] [--line:2.75rem] [--line-start:4.4rem] animate-[fade-up_0.45s_var(--ease-out)_both]"
+          >
+            <Tape at="top" w={90} rotate={2} />
+            <div className="flex items-start justify-between pl-[3.6rem] pr-4 pt-5 h-[4.4rem]">
+              <p className="font-caveat text-4xl leading-none text-ink">Index</p>
+              <button
+                ref={closeBtn}
+                type="button"
+                onClick={() => setOpen(false)}
+                className="min-h-11 px-3 inline-flex items-center gap-1 type-label text-[0.7rem] text-pen-deep"
+              >
+                <X className="size-4" aria-hidden="true" />
+                Close
+              </button>
+            </div>
+
+            <nav aria-label="Sections">
+              <ul>
+                {PAGES.map((p) => (
+                  <li key={p.id}>
+                    <a
+                      href={`/#${p.id}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setOpen(false);
+                        requestAnimationFrame(() => go(p.id));
+                      }}
+                      aria-current={active === p.id ? "location" : undefined}
+                      className="flex items-end gap-2 h-[2.75rem] pl-[3.6rem] pr-5 text-ink"
+                    >
+                      <span className="font-bebas text-[2rem] leading-[1.15]">{p.label}</span>
+                      <span className="flex-1 mb-2.5 border-b-2 border-dotted border-ink/30" aria-hidden="true" />
+                      <span className={`flag flag-${p.flag} mb-2 !text-[0.66rem]`}>p. {p.page}</span>
+                    </a>
+                  </li>
                 ))}
-              </div>
-            </div>
+              </ul>
+            </nav>
 
-            {/* Flap 2 (Middle) */}
-            <div className="mobile-flap w-full bg-[#D3D1C8] text-[#111018] p-6 shadow-xl mb-[-2px] border-b-2 border-black/20" style={{ clipPath: "polygon(0 0, 100% 0, 99% 100%, 1% 100%)" }}>
-              <div className="flex flex-col gap-4">
-                {navItems.slice(4).map((item) => (
-                  <Link key={item.label} href={item.href} onClick={onClose} className="text-3xl font-black uppercase tracking-tighter">
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
+            <div className="mt-8 pl-[3.6rem] pr-5 grid grid-cols-2 gap-3">
+              {[
+                { label: "GitHub", href: CONTACT.github, Icon: Github, ext: true },
+                { label: "LinkedIn", href: CONTACT.linkedin, Icon: Linkedin, ext: true },
+                { label: "Email", href: `mailto:${CONTACT.email}`, Icon: Mail },
+                { label: "Resume", href: CONTACT.resume, Icon: FileText, ext: true, hot: true },
+              ].map(({ label, href, Icon, ext, hot }) => (
+                <a
+                  key={label}
+                  href={href}
+                  {...(ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className={`paper ${hot ? "paper-sticky" : "paper-kraft"} min-h-11 px-3 flex items-center gap-2 type-label text-[0.7rem]`}
+                  style={{ "--r": `${label.length % 2 ? -1.2 : 1}deg` }}
+                >
+                  <Icon className="size-4" aria-hidden="true" />
+                  {label}
+                </a>
+              ))}
             </div>
-
-            {/* Flap 3 (Bottom) */}
-            <div className="mobile-flap w-full bg-[#232132] text-white p-6 shadow-xl pb-10" style={{ clipPath: "polygon(0 0, 100% 0, 95% 100%, 5% 100%)" }}>
-               <p className="font-mono text-xs font-bold text-emerald-400 tracking-widest uppercase mb-6">Network</p>
-               <div className="flex flex-col gap-4">
-                 <a href="https://github.com/anishsingh234" className="flex items-center gap-4 text-xl font-bold uppercase"><Github/> Github</a>
-                 <a href="https://linkedin.com/in/anish-ai" className="flex items-center gap-4 text-xl font-bold uppercase"><ArrowUpRight/> LinkedIn</a>
-                 <a href="mailto:contact@anish.dev" className="flex items-center gap-4 text-xl font-bold uppercase"><Mail/> Email</a>
-                 <a href="/resume.pdf" className="flex items-center gap-4 text-xl font-bold uppercase text-purple-400 mt-4"><Download/> Resume</a>
-               </div>
-            </div>
-
           </div>
         </div>
       )}
@@ -353,71 +253,207 @@ function MobileNav({ open, onClose, onMenuOpen, activeSection, onSearchOpen }) {
   );
 }
 
+/* ─── ⌘K: an index card that finds pages, projects and contact routes ───── */
+function IndexCard({ open, onClose }) {
+  const [query, setQuery] = useState("");
+  const [cursor, setCursor] = useState(0);
+  const inputRef = useRef(null);
+  const itemRefs = useRef([]);
+  const go = useGoToSection();
 
-/* ─── MAIN NAVBAR EXPORT ──────────────────────────────────────────────────── */
-export default function Navbar() {
-  const [paletteOpen, setPaletteOpen] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("");
-  const pathname = usePathname();
-  const router = useRouter();
-  const isHome = pathname === "/";
+  const entries = useMemo(
+    () => [
+      ...PAGES.map((p) => ({ group: "Pages", label: p.label, meta: `p. ${p.page}`, section: p.id })),
+      ...projectsData
+        .filter((p) => !/dsa|mini/i.test(p.tag))
+        .map((p) => ({
+          group: "Projects",
+          label: p.name,
+          meta: p.tag,
+          href: p.demoLink || p.GithubLink,
+          external: true,
+        })),
+      { group: "Elsewhere", label: "Full project archive", meta: "/projects", href: "/projects" },
+      { group: "Elsewhere", label: "Resume (PDF)", meta: "download", href: CONTACT.resume, external: true },
+      { group: "Elsewhere", label: "GitHub", meta: "anishsingh234", href: CONTACT.github, external: true },
+      { group: "Elsewhere", label: "Email", meta: CONTACT.email, href: `mailto:${CONTACT.email}` },
+    ],
+    []
+  );
 
-  // Cmd+K shortcut
+  const results = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return entries;
+    return entries.filter((e) => `${e.label} ${e.meta}`.toLowerCase().includes(q));
+  }, [entries, query]);
+
   useEffect(() => {
-    const h = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+    if (!open) return;
+    const previous = document.activeElement;
+    setQuery("");
+    setCursor(0);
+    requestAnimationFrame(() => inputRef.current?.focus());
+    return () => previous?.focus?.();
+  }, [open]);
+
+  useEffect(() => setCursor(0), [query]);
+
+  if (!open) return null;
+
+  const activate = (entry) => {
+    onClose();
+    if (entry.section) go(entry.section);
+  };
+
+  const onKeyDown = (e) => {
+    if (e.key === "Escape") return onClose();
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      const next = (cursor + (e.key === "ArrowDown" ? 1 : -1) + results.length) % Math.max(results.length, 1);
+      setCursor(next);
+      itemRefs.current[next]?.scrollIntoView({ block: "nearest" });
+    }
+    if (e.key === "Enter" && results[cursor]) {
+      e.preventDefault();
+      itemRefs.current[cursor]?.click();
+    }
+  };
+
+  let lastGroup = null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[200] flex items-start justify-center px-3 pt-[12vh] bg-desk/80 backdrop-blur-[2px]"
+      onMouseDown={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="index-card-title"
+        onKeyDown={onKeyDown}
+        className="paper w-full max-w-xl [--r:-0.8deg] animate-[fade-up_0.35s_var(--ease-out)_both]"
+      >
+        <Tape at="top" w={110} rotate={-2} />
+        <div className="px-5 pt-6 pb-3 border-b-2 border-pen/60">
+          <p id="index-card-title" className="flex items-baseline justify-between type-label text-graphite">
+            <span>Index card — find anything</span>
+            <kbd className="font-mono text-[0.68rem] border border-ink/25 px-1.5">esc</kbd>
+          </p>
+          <label className="mt-3 flex items-center gap-3">
+            <Search className="size-5 text-graphite shrink-0" aria-hidden="true" />
+            <span className="sr-only">Search pages and projects</span>
+            <input
+              ref={inputRef}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              role="combobox"
+              aria-expanded="true"
+              aria-controls="index-results"
+              aria-activedescendant={results[cursor] ? `index-item-${cursor}` : undefined}
+              placeholder="Try “RAG”, “HealSync”, “resume”…"
+              className="w-full bg-transparent font-serif text-xl text-ink placeholder:text-graphite/70 outline-none py-1"
+            />
+          </label>
+        </div>
+
+        <ul id="index-results" role="listbox" aria-label="Results" className="max-h-[52vh] overflow-y-auto py-2">
+          {results.length === 0 && (
+            <li className="px-5 py-8 font-caveat text-2xl text-graphite">
+              Nothing filed under “{query}”. Try a project name or a skill.
+            </li>
+          )}
+          {results.map((entry, i) => {
+            const header = entry.group !== lastGroup ? entry.group : null;
+            lastGroup = entry.group;
+            const ItemTag = entry.section ? "button" : "a";
+            const linkProps = entry.section
+              ? { type: "button" }
+              : {
+                  href: entry.href,
+                  ...(entry.external ? { target: "_blank", rel: "noopener noreferrer" } : {}),
+                };
+            return (
+              <li key={`${entry.group}-${entry.label}`} role="presentation">
+                {header && (
+                  <p className="px-5 pt-3 pb-1 type-label text-[0.66rem] text-graphite" aria-hidden="true">
+                    {header}
+                  </p>
+                )}
+                <ItemTag
+                  {...linkProps}
+                  id={`index-item-${i}`}
+                  role="option"
+                  aria-selected={i === cursor}
+                  tabIndex={-1}
+                  ref={(el) => (itemRefs.current[i] = el)}
+                  onMouseEnter={() => setCursor(i)}
+                  onClick={() => activate(entry)}
+                  className={`w-full flex items-center justify-between gap-4 px-5 py-2.5 text-left transition-colors ${
+                    i === cursor ? "bg-marker/70" : ""
+                  }`}
+                >
+                  <span className="font-serif text-lg text-ink">{entry.label}</span>
+                  <span className="flex items-center gap-1.5 font-mono text-xs text-graphite truncate">
+                    {entry.meta}
+                    {entry.external && <ArrowUpRight className="size-3.5 shrink-0" aria-hidden="true" />}
+                  </span>
+                </ItemTag>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Navbar ───────────────────────────────────────────────────────────── */
+export default function Navbar() {
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [active, setActive] = useState("");
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        setPaletteOpen((v) => !v);
+        setSearchOpen((v) => !v);
       }
     };
-    window.addEventListener("keydown", h);
-    return () => window.removeEventListener("keydown", h);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // Section observer
+  // Highlight whichever page occupies the middle of the viewport.
   useEffect(() => {
-    if (!isHome) return;
-    const ids = navItems.map((n) => n.id).filter(Boolean);
-    const observers = ids.map((id) => {
-      const el = document.getElementById(id);
-      if (!el) return null;
-      const ob = new IntersectionObserver(
-        ([e]) => {
-          if (e.isIntersecting) setActiveSection(id);
-        },
-        { threshold: 0.3 }
-      );
-      ob.observe(el);
-      return ob;
+    if (pathname !== "/") return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) if (entry.isIntersecting) setActive(entry.target.id);
+      },
+      { rootMargin: "-45% 0px -50% 0px" }
+    );
+    PAGES.forEach((p) => {
+      const el = document.getElementById(p.id);
+      if (el) observer.observe(el);
     });
-    return () => observers.forEach((ob) => ob?.disconnect());
-  }, [isHome]);
+    return () => observer.disconnect();
+  }, [pathname]);
+
+  const openSearch = useCallback(() => setSearchOpen(true), []);
+  const closeSearch = useCallback(() => setSearchOpen(false), []);
 
   return (
     <>
-      {/* Desktop — Torn Strip */}
-      <TornStripNav
-        activeSection={activeSection}
-        pathname={pathname}
-        onSearchOpen={() => setPaletteOpen(true)}
-      />
-
-      {/* Mobile — Unfolding Map */}
-      <MobileNav
-        open={mobileOpen}
-        onClose={() => setMobileOpen(false)}
-        onMenuOpen={() => setMobileOpen(true)}
-        activeSection={activeSection}
-        onSearchOpen={() => setPaletteOpen(true)}
-      />
-
-      {/* Command palette — The Archive Card */}
-      <ArchiveSearch
-        open={paletteOpen}
-        onClose={() => setPaletteOpen(false)}
-        onNavigate={(item) => router.push(item.href)}
-      />
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[300] paper px-4 py-2 type-label"
+      >
+        Skip to content
+      </a>
+      <PaperStrip active={active} onSearch={openSearch} />
+      <MobileBar active={active} onSearch={openSearch} />
+      <IndexCard open={searchOpen} onClose={closeSearch} />
     </>
   );
 }

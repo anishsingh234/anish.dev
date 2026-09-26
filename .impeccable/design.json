@@ -1,0 +1,638 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-26T19:11:55.836Z",
+  "title": "Design System: Anish Singh — Working Notebook",
+  "extensions": {
+    "colorMeta": {
+      "desk": {
+        "role": "neutral",
+        "displayName": "Charcoal Desk",
+        "canonical": "oklch(15.8% 0.011 294.3)",
+        "tonalRamp": [
+          "#0b0b0e",
+          "#242328",
+          "#403f44",
+          "#5e5d63",
+          "#807f86",
+          "#a5a4aa",
+          "#cbcacf",
+          "#eeeef3"
+        ]
+      },
+      "desk-2": {
+        "role": "neutral",
+        "displayName": "Desk Shadow / Chapter 01 Divider",
+        "canonical": "oklch(20.2% 0.022 288.4)",
+        "tonalRamp": [
+          "#0b0a11",
+          "#23232c",
+          "#3f3e49",
+          "#5d5c69",
+          "#7f7e8c",
+          "#a4a3b0",
+          "#cac9d5",
+          "#eeedf8"
+        ]
+      },
+      "ivory": {
+        "role": "neutral",
+        "displayName": "Ivory Sheet",
+        "canonical": "oklch(94.6% 0.014 88.7)",
+        "tonalRamp": [
+          "#0d0b07",
+          "#26241e",
+          "#423f39",
+          "#615d55",
+          "#838077",
+          "#a7a49c",
+          "#cdcac3",
+          "#f1eee8"
+        ]
+      },
+      "cream": {
+        "role": "neutral",
+        "displayName": "Cream Research Paper",
+        "canonical": "oklch(90.4% 0.031 90.3)",
+        "tonalRamp": [
+          "#0e0b03",
+          "#282417",
+          "#453f30",
+          "#645d4b",
+          "#87806d",
+          "#aba493",
+          "#d0caba",
+          "#f3eee0"
+        ]
+      },
+      "kraft": {
+        "role": "neutral",
+        "displayName": "Kraft Tag",
+        "canonical": "oklch(77.7% 0.061 76.8)",
+        "tonalRamp": [
+          "#140800",
+          "#302107",
+          "#4f3c1f",
+          "#705938",
+          "#947c58",
+          "#b7a181",
+          "#dcc7aa",
+          "#feecd2"
+        ]
+      },
+      "kraft-ink": {
+        "role": "neutral",
+        "displayName": "Kraft Ink",
+        "canonical": "oklch(24.3% 0.030 65.6)",
+        "tonalRamp": [
+          "#110904",
+          "#2c2218",
+          "#493d32",
+          "#695b4d",
+          "#8d7d6e",
+          "#b0a294",
+          "#d5c8bc",
+          "#f8ece1"
+        ]
+      },
+      "graph": {
+        "role": "neutral",
+        "displayName": "Graph Paper",
+        "canonical": "oklch(93.2% 0.007 115.7)",
+        "tonalRamp": [
+          "#0b0b09",
+          "#242422",
+          "#3f403d",
+          "#5d5e5a",
+          "#80817c",
+          "#a4a5a1",
+          "#cacbc7",
+          "#eeefec"
+        ]
+      },
+      "receipt": {
+        "role": "neutral",
+        "displayName": "Thermal Receipt",
+        "canonical": "oklch(96.4% 0.007 88.6)",
+        "tonalRamp": [
+          "#0c0b09",
+          "#252421",
+          "#41403c",
+          "#5f5d59",
+          "#82807c",
+          "#a6a4a0",
+          "#cccac7",
+          "#f0eeeb"
+        ]
+      },
+      "sticky": {
+        "role": "neutral",
+        "displayName": "Sticky Note",
+        "canonical": "oklch(89.0% 0.162 99.5)",
+        "tonalRamp": [
+          "#170700",
+          "#332100",
+          "#523e00",
+          "#735c00",
+          "#978000",
+          "#baa528",
+          "#ddcc6b",
+          "#fff09e"
+        ]
+      },
+      "legal": {
+        "role": "neutral",
+        "displayName": "Legal Pad Yellow",
+        "canonical": "oklch(91.1% 0.127 100.7)",
+        "tonalRamp": [
+          "#130900",
+          "#2f2300",
+          "#4d4000",
+          "#6d5e00",
+          "#918110",
+          "#b3a652",
+          "#d8cd84",
+          "#faf1b2"
+        ]
+      },
+      "blueprint": {
+        "role": "neutral",
+        "displayName": "Blueprint",
+        "canonical": "oklch(32.5% 0.062 254.0)",
+        "tonalRamp": [
+          "#010b1b",
+          "#14253a",
+          "#2c415b",
+          "#465f7e",
+          "#6882a3",
+          "#8ea7c6",
+          "#b6cde9",
+          "#ddf1ff"
+        ]
+      },
+      "blueprint-ink": {
+        "role": "neutral",
+        "displayName": "Blueprint Line",
+        "canonical": "oklch(92.3% 0.019 248.0)",
+        "tonalRamp": [
+          "#070c10",
+          "#1f252b",
+          "#394148",
+          "#565f67",
+          "#78818b",
+          "#9da6ae",
+          "#c4ccd3",
+          "#e8eff6"
+        ]
+      },
+      "paper-ink": {
+        "role": "neutral",
+        "displayName": "Ink Sheet",
+        "canonical": "oklch(22.3% 0.017 290.0)",
+        "tonalRamp": [
+          "#0b0a10",
+          "#24232a",
+          "#3f3f47",
+          "#5d5c66",
+          "#807f8a",
+          "#a4a3ad",
+          "#cac9d3",
+          "#eeedf6"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(17.8% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#808080",
+          "#a4a4a4",
+          "#cacaca",
+          "#eeeeee"
+        ]
+      },
+      "graphite": {
+        "role": "neutral",
+        "displayName": "Graphite",
+        "canonical": "oklch(40.7% 0.017 294.8)",
+        "tonalRamp": [
+          "#0b0a0f",
+          "#24232a",
+          "#403e47",
+          "#5e5c66",
+          "#817e89",
+          "#a5a3ad",
+          "#cbc9d2",
+          "#efedf5"
+        ]
+      },
+      "marker": {
+        "role": "primary",
+        "displayName": "Marker Yellow",
+        "canonical": "oklch(89.3% 0.176 99.7)",
+        "tonalRamp": [
+          "#170700",
+          "#342100",
+          "#533d00",
+          "#755c00",
+          "#997f00",
+          "#bba504",
+          "#dfcc60",
+          "#fff196"
+        ]
+      },
+      "pen": {
+        "role": "secondary",
+        "displayName": "Pen Magenta",
+        "canonical": "oklch(60.7% 0.217 13.4)",
+        "tonalRamp": [
+          "#310000",
+          "#5a000b",
+          "#850022",
+          "#b3003a",
+          "#e0325b",
+          "#ff6b82",
+          "#ff9bac",
+          "#ffc7d3"
+        ]
+      },
+      "pen-deep": {
+        "role": "secondary",
+        "displayName": "Deep Pen",
+        "canonical": "oklch(50.5% 0.191 15.4)",
+        "tonalRamp": [
+          "#2d0000",
+          "#55000b",
+          "#7f0022",
+          "#ab173b",
+          "#d6445b",
+          "#f97583",
+          "#ffa2ac",
+          "#ffcdd4"
+        ]
+      },
+      "cobalt": {
+        "role": "tertiary",
+        "displayName": "Cobalt Ink",
+        "canonical": "oklch(52.0% 0.183 263.8)",
+        "tonalRamp": [
+          "#00003b",
+          "#011864",
+          "#12368f",
+          "#2854bc",
+          "#4879e7",
+          "#72a1ff",
+          "#9dc9ff",
+          "#c6eeff"
+        ]
+      },
+      "cobalt-divider": {
+        "role": "tertiary",
+        "displayName": "Cobalt Divider Stock",
+        "canonical": "oklch(40.3% 0.152 265.2)",
+        "tonalRamp": [
+          "#010133",
+          "#091c59",
+          "#1e3982",
+          "#3557ad",
+          "#557bd6",
+          "#7da2f5",
+          "#a7c9ff",
+          "#cfeeff"
+        ]
+      },
+      "cutting-mat": {
+        "role": "neutral",
+        "displayName": "Cutting Mat Green",
+        "canonical": "oklch(36.8% 0.046 173.6)",
+        "tonalRamp": [
+          "#000f0a",
+          "#112923",
+          "#29463e",
+          "#44665c",
+          "#65897e",
+          "#8dada2",
+          "#b5d2c9",
+          "#dcf5ed"
+        ]
+      },
+      "flag-pen": {
+        "role": "secondary",
+        "displayName": "Pen Index Flag",
+        "canonical": "oklch(52.8% 0.198 13.2)",
+        "tonalRamp": [
+          "#2e0000",
+          "#56000e",
+          "#800025",
+          "#ad0e3e",
+          "#d8405f",
+          "#fb7286",
+          "#ffa0af",
+          "#ffcbd6"
+        ]
+      },
+      "flag-mint": {
+        "role": "neutral",
+        "displayName": "Mint Index Flag",
+        "canonical": "oklch(80.9% 0.093 163.5)",
+        "tonalRamp": [
+          "#001205",
+          "#002e1a",
+          "#034c34",
+          "#226d50",
+          "#489171",
+          "#75b597",
+          "#a1d9be",
+          "#cbfce3"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Cutout Display",
+        "purpose": "Hero name only, one letter per paper cutout (Bebas Neue)."
+      },
+      "headline": {
+        "displayName": "Page Title",
+        "purpose": "Page titles via PageHead, followed by the self-drawing pen underline."
+      },
+      "title": {
+        "displayName": "Artifact Title",
+        "purpose": "Project names, log roles, product tags."
+      },
+      "body": {
+        "displayName": "Reading Serif",
+        "purpose": "Paragraphs on paper and desk, ~34–36rem measure (Spectral)."
+      },
+      "label": {
+        "displayName": "Typed Label",
+        "purpose": "Buttons, flags, running heads, metadata, Fig. captions (Courier Prime)."
+      },
+      "hand": {
+        "displayName": "Margin Hand",
+        "purpose": "Handwritten notes, form labels, sticky notes, desk clock (Caveat); always slightly rotated."
+      }
+    },
+    "shadows": [
+      {
+        "name": "lift-0",
+        "value": "0 1px 1px rgb(0 0 0 / 0.22), 0 3px 8px -2px rgb(0 0 0 / 0.4)",
+        "purpose": "Small objects flat on the page (monogram)."
+      },
+      {
+        "name": "lift-1",
+        "value": "0 1px 2px rgb(0 0 0 / 0.3), 0 12px 24px -10px rgb(0 0 0 / 0.65)",
+        "purpose": "Default resting paper, tabs, prints."
+      },
+      {
+        "name": "lift-2",
+        "value": "0 2px 4px rgb(0 0 0 / 0.3), 0 24px 44px -16px rgb(0 0 0 / 0.72)",
+        "purpose": "Heavy stacks: legal pad, About spread, cutting mat, toasts."
+      },
+      {
+        "name": "lift-3",
+        "value": "0 4px 8px rgb(0 0 0 / 0.26), 0 40px 64px -20px rgb(0 0 0 / 0.78)",
+        "purpose": "Paper picked up: .lift hover/focus-within and modal sheets only."
+      },
+      {
+        "name": "drop",
+        "value": "filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.3)) drop-shadow(0 14px 16px rgb(0 0 0 / 0.42))",
+        "purpose": "Wrapper shadow for masked or clipped sheets (torn, zigzag, clip-path), which lose their box-shadow."
+      },
+      {
+        "name": "drop-lifted",
+        "value": "filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.28)) drop-shadow(0 30px 28px rgb(0 0 0 / 0.5))",
+        "purpose": ".drop.lift hover state."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Reveals, ink drawing, highlighter sweeps, fades."
+      },
+      {
+        "name": "ease-paper",
+        "value": "cubic-bezier(0.2, 0.8, 0.25, 1)",
+        "purpose": "Paper handling: lift, tape, tabs, letter drop."
+      },
+      {
+        "name": "stamp",
+        "value": "scale 1.7 → 1, 0.34s cubic-bezier(0.55, 0, 0.8, 0.2)",
+        "purpose": "Rubber-stamp slam (data-reveal=\"stamp\", .hero-stamp)."
+      },
+      {
+        "name": "reveal",
+        "value": "opacity 0.8s, translate 0.9s from 22px, delay var(--d)",
+        "purpose": "[data-reveal] → [data-inview], set once by RevealObserver; an attribute so React re-renders never wipe it."
+      },
+      {
+        "name": "ink-draw",
+        "value": "stroke-dashoffset 1 → 0, 1.1s, pathLength=1",
+        "purpose": "Doodles: .draw on reveal, .hero-draw on first paint."
+      },
+      {
+        "name": "lift",
+        "value": "translate 0 -6px, rotate + var(--rh, 1.2deg), lift-3, 0.45s",
+        "purpose": "Handled-paper hover; hover-capable devices only."
+      },
+      {
+        "name": "hero-letter",
+        "value": "letter-drop 0.85s, delay 0.1s + i × 75ms",
+        "purpose": "Pure-CSS hero entrance; no hydration wait."
+      },
+      {
+        "name": "drift",
+        "value": "animation-timeline: view(); translate ±var(--drift, 48px)",
+        "purpose": "CSS scroll-driven parallax for background doodles; supported browsers with motion allowed only."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "animations/transitions 0.01ms; reveals shown; strokes and highlights pre-drawn; GSAP pin off; notebook pre-turned, no tilt",
+        "purpose": "prefers-reduced-motion: reduce."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "xs",
+        "value": "480px"
+      },
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      },
+      {
+        "name": "2xl",
+        "value": "1536px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Sticky Button",
+      "kind": "button",
+      "refersTo": "button-sticky",
+      "description": "Primary action (Resume, Download PDF, Search): a sticky note, slightly rotated, lifts when handled.",
+      "html": "<a class=\"ds-btn-sticky\" href=\"#\">Resume</a>",
+      "css": ".ds-btn-sticky { --r: 1.8deg; display: inline-flex; align-items: center; min-height: 48px; padding: 0 28px; background: var(--sticky, #f5dc47); color: var(--ink, #111); font-family: var(--font-courier), \"Courier Prime\", ui-monospace, monospace; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.78rem; text-decoration: none; rotate: var(--r); box-shadow: var(--lift-1, 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 24px -10px rgb(0 0 0 / 0.65)); } .ds-btn-sticky { transition: translate 0.45s var(--ease-paper, cubic-bezier(0.2, 0.8, 0.25, 1)), rotate 0.45s var(--ease-paper, cubic-bezier(0.2, 0.8, 0.25, 1)), box-shadow 0.45s var(--ease-paper, cubic-bezier(0.2, 0.8, 0.25, 1)); } .ds-btn-sticky:hover, .ds-btn-sticky:focus-visible { translate: 0 -6px; rotate: calc(var(--r) + 1.2deg); box-shadow: var(--lift-3, 0 4px 8px rgb(0 0 0 / 0.26), 0 40px 64px -20px rgb(0 0 0 / 0.78)); } .ds-btn-sticky:focus-visible { outline: 2px dashed var(--pen, #e62d5b); outline-offset: 4px; }"
+    },
+    {
+      "name": "Ivory Taped Button",
+      "kind": "button",
+      "refersTo": "button-ivory",
+      "description": "'View my work': an ivory sheet with a strip of tape on top.",
+      "html": "<a class=\"ds-btn-ivory\" href=\"#\"><span class=\"ds-tape\"></span>View my work →</a>",
+      "css": ".ds-btn-ivory { --r: -1.2deg; position: relative; display: inline-flex; align-items: center; min-height: 48px; padding: 0 28px; background: var(--ivory, #f1ede3); color: var(--ink, #111); font-family: var(--font-courier), \"Courier Prime\", ui-monospace, monospace; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.78rem; text-decoration: none; rotate: var(--r); box-shadow: var(--lift-1, 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 24px -10px rgb(0 0 0 / 0.65)); } .ds-tape { position: absolute; top: -13px; left: calc(50% - 23px); width: 46px; height: 26px; background: rgb(228 218 188 / 0.74); rotate: -4deg; pointer-events: none; } .ds-btn-ivory { transition: translate 0.45s var(--ease-paper, cubic-bezier(0.2, 0.8, 0.25, 1)), rotate 0.45s var(--ease-paper, cubic-bezier(0.2, 0.8, 0.25, 1)), box-shadow 0.45s var(--ease-paper, cubic-bezier(0.2, 0.8, 0.25, 1)); } .ds-btn-ivory:hover, .ds-btn-ivory:focus-visible { translate: 0 -6px; rotate: calc(var(--r) + 1.2deg); box-shadow: var(--lift-3, 0 4px 8px rgb(0 0 0 / 0.26), 0 40px 64px -20px rgb(0 0 0 / 0.78)); } .ds-btn-ivory:focus-visible { outline: 2px dashed var(--pen, #e62d5b); outline-offset: 4px; }"
+    },
+    {
+      "name": "Ink Sheet Button",
+      "kind": "button",
+      "refersTo": "button-ink",
+      "description": "Commit actions (Send the letter, archive links): a dark ink sheet with an ivory label.",
+      "html": "<button class=\"ds-btn-ink\" type=\"button\">Send the letter</button>",
+      "css": ".ds-btn-ink { --r: -1.2deg; display: inline-flex; align-items: center; min-height: 48px; padding: 0 24px; border: 0; background: #1b1a23; color: var(--ivory, #f1ede3); font-family: var(--font-courier), \"Courier Prime\", ui-monospace, monospace; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.78rem; rotate: var(--r); box-shadow: var(--lift-1, 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 24px -10px rgb(0 0 0 / 0.65)); cursor: pointer; } .ds-btn-ink { transition: translate 0.45s var(--ease-paper, cubic-bezier(0.2, 0.8, 0.25, 1)), rotate 0.45s var(--ease-paper, cubic-bezier(0.2, 0.8, 0.25, 1)), box-shadow 0.45s var(--ease-paper, cubic-bezier(0.2, 0.8, 0.25, 1)); } .ds-btn-ink:hover, .ds-btn-ink:focus-visible { translate: 0 -6px; rotate: calc(var(--r) + 1.2deg); box-shadow: var(--lift-3, 0 4px 8px rgb(0 0 0 / 0.26), 0 40px 64px -20px rgb(0 0 0 / 0.78)); } .ds-btn-ink:focus-visible { outline: 2px dashed var(--pen, #e62d5b); outline-offset: 4px; }"
+    },
+    {
+      "name": "Index Flag",
+      "kind": "chip",
+      "refersTo": "flag",
+      "description": "Page flag with a notched end; colour comes from the page registry. Sits at the right of every running head.",
+      "html": "<span class=\"ds-flag\">p. 09</span> <span class=\"ds-flag ds-flag-pen\">p. 05</span> <span class=\"ds-flag ds-flag-cobalt\">p. 06</span> <span class=\"ds-flag ds-flag-mint\">p. 07</span>",
+      "css": ".ds-flag { display: inline-flex; align-items: center; padding: 0.22rem 1.1rem 0.22rem 0.55rem; background: var(--marker, #f8dd2e); color: #111; font-family: var(--font-courier), \"Courier Prime\", ui-monospace, monospace; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.72rem; clip-path: polygon(0 0, 100% 0, calc(100% - 9px) 50%, 100% 100%, 0 100%); } .ds-flag-pen { background: #c21a49; color: #fff; } .ds-flag-cobalt { background: var(--cobalt, #2f5fd0); color: #fff; } .ds-flag-mint { background: #86d4b0; }"
+    },
+    {
+      "name": "Running Head",
+      "kind": "custom",
+      "description": "Top of every page: notebook title left, index flag with page number right. Replaces kickers.",
+      "html": "<div class=\"ds-rh\"><span>Anish Singh — working notebook</span><span class=\"ds-rh-flag\">p. 07</span></div>",
+      "css": ".ds-rh { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 1rem 1rem 0.65rem; background: #0d0c11; border-bottom: 1px solid rgb(241 237 227 / 0.14); font-family: var(--font-courier), \"Courier Prime\", ui-monospace, monospace; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(241 237 227 / 0.58); } .ds-rh-flag { padding: 0.22rem 1.1rem 0.22rem 0.55rem; background: #86d4b0; color: #111; font-weight: 700; clip-path: polygon(0 0, 100% 0, calc(100% - 9px) 50%, 100% 100%, 0 100%); }"
+    },
+    {
+      "name": "Rubber Stamp",
+      "kind": "custom",
+      "refersTo": "stamp",
+      "description": "Bebas in a double border, rotated, in deep pen; slams in via data-reveal=\"stamp\".",
+      "html": "<div class=\"ds-stamp-bed\"><span class=\"ds-stamp\">Live</span></div>",
+      "css": ".ds-stamp-bed { padding: 24px; background: var(--ivory, #f1ede3); } .ds-stamp { display: inline-block; padding: 0.28em 0.7em 0.18em; border: 3px solid currentColor; outline: 1.5px solid currentColor; outline-offset: 3px; color: #b8163f; font-family: var(--font-bebas), \"Bebas Neue\", Impact, sans-serif; font-size: 1.4rem; letter-spacing: 0.12em; line-height: 1; rotate: -8deg; opacity: 0.9; }"
+    },
+    {
+      "name": "Underline Field",
+      "kind": "input",
+      "refersTo": "input-underline",
+      "description": "Written on the ruled letter: bottom rule only, cobalt handwritten label, pen-magenta focus.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">your name</span><input class=\"ds-field-input\" type=\"text\" /></label>",
+      "css": ".ds-field { display: block; padding: 20px; background: var(--ivory, #f1ede3); } .ds-field-label { display: block; font-family: var(--font-caveat), Caveat, cursive; font-size: 1.45rem; line-height: 1; color: var(--cobalt, #2f5fd0); } .ds-field-input { width: 100%; background: transparent; border: 0; border-bottom: 2px solid rgb(17 17 17 / 0.3); padding: 6px 0; font-family: var(--font-spectral), Spectral, Georgia, serif; font-size: 1.1rem; color: #111; caret-color: #e62d5b; transition: border-color 0.2s; } .ds-field-input:focus, .ds-field-input:focus-visible { outline: none; border-bottom-color: var(--pen, #e62d5b); }"
+    },
+    {
+      "name": "Paper Strip Nav",
+      "kind": "nav",
+      "description": "Desktop nav: a torn ivory strip with the AK. monogram and handwritten title, flag tabs hanging below; the current page hangs lower.",
+      "html": "<nav class=\"ds-nav\"><div class=\"ds-nav-strip\"><a class=\"ds-nav-mark\" href=\"#\">AK.</a><span class=\"ds-nav-title\">anish’s working notebook</span></div><ul class=\"ds-nav-tabs\"><li><a class=\"ds-tab\" style=\"background:#cdb28b\" href=\"#\">About</a></li><li><a class=\"ds-tab\" style=\"background:#c21a49;color:#fff\" href=\"#\" aria-current=\"location\">Projects</a></li><li><a class=\"ds-tab\" style=\"background:#2f5fd0;color:#fff\" href=\"#\">Skills</a></li><li><a class=\"ds-tab\" style=\"background:#f8dd2e\" href=\"#\">Contact</a></li></ul></nav>",
+      "css": ".ds-nav { display: inline-flex; flex-direction: column; align-items: stretch; padding: 16px 16px 24px; background: #0d0c11; } .ds-nav-strip { position: relative; z-index: 1; display: flex; align-items: center; gap: 20px; padding: 10px 20px 16px 12px; background: var(--ivory, #f1ede3); rotate: -0.4deg; filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.3)) drop-shadow(0 14px 16px rgb(0 0 0 / 0.42)); } .ds-nav-mark { background: #111; color: #f1ede3; font-family: var(--font-bebas), \"Bebas Neue\", Impact, sans-serif; font-size: 1.5rem; line-height: 1; padding: 6px 10px 4px; rotate: -3deg; text-decoration: none; transition: rotate 0.2s; } .ds-nav-mark:hover { rotate: 0deg; } .ds-nav-title { font-family: var(--font-caveat), Caveat, cursive; font-size: 1.35rem; color: #111; } .ds-nav-tabs { display: flex; justify-content: space-between; margin: -20px 0 0; padding: 0 8px; list-style: none; } .ds-tab { display: block; padding: 24px 10px 6px; color: #111; font-family: var(--font-courier), \"Courier Prime\", ui-monospace, monospace; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.68rem; text-decoration: none; box-shadow: var(--lift-1, 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 24px -10px rgb(0 0 0 / 0.65)); translate: 0 -4px; transition: translate 0.3s var(--ease-paper, cubic-bezier(0.2, 0.8, 0.25, 1)); } .ds-tab:hover { translate: 0 2px; } .ds-tab[aria-current] { translate: 0 8px; } .ds-tab:focus-visible { outline: 2px dashed #e62d5b; outline-offset: 4px; }"
+    },
+    {
+      "name": "Taped Sheet",
+      "kind": "card",
+      "description": "Default container: an ivory sheet with its own rotation, lift-1 at rest and lift-3 when handled; Fig. caption below the work.",
+      "html": "<article class=\"ds-sheet\"><span class=\"ds-tape\"></span><h3 class=\"ds-sheet-title\">ChatSathi</h3><p class=\"ds-sheet-body\">An AI chatbot SaaS, embeddable with one script tag.</p><p class=\"ds-sheet-cap\"><b>Fig. 05.1</b> — AI · SaaS</p></article>",
+      "css": ".ds-sheet { --r: -0.8deg; position: relative; max-width: 360px; padding: 32px 32px 28px; background: var(--ivory, #f1ede3); color: #111; rotate: var(--r); box-shadow: var(--lift-1, 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 24px -10px rgb(0 0 0 / 0.65)); } .ds-tape { position: absolute; top: -13px; left: calc(50% - 23px); width: 46px; height: 26px; background: rgb(228 218 188 / 0.74); rotate: -4deg; pointer-events: none; } .ds-sheet-title { margin: 0; font-family: var(--font-bebas), \"Bebas Neue\", Impact, sans-serif; font-weight: 400; font-size: 2.6rem; line-height: 0.95; } .ds-sheet-body { margin: 12px 0 0; font-family: var(--font-spectral), Spectral, Georgia, serif; font-size: 1.05rem; line-height: 1.65; color: rgb(17 17 17 / 0.85); } .ds-sheet-cap { margin: 12px 0 0; font-family: var(--font-courier), \"Courier Prime\", ui-monospace, monospace; font-size: 0.68rem; letter-spacing: 0.05em; color: #4a4852; } .ds-sheet { transition: translate 0.45s var(--ease-paper, cubic-bezier(0.2, 0.8, 0.25, 1)), rotate 0.45s var(--ease-paper, cubic-bezier(0.2, 0.8, 0.25, 1)), box-shadow 0.45s var(--ease-paper, cubic-bezier(0.2, 0.8, 0.25, 1)); } .ds-sheet:hover, .ds-sheet:focus-visible { translate: 0 -6px; rotate: calc(var(--r) + 1.2deg); box-shadow: var(--lift-3, 0 4px 8px rgb(0 0 0 / 0.26), 0 40px 64px -20px rgb(0 0 0 / 0.78)); } .ds-sheet:focus-visible { outline: 2px dashed var(--pen, #e62d5b); outline-offset: 4px; }"
+    },
+    {
+      "name": "Highlighter Mark",
+      "kind": "custom",
+      "description": "Marker-yellow highlight behind a phrase; sweeps in left to right on reveal (.hl-draw).",
+      "html": "<p class=\"ds-hl-p\">I build <span class=\"ds-hl\">intelligent systems</span> into my applications.</p>",
+      "css": ".ds-hl-p { padding: 20px; background: #e7dfc9; font-family: var(--font-spectral), Spectral, Georgia, serif; font-size: 1.1rem; color: #111; } .ds-hl { background: linear-gradient(100deg, transparent 0.2em, rgb(248 221 46 / 0.78) 0.35em 95%, transparent) no-repeat 0 62% / 100% 58%; padding-inline: 0.12em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Working Notebook",
+    "overview": "The site is one physical developer notebook left open on a charcoal desk under a lamp. Every section is a numbered page; every piece of content is a real paper artifact pasted, taped or clipped onto it: printouts on tractor-feed paper, thermal receipts, graph sheets, blueprints, kraft tags, sticky notes, a yellow legal pad. The desk is dark and quiet; the paper carries all the colour and all the reading.\n\nDepth is physical, never digital. Paper rests on the desk with a contact shadow, sits a degree or two off square, and lifts toward the reader when handled. Marks on the paper are made by three inks with distinct jobs, plus a graphite pencil, and they ink themselves in as the page arrives. Motion is the motion of paper and pen: sheets settle, stamps slam, strokes draw, highlighter sweeps. Nothing glows, nothing is a pill, nothing is a rounded SaaS card.\n\nThe one three-dimensional object is the notebook itself, on the last page, turning to \"one last page.\" It is a finale, not a pattern.",
+    "keyCharacteristics": [
+      "Charcoal desk with fibre grain and a lamp-light pool; every readable surface is a paper stock.",
+      "Square-cut paper, small per-sheet rotations, soft two-part desk shadows (lift tokens).",
+      "Three inks with fixed roles: marker yellow, pen magenta, cobalt.",
+      "Four faces, four jobs: Bebas display, Spectral body, Courier Prime typed labels, Caveat handwriting.",
+      "Page furniture everywhere: running heads, index flags, page numbers, Fig. captions.",
+      "Scroll reveals via a data attribute; hand-drawn SVG doodles that draw themselves; full reduced-motion fallback."
+    ],
+    "rules": [
+      {
+        "name": "The Three Inks Rule",
+        "body": "Yellow highlights and calls to action; magenta edits, stamps, focuses and links; cobalt draws technical and AI material. Don't swap roles, and don't add a fourth ink.",
+        "section": "colors"
+      },
+      {
+        "name": "The Paper Carries Colour Rule",
+        "body": "The desk stays charcoal. Colour comes from paper stocks, flags and ink marks laid on it. The only full-bleed colour fields are the three chapter dividers.",
+        "section": "colors"
+      },
+      {
+        "name": "The Deep Pen Rule",
+        "body": "Magenta text smaller than display size on a light stock uses `pen-deep`.",
+        "section": "colors"
+      },
+      {
+        "name": "The Four Jobs Rule",
+        "body": "Bebas is cut out or stamped, Spectral is read, Courier is printed or filed, Caveat is handwritten. Pick the face by how the mark would be made.",
+        "section": "typography"
+      },
+      {
+        "name": "The No-Kicker Rule",
+        "body": "No eyebrow or kicker text above headlines. A page opens with its running head (notebook title on the left, index flag with page number on the right), then the title. Catalog numbers sit under the work as figure captions.",
+        "section": "typography"
+      },
+      {
+        "name": "The Fig. Numbering Rule",
+        "body": "Figures are captioned in Courier as `Fig. <page>.<n> — description`, where `<page>` is the two-digit page number from the registry (Fig. 03.1 on page 03, Fig. 05.1–05.4 on page 05). Captions go below the figure, never above its title.",
+        "section": "typography"
+      },
+      {
+        "name": "The Drop Wrapper Rule",
+        "body": "A mask or clip-path (`.torn-top`, `.torn-bottom`, `.zigzag`, clip-path tags) cuts off the element's own box-shadow. Masked sheets therefore sit inside a `.drop` wrapper that casts a filter shadow. `.drop.lift` hover swaps to the deeper filter.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Handled Paper Rule",
+        "body": "`.lift` is the only hover elevation: the sheet rises 6px, turns by `--rh` (default +1.2°) and moves to lift 3, over 0.45s on `--ease-paper`. Tape on it lifts with it. It only runs on hover-capable devices, and `:focus-within` triggers it too.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do put every readable block on a named paper stock, chosen by what the artifact would be in real life.",
+      "Do give every sheet its own `--r` rotation (usually within ±3°) and alternate direction with neighbours.",
+      "Do use `--lift-1` for resting paper, `--lift-2` for heavy stacks, and let only `.lift` hover reach `--lift-3`.",
+      "Do wrap masked or clipped sheets (torn, zigzag, clip-path) in `.drop`.",
+      "Do open each page with the running head and its registry flag, and caption figures as `Fig. <page>.<n> — …` below the work.",
+      "Do reveal with `data-reveal` and stagger with `--d`. Put `pathLength=\"1\"` on every drawable path.",
+      "Do keep yellow for highlight and action, magenta for editing, stamps, focus and links, and cobalt for technical and AI drawings.",
+      "Do use `pen-deep` for small magenta text on light paper.",
+      "Do keep touch targets at 44px or more and the dashed pen focus outline visible."
+    ],
+    "donts": [
+      "Don't use rounded cards, pill badges, glows, gradients on text, or dark SaaS panels. Round corners only on objects that are round in life (the mat, a clip).",
+      "Don't add kicker or eyebrow labels above headlines. The running head and Fig. captions do that job.",
+      "Don't use hard offset (neobrutalist) shadows. Depth is contact shadow plus soft cast shadow.",
+      "Don't tear an edge that wasn't torn. Torn, zigzag and perforated edges belong to specific stocks.",
+      "Don't reveal with a runtime-added class. React will strip it, so use the data attribute.",
+      "Don't add a fourth ink colour or swap the roles of the three.",
+      "Don't add another WebGL scene, or load three.js on mobile or before the last page approaches.",
+      "Don't make the hero entrance wait on hydration or JS."
+    ]
+  }
+}

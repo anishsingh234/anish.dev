@@ -1,291 +1,160 @@
-"use client";
-import { useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
-import SectionHeading from "@/components/_ui/SectionHeading";
+import PageHead from "@/components/paper/PageHead";
+import Tape from "@/components/paper/Tape";
+import { ArrowCurve, PaperClip } from "@/components/paper/Doodles";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
-
+// `daily` = reached for on most projects; highlighted on the sheet.
 const GROUPS = [
   {
     label: "AI / ML",
-    color: "#E8E6E1", // light paper
-    textColor: "text-[#111018]",
+    sheet: "paper paper-graph",
+    place: "lg:col-span-5 lg:row-span-2",
+    r: -1.2,
+    tape: "tl",
     skills: [
-      { name: "LLMs", icon: "devicon-jupyter-plain", hi: true },
-      { name: "RAG Pipelines", icon: "devicon-azure-plain", hi: true },
-      { name: "Prompt Engineering", icon: "devicon-bash-plain", hi: true },
-      { name: "LangChain", icon: "devicon-python-plain", hi: true },
-      { name: "CrewAI", icon: "devicon-python-plain", hi: true },
-      { name: "Multi-Agent", icon: "devicon-kubernetes-plain", hi: false },
-      { name: "Vercel AI SDK", icon: "devicon-vercel-plain", hi: true },
-      { name: "Pinecone", icon: "devicon-postgresql-plain", hi: false },
-      { name: "Hugging Face", icon: "devicon-python-plain", hi: false },
-      { name: "Ollama", icon: "devicon-linux-plain", hi: false },
+      ["LLMs", true], ["RAG pipelines", true], ["Prompt engineering", true], ["LangChain", true],
+      ["CrewAI", true], ["Vercel AI SDK", true], ["Multi-agent systems"], ["Pinecone"], ["Hugging Face"], ["Ollama"],
     ],
+    note: "the part I get most excited about",
   },
   {
     label: "Frontend",
-    color: "#232132", // dark paper
-    textColor: "text-white",
+    sheet: "paper paper-lined [--margin:2.2rem] [--line:2rem] [--line-start:3.9rem]",
+    place: "lg:col-span-4",
+    r: 1,
+    tape: "top",
     skills: [
-      { name: "React.js", icon: "devicon-react-original", hi: true },
-      { name: "Next.js", icon: "devicon-nextjs-plain", hi: true },
-      { name: "Tailwind CSS", icon: "devicon-tailwindcss-plain", hi: true },
-      { name: "TypeScript", icon: "devicon-typescript-plain", hi: true },
-      { name: "Framer Motion", icon: "devicon-figma-plain", hi: false },
-      { name: "React Native", icon: "devicon-react-original", hi: false },
-      { name: "Expo", icon: "devicon-androidstudio-plain", hi: false },
-      { name: "Three.js", icon: "devicon-threejs-original", hi: false },
-      { name: "GSAP", icon: "devicon-javascript-plain", hi: true },
+      ["React", true], ["Next.js", true], ["TypeScript", true], ["Tailwind CSS", true], ["GSAP", true],
+      ["Framer Motion"], ["React Native"], ["Expo"], ["Three.js"],
     ],
   },
   {
     label: "Backend",
-    color: "#1E1A2D", // dark paper
-    textColor: "text-white",
-    skills: [
-      { name: "Node.js", icon: "devicon-nodejs-plain", hi: true },
-      { name: "Express.js", icon: "devicon-express-original", hi: true },
-      { name: "FastAPI", icon: "devicon-fastapi-plain", hi: true },
-      { name: "REST APIs", icon: "devicon-swagger-plain", hi: true },
-      { name: "GraphQL", icon: "devicon-graphql-plain", hi: false },
-      { name: "WebSockets", icon: "devicon-nodejs-plain", hi: false },
-    ],
+    sheet: "paper",
+    place: "lg:col-span-3 lg:mt-8",
+    r: -2,
+    clip: true,
+    skills: [["Node.js", true], ["Express", true], ["FastAPI", true], ["REST APIs", true], ["GraphQL"], ["WebSockets"]],
   },
   {
-    label: "Database",
-    color: "#E8E6E1", // light paper
-    textColor: "text-[#111018]",
-    skills: [
-      { name: "MongoDB", icon: "devicon-mongodb-plain", hi: true },
-      { name: "Prisma ORM", icon: "devicon-prisma-original", hi: true },
-      { name: "MySQL", icon: "devicon-mysql-plain", hi: false },
-      { name: "Supabase", icon: "devicon-supabase-plain", hi: true },
-      { name: "Redis", icon: "devicon-redis-plain", hi: false },
-    ],
+    label: "Data",
+    sheet: "paper paper-kraft",
+    place: "lg:col-span-3",
+    r: 1.8,
+    tape: "tr",
+    skills: [["MongoDB", true], ["Prisma ORM", true], ["Supabase", true], ["PostgreSQL"], ["MySQL"], ["Redis"]],
   },
   {
     label: "Languages",
-    color: "#232132", // dark paper
-    textColor: "text-white",
-    skills: [
-      { name: "JavaScript", icon: "devicon-javascript-plain", hi: true },
-      { name: "TypeScript", icon: "devicon-typescript-plain", hi: true },
-      { name: "Python", icon: "devicon-python-plain", hi: true },
-      { name: "C++", icon: "devicon-cplusplus-plain", hi: false },
-      { name: "SQL", icon: "devicon-azuresqldatabase-plain", hi: false },
-      { name: "C", icon: "devicon-c-plain", hi: false },
-    ],
-  },
-  {
-    label: "Tools",
-    color: "#1E1A2D", // dark paper
-    textColor: "text-white",
-    skills: [
-      { name: "Git", icon: "devicon-git-plain", hi: true },
-      { name: "GitHub", icon: "devicon-github-original", hi: true },
-      { name: "Vercel", icon: "devicon-vercel-plain", hi: true },
-      { name: "VS Code", icon: "devicon-vscode-plain", hi: true },
-      { name: "Postman", icon: "devicon-postman-plain", hi: false },
-      { name: "Clerk Auth", icon: "devicon-nodejs-plain", hi: false },
-      { name: "Figma", icon: "devicon-figma-plain", hi: false },
-    ],
+    sheet: "paper paper-ink",
+    place: "lg:col-span-4 lg:-mt-4",
+    r: -0.8,
+    tape: "top",
+    skills: [["JavaScript", true], ["TypeScript", true], ["Python", true], ["C++"], ["SQL"], ["C"]],
   },
 ];
 
-// Helper to generate a random rotation between -5 and 5 degrees
-const getRandomRotation = () => Math.random() * 10 - 5;
+const TOOLS = ["Git", "GitHub", "Vercel", "VS Code", "Postman", "Clerk Auth", "Figma"];
 
-// The SVG Marker Circle
-const RedMarker = () => (
-  <svg
-    className="marker-circle absolute -inset-2 w-[calc(100%+1rem)] h-[calc(100%+1rem)] pointer-events-none z-10"
-    viewBox="0 0 100 40"
-    preserveAspectRatio="none"
-  >
-    <path
-      d="M10,20 C10,5 90,5 90,20 C90,35 10,35 10,20 C10,10 90,10 90,20"
-      fill="none"
-      stroke="#EF4444"
-      strokeWidth="3"
-      strokeLinecap="round"
-      className="opacity-80"
-    />
-  </svg>
-);
+// Real links between tools and the projects they power.
+const CONNECTIONS = [
+  { tools: "LangChain + Pinecone + FastAPI", project: "HopeBridge", href: "#work-hopebridge" },
+  { tools: "Gemini API", project: "ChatSathi & NutriMate", href: "#work-chatsathi" },
+  { tools: "Prisma + MongoDB", project: "HealSync", href: "#work-healsync" },
+];
+
+function Sheet({ group, index }) {
+  const dark = group.sheet.includes("paper-ink");
+  return (
+    <div data-reveal className={group.place} style={{ "--d": `${index * 0.08}s` }}>
+      <section
+        aria-labelledby={`skills-${index}`}
+        className={`${group.sheet} lift relative h-full px-6 pt-7 pb-6`}
+        style={{ "--r": `${group.r}deg` }}
+      >
+        {group.tape && <Tape at={group.tape} w={70} />}
+        {group.clip && <PaperClip className="absolute -top-7 right-6 h-16 w-6 rotate-12" />}
+        <h3
+          id={`skills-${index}`}
+          className={`font-bebas text-[2.1rem] leading-none tracking-wide ${dark ? "text-marker" : "text-ink"}`}
+        >
+          {group.label}
+        </h3>
+        <ul
+          className={`mt-4 flex flex-wrap gap-x-4 gap-y-2 font-mono text-[0.86rem] ${dark ? "text-ivory" : "text-ink"}`}
+        >
+          {group.skills.map(([name, daily]) => (
+            <li key={name}>
+              {daily ? (
+                <span className={dark ? "bg-marker px-1.5 py-0.5 text-ink" : "hl hl-draw"}>
+                  {name}
+                  <span className="sr-only"> (daily)</span>
+                </span>
+              ) : (
+                <span className="opacity-80">{name}</span>
+              )}
+            </li>
+          ))}
+        </ul>
+        {group.note && (
+          <p className="mt-6 font-caveat text-[1.45rem] leading-tight text-pen-deep -rotate-1">{group.note}</p>
+        )}
+      </section>
+    </div>
+  );
+}
 
 export default function Skills() {
-  const sectionRef = useRef(null);
-
-  useGSAP(
-    () => {
-      // 1. Description note entrance
-      gsap.from(".skills-desc-note", {
-        x: -40,
-        opacity: 0,
-        rotationZ: 5,
-        duration: 0.8,
-        delay: 0.5,
-        ease: "back.out(1.5)",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          toggleActions: "play none none reverse",
-        }
-      });
-
-      // 2. Folder and Stickers Animation
-      const folders = gsap.utils.toArray(".skill-folder");
-
-      folders.forEach((folder, index) => {
-        const tab = folder.querySelector(".folder-tab");
-        const stickers = folder.querySelectorAll(".skill-sticker");
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: folder,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        });
-
-        // Folder container slides up
-        tl.from(folder, {
-          y: 100,
-          opacity: 0,
-          rotationZ: index % 2 === 0 ? -2 : 2,
-          duration: 0.8,
-          ease: "power3.out",
-        })
-          // Tab pops out from behind the body
-          .from(
-            tab,
-            {
-              yPercent: 100,
-              opacity: 0,
-              duration: 0.5,
-              ease: "back.out(2)",
-            },
-            "-=0.4",
-          )
-          // Stickers get slapped onto the folder
-          .from(
-            stickers,
-            {
-              scale: 0,
-              opacity: 0,
-              rotationZ: () => Math.random() * 40 - 20, // start with extreme random rotation
-              duration: 0.5,
-              stagger: 0.05,
-              ease: "back.out(2)",
-            },
-            "-=0.3",
-          );
-      });
-    },
-    { scope: sectionRef },
-  );
-
   return (
-    <>
-      <section
-        id="skills"
-        ref={sectionRef}
-        className="relative bg-transparent font-sans overflow-hidden border-t-2 border-white/5"
-      >
-        {/* ── Intro Header ── */}
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-20 pb-10 relative z-10 overflow-hidden sm:overflow-visible">
-          
-          <SectionHeading
-            eyebrow="Tech Arsenal"
-            title="The"
-            accent="Dossier"
-            className="mb-8"
-          />
+    <section id="skills" aria-labelledby="skills-title" className="relative px-4 sm:px-8 pt-20 pb-16 lg:pt-28 lg:pb-24">
+      <div className="mx-auto max-w-[1240px]">
+        <PageHead
+          id="skills-title"
+          page="06"
+          flag="cobalt"
+          title="Tools I actually use"
+          note="highlighted = what I reach for every day"
+        />
 
-          <p className="skills-desc-note text-white/80 font-sans max-w-xl text-lg bg-black/40 p-4 border-l-4 border-purple-500 rounded-r-lg relative transform -rotate-1 shadow-lg">
-            <span className="absolute -top-3 left-6 w-12 h-4 bg-white/20 backdrop-blur-sm rotate-3 shadow-sm" />
-            A comprehensive collection of the tools, languages, and frameworks I use to build intelligent systems and scalable web applications.
-          </p>
+        <div className="mt-14 lg:mt-20 grid gap-8 lg:gap-10 lg:grid-cols-12 items-start">
+          {GROUPS.map((g, i) => (
+            <Sheet key={g.label} group={g} index={i} />
+          ))}
         </div>
 
-        {/* ── Skill Folders Grid ── */}
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pb-20 relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {GROUPS.map((group, i) => {
-              const isDark = group.textColor === "text-[#111018]";
-              return (
-                <div key={group.label} className="skill-folder relative">
-                  {/* Folder Tab */}
-                  <div
-                    className="folder-tab w-48 h-12 flex items-center justify-center relative z-0"
-                    style={{
-                      backgroundColor: group.color,
-                      clipPath: "polygon(0 100%, 10% 0, 90% 0, 100% 100%)",
-                      boxShadow: "0 -5px 10px rgba(0,0,0,0.2)",
-                    }}
-                  >
-                    <span
-                      className={`font-mono text-xs font-bold uppercase tracking-widest ${group.textColor}`}
-                    >
-                      {group.label}
-                    </span>
-                  </div>
+        {/* Tools on a receipt-strip, plus margin notes tracing tools to projects. */}
+        <div className="mt-14 grid gap-10 lg:grid-cols-12 items-start">
+          <div data-reveal className="lg:col-span-4">
+            <div className="drop">
+              <div className="paper paper-receipt zigzag px-6 pt-6 pb-7 font-mono text-[0.82rem] text-ink [--r:-1.5deg]">
+                <h3 className="font-bold tracking-[0.2em]">TOOLS · DAILY KIT</h3>
+                <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1">
+                  {TOOLS.map((t) => (
+                    <li key={t} className="flex gap-2">
+                      <span className="text-graphite" aria-hidden="true">·</span>
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
 
-                  {/* Folder Body */}
-                  <div
-                    className="folder-body w-full rounded-b-xl rounded-tr-xl p-8 relative z-10"
-                    style={{
-                      backgroundColor: group.color,
-                      boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
-                      clipPath: "polygon(0 0, 100% 0, 99% 100%, 1% 99%)",
-                    }}
-                  >
-                    {/* Top Secret Stamp */}
-                    <div className="absolute top-4 right-4 opacity-30 transform rotate-12 pointer-events-none select-none border-4 border-red-500 text-red-500 font-bebas tracking-[0.2em] p-1 text-xl">
-                      CONFIDENTIAL
-                    </div>
-
-                    <h3
-                      className={`text-4xl font-bebas tracking-wide mb-6 ${group.textColor}`}
-                    >
-                      {group.label}
-                    </h3>
-
-                    {/* Stickers Container */}
-                    <div className="flex flex-wrap gap-3 justify-start">
-                      {group.skills.map((skill) => (
-                        <div
-                          key={skill.name}
-                          className={`skill-sticker relative flex items-center gap-2 px-3 py-2 shadow-lg transition-transform hover:scale-110 hover:z-50 cursor-default ${
-                            isDark
-                              ? "bg-[#111018] text-white border-2 border-white/10"
-                              : "bg-white text-[#111018] border-2 border-black/10"
-                          }`}
-                          style={{
-                            transform: `rotate(${getRandomRotation()}deg)`,
-                            clipPath: "polygon(2% 2%, 98% 0, 100% 98%, 0 100%)",
-                          }}
-                        >
-                          <i className={`${skill.icon} text-xl`} />
-                          <span className="font-mono text-sm font-bold select-none">
-                            {skill.name}
-                          </span>
-
-                          {/* Red Marker for highlighted skills */}
-                          {skill.hi && <RedMarker />}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+          <div data-reveal className="lg:col-span-8 [--d:0.15s]">
+            <p className="font-caveat text-2xl text-ivory/70">where these actually show up →</p>
+            <ul className="mt-4 grid gap-5 sm:grid-cols-3">
+              {CONNECTIONS.map((c, i) => (
+                <li key={c.project} className="relative" style={{ rotate: `${[-2, 1.5, -1][i]}deg` }}>
+                  <ArrowCurve draw className="h-8 w-14 text-marker/80 rotate-[70deg] ml-4" style={{ "--d": `${0.3 + i * 0.2}s` }} />
+                  <p className="font-mono text-[0.78rem] uppercase tracking-wider text-ivory/70">{c.tools}</p>
+                  <a href={c.href} className="pen-link mt-1 inline-block font-caveat text-[1.9rem] leading-none text-marker">
+                    {c.project}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }

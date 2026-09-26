@@ -1,59 +1,48 @@
-import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import clsx from "clsx";
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from "@vercel/analytics/react";
+import { Bebas_Neue, Caveat, Courier_Prime, Spectral } from "next/font/google";
 
-import { Dancing_Script, Great_Vibes } from "next/font/google";
-import { Bebas_Neue, Caveat, JetBrains_Mono } from 'next/font/google';
-
-const jetbrainsMono = JetBrains_Mono({
+// Four faces, four jobs: condensed display, editorial body, typed/printed
+// labels and code, handwritten annotations.
+const bebas = Bebas_Neue({
+  weight: "400",
   subsets: ["latin"],
-  weight: ["500", "600"],
-  variable: "--font-jetbrains",
+  variable: "--font-bebas",
   display: "swap",
 });
 
-const bebas = Bebas_Neue({
-  weight: '400',
-  subsets: ['latin'],
-  variable: "--font-bebas",
-  display: 'swap',
+const spectral = Spectral({
+  weight: ["400", "500", "700"],
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  variable: "--font-spectral",
+  display: "swap",
+});
+
+const courierPrime = Courier_Prime({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-courier",
+  display: "swap",
 });
 
 const caveat = Caveat({
+  weight: ["500", "700"],
   subsets: ["latin"],
   variable: "--font-caveat",
   display: "swap",
 });
 
-const dancingScript = Dancing_Script({
-  subsets: ["latin"],
-  variable: "--font-dancing-script",
-  display: "swap",
-});
-
-const greatVibes = Great_Vibes({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-great-vibes",
-  display: "swap",
-});
-
-// Configure Space Grotesk font
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-sans",
-  display: "swap",
-});
-
+const SITE_URL = "https://anish-ai.vercel.app";
 const SITE_TITLE = "Anish Singh — Full Stack Developer & AI Engineer";
 const SITE_DESCRIPTION =
-  "Full stack developer specializing in React, Next.js, Node.js, and AI/ML integration. Building production-grade web applications and intelligent systems.";
+  "Anish Singh is a full stack developer and AI engineer building production web apps with Next.js, React and Node.js, plus RAG pipelines, LLM integrations and multi-agent systems. Full Stack Developer at Exponent Solutions.";
 
 export const metadata = {
-  metadataBase: new URL("https://anish-ai.vercel.app"),
+  metadataBase: new URL(SITE_URL),
+  applicationName: "Anish Singh — Portfolio",
+  category: "technology",
   title: {
     default: SITE_TITLE,
     template: "%s | Anish Singh",
@@ -61,18 +50,21 @@ export const metadata = {
   description: SITE_DESCRIPTION,
   keywords: [
     "Anish Singh",
+    "Anish Kumar Singh",
     "Full Stack Developer",
-    "React",
-    "Next.js",
+    "AI Engineer",
+    "Next.js Developer",
+    "React Developer",
     "Node.js",
-    "AI",
-    "Machine Learning",
+    "RAG",
+    "LLM",
+    "LangChain",
+    "Generative AI",
+    "Software Engineer India",
     "Portfolio",
-    "Web Developer",
-    "Software Engineer",
     "anish-ai",
   ],
-  authors: [{ name: "Anish Singh", url: "https://anish-ai.vercel.app" }],
+  authors: [{ name: "Anish Singh", url: SITE_URL }],
   creator: "Anish Singh",
   publisher: "Anish Singh",
   formatDetection: {
@@ -100,14 +92,14 @@ export const metadata = {
   openGraph: {
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
-    url: "https://anish-ai.vercel.app/",
+    url: `${SITE_URL}/`,
     siteName: "Anish Singh",
     images: [
       {
         url: "/namaste-og.png",
         width: 1200,
         height: 630,
-        alt: "Anish Singh Portfolio Greeting",
+        alt: "Anish Singh — Full Stack Developer & AI Engineer",
       },
     ],
     locale: "en_US",
@@ -121,50 +113,78 @@ export const metadata = {
   },
 };
 
-const personSchema = {
+export const viewport = {
+  themeColor: "#0D0C11",
+};
+
+// Site-wide structured data: who this is, and the site that represents them.
+const structuredData = {
   "@context": "https://schema.org",
-  "@type": "Person",
-  name: "Anish Singh",
-  url: "https://anish-ai.vercel.app",
-  jobTitle: "Full Stack Developer & AI Engineer",
-  sameAs: [
-    "https://github.com/anishsingh234",
-    "https://linkedin.com/in/anish-ai",
-  ],
-  knowsAbout: [
-    "React",
-    "Next.js",
-    "Node.js",
-    "Artificial Intelligence",
-    "Machine Learning",
-    "RAG",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": `${SITE_URL}/#person`,
+      name: "Anish Singh",
+      alternateName: "Anish Kumar Singh",
+      url: SITE_URL,
+      image: `${SITE_URL}/namaste-og.png`,
+      email: "mailto:anishsingh210204@gmail.com",
+      jobTitle: "Full Stack Developer & AI Engineer",
+      description: SITE_DESCRIPTION,
+      worksFor: { "@type": "Organization", name: "Exponent Solutions" },
+      alumniOf: {
+        "@type": "CollegeOrUniversity",
+        name: "Uttarakhand Technical University",
+        address: { "@type": "PostalAddress", addressLocality: "Dehradun", addressCountry: "IN" },
+      },
+      sameAs: ["https://github.com/anishsingh234", "https://linkedin.com/in/anish-ai"],
+      knowsAbout: [
+        "Next.js",
+        "React",
+        "TypeScript",
+        "Node.js",
+        "FastAPI",
+        "MongoDB",
+        "Retrieval-Augmented Generation",
+        "Large Language Models",
+        "LangChain",
+        "CrewAI",
+        "Multi-agent systems",
+      ],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: "Anish Singh",
+      inLanguage: "en",
+      publisher: { "@id": `${SITE_URL}/#person` },
+    },
   ],
 };
+
+// Runs before first paint: marks JS as available so scroll reveals can start
+// hidden without hiding anything from no-JS visitors.
+const bootScript = `document.documentElement.classList.add('js')`;
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Devicon CDN — used by the Skills section's tech icons */}
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
-        />
+        <script dangerouslySetInnerHTML={{ __html: bootScript }} />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
       </head>
       <body
         suppressHydrationWarning
         className={clsx(
-          spaceGrotesk.variable,
-          dancingScript.variable,
-          greatVibes.variable,
           bebas.variable,
+          spectral.variable,
+          courierPrime.variable,
           caveat.variable,
-          jetbrainsMono.variable,
-          "bg-background text-foreground font-sans paper-bg"
+          "bg-desk text-ivory font-serif antialiased"
         )}
       >
         {children}

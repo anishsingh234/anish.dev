@@ -1,11 +1,18 @@
 "use client";
-import React from "react";
+
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import emailjs from "@emailjs/browser";
 import { Toaster, toast } from "sonner";
-import { ArrowRight } from "lucide-react";
+import { Send } from "lucide-react";
+
+const field =
+  "w-full bg-transparent border-0 border-b-2 border-ink/30 px-0 py-1.5 font-serif text-[1.1rem] text-ink placeholder:text-graphite/90 focus:border-pen focus:outline-none focus-visible:outline-none transition-colors";
+const label = "block font-caveat text-[1.45rem] leading-none text-cobalt";
+const error = "mt-1.5 block font-mono text-[0.72rem] text-pen-deep";
 
 export default function Form() {
+  const [sending, setSending] = useState(false);
   const {
     register,
     handleSubmit,
@@ -13,116 +20,128 @@ export default function Form() {
     formState: { errors },
   } = useForm();
 
-  const sendEmail = (params) => {
-    const toastId = toast.loading("Sending dispatch, please wait...");
+  const onSubmit = (data) => {
+    setSending(true);
+    const toastId = toast.loading("Folding the letter…");
     emailjs
       .send(
         process.env.NEXT_PUBLIC_SERVICE_ID,
         process.env.NEXT_PUBLIC_TEMPLATE_ID,
-        params,
-        {
-          publicKey: process.env.NEXT_PUBLIC_PUBLIC_KEY,
-          limitRate: { throttle: 5000 },
-        }
+        { to_name: "Anish", from_name: data.name, reply_to: data.email, message: data.message },
+        { publicKey: process.env.NEXT_PUBLIC_PUBLIC_KEY, limitRate: { throttle: 5000 } }
       )
       .then(
         () => {
           reset();
-          toast.success("Dispatch received! I will get back to you soon.", { id: toastId });
+          toast.success("Sent. I’ll reply to the email you gave.", { id: toastId });
         },
-        (error) => {
-          console.error("EmailJS Error:", error);
-          toast.error(`Error sending dispatch: ${error?.text || error?.message || "Unknown error"}`, { id: toastId });
+        (err) => {
+          console.error("EmailJS error:", err);
+          toast.error("That didn’t send. Try again, or email me directly — the address is on the slip.", { id: toastId });
         }
-      );
-  };
-
-  const onSubmit = (data) => {
-    const templateParams = {
-      to_name: "Anish",
-      from_name: data.name,
-      reply_to: data.email,
-      message: data.message,
-    };
-    sendEmail(templateParams);
+      )
+      .finally(() => setSending(false));
   };
 
   return (
-    <div className="w-full relative">
-      <Toaster richColors={true} />
-      <form 
-        className="space-y-6 w-full relative z-10" 
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="w-full flex-col flex gap-2 form-element">
-            <input 
-              type="text" 
-              placeholder="YOUR NAME" 
-              suppressHydrationWarning
-              className="w-full bg-[#111018]/5 border-2 border-black/20 px-4 py-4 text-sm text-[#111018] placeholder:text-[#111018]/40 focus:outline-none focus:border-purple-600 transition-colors font-mono font-bold uppercase tracking-wider"
-              style={{ clipPath: "polygon(1% 0, 99% 2%, 100% 98%, 0 100%)", boxShadow: "inset 2px 3px 5px rgba(0,0,0,0.1)" }}
+    <>
+      <Toaster
+        position="bottom-center"
+        toastOptions={{
+          style: {
+            background: "#f1ede3",
+            color: "#111",
+            border: "none",
+            borderRadius: 0,
+            boxShadow: "var(--lift-2)",
+            fontFamily: "var(--font-spectral), Georgia, serif",
+          },
+        }}
+      />
+      <form className="space-y-7" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <div className="grid gap-7 sm:grid-cols-2">
+          <div>
+            <label htmlFor="contact-name" className={label}>
+              your name
+            </label>
+            <input
+              id="contact-name"
+              type="text"
+              autoComplete="name"
+              aria-invalid={errors.name ? "true" : "false"}
+              aria-describedby={errors.name ? "contact-name-error" : undefined}
+              className={field}
               {...register("name", {
-                required: "Name is required!",
-                minLength: { value: 3, message: "At least 3 characters." },
+                required: "Please add your name.",
+                minLength: { value: 3, message: "Your name needs at least 3 letters." },
               })}
             />
             {errors.name && (
-              <span className="inline-block text-red-600 font-mono text-xs font-bold pl-1 uppercase">
-                * {errors.name.message}
+              <span id="contact-name-error" role="alert" className={error}>
+                {errors.name.message}
               </span>
             )}
           </div>
-          
-          <div className="w-full flex-col flex gap-2 form-element">
-            <input 
-              type="email" 
-              placeholder="RETURN ADDRESS (EMAIL)" 
-              suppressHydrationWarning
-              className="w-full bg-[#111018]/5 border-2 border-black/20 px-4 py-4 text-sm text-[#111018] placeholder:text-[#111018]/40 focus:outline-none focus:border-purple-600 transition-colors font-mono font-bold uppercase tracking-wider"
-              style={{ clipPath: "polygon(0 2%, 99% 0, 98% 100%, 2% 98%)", boxShadow: "inset 2px 3px 5px rgba(0,0,0,0.1)" }}
-              {...register("email", { required: "Email is required!" })}
+          <div>
+            <label htmlFor="contact-email" className={label}>
+              where I can reply
+            </label>
+            <input
+              id="contact-email"
+              type="email"
+              autoComplete="email"
+              inputMode="email"
+              aria-invalid={errors.email ? "true" : "false"}
+              aria-describedby={errors.email ? "contact-email-error" : undefined}
+              className={field}
+              placeholder="you@company.com"
+              {...register("email", {
+                required: "Please add an email so I can reply.",
+                pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "That email looks incomplete — check the @ and domain." },
+              })}
             />
             {errors.email && (
-              <span className="inline-block text-red-600 font-mono text-xs font-bold pl-1 uppercase">
-                * {errors.email.message}
+              <span id="contact-email-error" role="alert" className={error}>
+                {errors.email.message}
               </span>
             )}
           </div>
         </div>
-        
-        <div className="w-full flex-col flex gap-2 form-element">
-          <textarea 
-            rows={5} 
-            placeholder="WRITE YOUR MESSAGE HERE..." 
-            suppressHydrationWarning
-            className="w-full bg-[#111018]/5 border-2 border-black/20 px-4 py-4 text-sm text-[#111018] placeholder:text-[#111018]/40 focus:outline-none focus:border-purple-600 transition-colors resize-none font-mono font-bold uppercase tracking-wider"
-            style={{ clipPath: "polygon(0 0, 100% 1%, 99% 100%, 1% 99%)", boxShadow: "inset 2px 4px 6px rgba(0,0,0,0.1)" }}
+
+        <div>
+          <label htmlFor="contact-message" className={label}>
+            the idea, role or problem
+          </label>
+          <textarea
+            id="contact-message"
+            rows={5}
+            aria-invalid={errors.message ? "true" : "false"}
+            aria-describedby={errors.message ? "contact-message-error" : undefined}
+            className={`${field} resize-none leading-[2rem] border-b-0`}
             {...register("message", {
-              required: "Message is required!",
-              minLength: { value: 20, message: "Please write a bit more." },
+              required: "Please write a message.",
+              minLength: { value: 20, message: "A little more detail helps — at least 20 characters." },
             })}
           />
           {errors.message && (
-            <span className="inline-block text-red-600 font-mono text-xs font-bold pl-1 uppercase">
-              * {errors.message.message}
+            <span id="contact-message-error" role="alert" className={error}>
+              {errors.message.message}
             </span>
           )}
         </div>
-        
-        <button 
-          type="submit"
-          suppressHydrationWarning
-          className="form-element group relative w-full py-5 bg-[#111018] text-white font-mono font-black tracking-[0.2em] uppercase transition-transform hover:-translate-y-1 hover:shadow-[8px_12px_20px_rgba(0,0,0,0.4)] flex items-center justify-center gap-3"
-          style={{ clipPath: "polygon(1% 1%, 99% 0, 98% 99%, 0 100%)", boxShadow: "4px 6px 12px rgba(0,0,0,0.3)" }}
-        >
-          Send Dispatch
-          <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
-          
-          {/* Subtle tape overlay */}
-          <div className="absolute top-0 right-4 w-12 h-3 bg-white/20 rotate-[-5deg]" />
-        </button>
+
+        <div className="flex flex-wrap items-center gap-5 pt-1">
+          <button
+            type="submit"
+            disabled={sending}
+            className="paper paper-ink lift inline-flex min-h-12 items-center gap-2.5 px-6 type-label text-[0.78rem] [--r:-1.2deg] disabled:opacity-60 disabled:cursor-wait"
+          >
+            {sending ? "Sending…" : "Send the letter"}
+            <Send className="size-4" aria-hidden="true" />
+          </button>
+          <p className="font-caveat text-xl text-graphite">— signed, sealed, sent to my inbox</p>
+        </div>
       </form>
-    </div>
+    </>
   );
 }

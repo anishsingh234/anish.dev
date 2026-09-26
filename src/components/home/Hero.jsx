@@ -1,396 +1,160 @@
-"use client";
-import { useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
-import {
-  Github,
-  Mail,
-  ArrowUpRight,
-  Download,
-  Brain,
-  Code2,
-  Rocket,
-} from "lucide-react";
+import { ArrowRight, FileDown, Paperclip } from "lucide-react";
+import Tape from "@/components/paper/Tape";
+import { ArrowCurve, ArrowDown, PaperClip, Star, Spiral, Squiggle } from "@/components/paper/Doodles";
+import { CONTACT } from "@/components/paper/pages";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+// Each letter is cut from a different sheet. Rotations are deliberately uneven.
+const LETTERS = [
+  { ch: "A", stock: "", ink: "text-ink", r: -5 },
+  { ch: "N", stock: "paper-sticky", ink: "text-ink", r: 3, tape: 8 },
+  { ch: "I", stock: "paper-ink ring-1 ring-ivory/15", ink: "text-ivory", r: -2 },
+  { ch: "S", stock: "paper-kraft", ink: "text-[#2a1d10]", r: 4.5 },
+  { ch: "H", stock: "", ink: "text-ink", r: -3, tape: -10 },
+];
 
-// Static noise texture, scoped to the Hero section only (not fixed to the
-// viewport) so it stops costing anything once the user scrolls past it.
-const PaperTexture = () => (
-  <div className="hidden md:block pointer-events-none absolute inset-0 z-50 w-full h-full opacity-[0.15] mix-blend-overlay paper-noise" />
-);
+const FILE_CARD = [
+  ["File", "A. K. Singh"],
+  ["Role", "Full stack + AI"],
+  ["Grad", "B.Tech AI & ML ’26"],
+  ["Now", "Exponent Solutions"],
+];
 
 export default function Hero() {
-  const containerRef = useRef(null);
-  const storyWrapRef = useRef(null);
-
-  useGSAP(
-    () => {
-      // 1. Initial "Drawing" Animation (Delayed to sync with Preloader exit)
-      const tl = gsap.timeline({
-        defaults: { ease: "power3.out" },
-        delay: 3.2, // Wait for Preloader to finish sketching (2.2s) + pause (0.3s) + swipe (0.9s)
-      });
-
-      // 1. Drop in collage letters with gravity and bounce
-      tl.fromTo(
-        ".collage-letter",
-        {
-          y: -300,
-          opacity: 0,
-          rotationZ: () => Math.random() * 60 - 30,
-          scale: 1.5,
-        },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          stagger: 0.1,
-          // Try to keep their original inline rotation if possible
-          rotationZ: (i, el) => parseFloat(el.getAttribute("data-rot") || "0"),
-          ease: "bounce.out",
-        },
-      )
-        // 2. Stamp the last name aggressively
-        .fromTo(
-          ".stamped-text",
-          { opacity: 0, scale: 3 },
-          {
-            opacity: 0.8,
-            scale: 1,
-            duration: 0.3,
-            stagger: 0.05,
-            ease: "power4.in",
-          },
-          "-=0.2",
-        )
-        // 3. Flutter in the paper cut-out elements
-        .fromTo(
-          ".paper-card",
-          {
-            y: 60,
-            opacity: 0,
-            rotationZ: () => Math.random() * 10 - 5,
-            rotationX: 30,
-          },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            stagger: 0.2,
-            rotationZ: 0,
-            rotationX: 0,
-            ease: "power3.out",
-          },
-          "-=0.2",
-        )
-        .fromTo(
-          ".scroll-indicator",
-          { opacity: 0, y: -20 },
-          { opacity: 1, y: 0, duration: 1 },
-          "-=0.4",
-        );
-
-      // 2. Scrollytelling Sequence — pinned horizontal scrub on desktop,
-      // a simple stacked fade-in on mobile (pinning + horizontal scrub reads
-      // as janky/unresponsive scroll-jacking on touch devices).
-      const panels = gsap.utils.toArray(".story-panel");
-
-      const mm = gsap.matchMedia();
-
-      mm.add("(min-width: 768px)", () => {
-        gsap.to(panels, {
-          xPercent: -100 * (panels.length - 1),
-          ease: "none",
-          scrollTrigger: {
-            trigger: storyWrapRef.current,
-            pin: true,
-            scrub: 1,
-            snap: 1 / (panels.length - 1),
-            start: "top top",
-            end: () => "+=" + storyWrapRef.current.offsetWidth,
-          },
-        });
-      });
-
-      mm.add("(max-width: 767px)", () => {
-        panels.forEach((panel) => {
-          gsap.from(panel, {
-            opacity: 0,
-            y: 40,
-            duration: 0.8,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: panel,
-              start: "top 80%",
-              toggleActions: "play none none reverse",
-            },
-          });
-        });
-      });
-    },
-    { scope: containerRef },
-  );
-
   return (
     <section
-      ref={containerRef}
-      className="relative bg-[#0D0A10] text-white overflow-hidden font-sans"
+      id="top"
+      aria-labelledby="hero-title"
+      className="relative isolate flex min-h-[100svh] flex-col overflow-hidden px-4 sm:px-8 pt-24 lg:pt-40 pb-6"
     >
-      <PaperTexture />
+      {/* Margin doodles — what the pen did while the name was being cut out. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 hidden md:block">
+        <Star className="hero-draw drift absolute left-[14%] top-[22%] size-10 text-marker/80 -rotate-12 [--d:1.2s] [--drift:24px]" />
+        <Spiral className="hero-draw drift absolute right-[17%] top-[17%] size-12 text-ivory/35 [--d:1.4s] [--drift:36px]" />
+        <Squiggle className="hero-draw absolute left-[16%] bottom-[30%] h-5 w-36 text-pen/60 [--d:1.6s]" />
+        <Star className="hero-draw absolute right-[26%] bottom-[20%] size-6 text-ivory/40 rotate-12 [--d:1.8s]" />
+      </div>
 
-      {/* ── Landing Area ── */}
-      <div className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-32 pb-40">
-        <h1 className="sr-only">Anish Singh — Full Stack Developer & AI Engineer</h1>
-        {/* ── Collage Name: ANISH ── */}
-        <div className="w-full max-w-4xl mx-auto mb-2 flex flex-col items-center justify-center relative z-10">
-          <div className="flex justify-center items-center gap-1 sm:gap-3 mb-6">
-            {/* A - Newspaper */}
-            <div
-              className="collage-letter relative bg-[#f4f1ea] text-black font-bebas text-6xl sm:text-8xl px-4 sm:px-6 py-2 sm:py-4 shadow-xl border border-gray-300"
-              data-rot="-6"
-              style={{
-                clipPath: "polygon(5% 0%, 100% 3%, 95% 100%, 0% 97%)",
-                transform: "rotate(-6deg)",
-              }}
-            >
-              A
-            </div>
-            {/* N - Yellow notepad */}
-            <div
-              className="collage-letter relative bg-[#fdf5c9] text-blue-800 font-bebas text-6xl sm:text-8xl px-4 sm:px-6 py-2 sm:py-4 shadow-xl border-t-[10px] border-[#e2d58b]"
-              data-rot="4"
-              style={{
-                clipPath: "polygon(0% 2%, 98% 0%, 100% 98%, 3% 100%)",
-                transform: "rotate(4deg)",
-              }}
-            >
-              N
-            </div>
-            {/* I - Black tape */}
-            <div
-              className="collage-letter relative bg-[#1a1a1a] text-white font-bebas text-6xl sm:text-8xl px-5 sm:px-8 py-1 sm:py-2 shadow-2xl"
-              data-rot="-2"
-              style={{
-                clipPath: "polygon(2% 0%, 98% 2%, 100% 100%, 0% 96%)",
-                transform: "rotate(-2deg)",
-              }}
-            >
-              I
-            </div>
-            {/* S - Cardboard */}
-            <div
-              className="collage-letter relative bg-[#d4b595] text-[#3a2818] font-bebas text-6xl sm:text-8xl px-4 sm:px-6 py-2 sm:py-4 shadow-xl border-2 border-[#b59575] border-dashed"
-              data-rot="8"
-              style={{ transform: "rotate(8deg)" }}
-            >
-              S
-            </div>
-            {/* H - Receipt paper */}
-            <div
-              className="collage-letter relative bg-white text-black font-bebas text-6xl sm:text-8xl px-4 sm:px-6 py-2 sm:py-4 shadow-xl"
-              data-rot="-5"
-              style={{
-                clipPath: "polygon(0% 0%, 100% 0%, 95% 100%, 5% 100%)",
-                transform: "rotate(-5deg)",
-              }}
-            >
-              H
-            </div>
+      <div className="mx-auto grid w-full max-w-[1400px] flex-1 items-center gap-10 xl:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
+        {/* ── Left margin: typed index card (xl+) ── */}
+        <aside
+          aria-label="Quick facts"
+          className="hero-fade hidden xl:block justify-self-start [--d:1.05s]"
+        >
+          <div className="paper relative w-52 px-5 pt-7 pb-5 [--r:-3deg] lift border-t-[6px] border-cobalt/70">
+            <PaperClip className="absolute -top-7 right-6 h-16 w-6 rotate-6" />
+            <dl className="font-mono text-[0.78rem] leading-7 text-ink">
+              {FILE_CARD.map(([k, v]) => (
+                <div key={k} className="flex gap-3 border-b border-dashed border-ink/20">
+                  <dt className="w-14 shrink-0 uppercase tracking-wider text-graphite">{k}</dt>
+                  <dd className="truncate">{v}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="mt-3 font-caveat text-xl text-pen-deep -rotate-2">don’t delete this card</p>
           </div>
+        </aside>
 
-          {/* Stamped Last Name: SINGH */}
-          <div className="flex justify-center mb-16 relative">
-            <div
-              className="stamped-text font-bebas text-5xl sm:text-7xl tracking-[0.2em] text-[#ff3366] mix-blend-screen"
-              style={{ transform: "rotate(-2deg)" }}
+        {/* ── The name ── */}
+        <div className="relative flex flex-col items-center text-center">
+          {/* The torn graph sheet the letters were pasted onto. */}
+          <div
+            aria-hidden="true"
+            className="drop hero-fade absolute -z-10 hidden md:block -left-[7%] -top-[9%] w-[62%] h-[46%] [--d:0.05s]"
+          >
+            <div className="paper paper-graph torn-bottom h-full w-full [--r:-4deg]" />
+          </div>
+          <h1 id="hero-title">
+            <span className="sr-only">Anish Singh — Full Stack Developer and AI Engineer</span>
+            <span aria-hidden="true" className="flex items-end justify-center gap-[clamp(0.35rem,1.2vw,1rem)]">
+              {LETTERS.map((l, i) => (
+                <span
+                  key={l.ch}
+                  className={`hero-letter paper lift ${l.stock} ${l.ink} relative grid place-items-center font-bebas leading-none w-[clamp(3.7rem,15vw,9.6rem)] h-[clamp(4.9rem,19vw,12.2rem)] pt-[0.08em] text-[clamp(3.6rem,14vw,10.4rem)] xl:w-[min(9.6rem,10vw)] xl:h-[min(12.2rem,12.6vw)] xl:text-[min(10.4rem,9.2vw)]`}
+                  style={{ "--r": `${l.r}deg`, "--i": i, "--rh": `${-l.r / 2}deg` }}
+                >
+                  {l.tape !== undefined && <Tape at="top" w={54} rotate={l.tape} className="hidden sm:block" />}
+                  {l.ch}
+                </span>
+              ))}
+            </span>
+
+            <span
+              aria-hidden="true"
+              className="hero-stamp inked mt-3 sm:mt-5 block font-bebas leading-[0.9] text-pen tracking-[0.22em] pl-[0.22em] text-[clamp(3.4rem,11vw,8.2rem)] [--d:0.45s]"
+              style={{ rotate: "-1.5deg" }}
             >
               SINGH
-            </div>
-            {/* Ink splatters */}
-            <div
-              className="stamped-text absolute -top-4 right-0 w-3 h-3 bg-[#ff3366] rounded-full mix-blend-screen"
-              style={{ transform: "rotate(-2deg)" }}
-            ></div>
-            <div className="stamped-text absolute bottom-2 -left-4 w-1.5 h-1.5 bg-[#ff3366] rounded-full mix-blend-screen"></div>
+            </span>
+          </h1>
+
+          <p className="hero-fade mt-4 sm:mt-6 type-label text-[0.72rem] sm:text-[0.82rem] tracking-[0.2em] text-ivory/85 [--d:0.7s]">
+            Full Stack Developer <span className="text-pen" aria-hidden="true">·</span>
+            <span className="sr-only">and</span> AI Engineer
+          </p>
+          <p className="hero-fade mt-2 font-serif italic text-xl sm:text-2xl text-ivory [--d:0.8s]">
+            Building useful things with code &amp; AI.
+          </p>
+
+          <div className="hero-fade mt-8 flex w-full max-w-sm sm:max-w-none items-center justify-center gap-3 sm:gap-5 [--d:0.9s]">
+            <a
+              href="#projects"
+              className="paper lift relative flex-1 sm:flex-none inline-flex min-h-12 items-center justify-center gap-2.5 px-4 sm:px-7 type-label text-[0.78rem] [--r:-1.2deg]"
+            >
+              <Tape at="top" w={46} rotate={-4} />
+              View my work
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </a>
+            <a
+              href={CONTACT.resume}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="paper paper-sticky lift flex-1 sm:flex-none inline-flex min-h-12 items-center justify-center gap-2.5 px-4 sm:px-7 type-label text-[0.78rem] [--r:1.8deg]"
+            >
+              <FileDown className="size-4" aria-hidden="true" />
+              Resume
+              <span className="sr-only">(PDF, opens in a new tab)</span>
+            </a>
           </div>
         </div>
 
-        {/* Paper Cut-out CTA Cards */}
-        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-12 relative z-10">
-          {/* View My Work - Manila folder tab */}
-          <a
-            href="#projects"
-            className="paper-card group relative bg-[#d9c5a0] text-[#111018] px-8 py-4 font-bold text-lg inline-flex items-center gap-3 transition-transform hover:scale-105 border border-[#c2ae87]"
-            style={{
-              clipPath: "polygon(0% 10%, 15% 0%, 100% 0%, 100% 100%, 0% 100%)",
-              boxShadow: "4px 8px 15px rgba(0,0,0,0.4)",
-            }}
-          >
-            <span>View My Work</span>
-            <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-          </a>
-
-          {/* Resume - Neon Sticky Note */}
-          <a
-            href="/resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="paper-card group relative bg-[#ffeb3b] text-[#111018] px-8 py-4 font-bold text-lg inline-flex items-center gap-3 transition-transform hover:-translate-y-2 origin-bottom-right"
-            style={{
-              boxShadow: "6px 6px 15px rgba(0,0,0,0.4)",
-              clipPath: "polygon(0% 0%, 100% 0%, 95% 100%, 0% 95%)",
-            }}
-          >
-            <Download className="w-5 h-5" />
-            <span>Resume</span>
-            {/* Sticky note folded corner illusion */}
-            <div
-              className="absolute bottom-0 right-0 w-6 h-6 bg-[#d4c32b] transform -rotate-12 translate-x-1 translate-y-1 opacity-0 group-hover:opacity-100 transition-opacity"
-              style={{ clipPath: "polygon(0% 100%, 100% 0%, 100% 100%)" }}
-            ></div>
-          </a>
-        </div>
-
-        {/* Scroll Indicator */}
-        <div className="scroll-indicator absolute bottom-10 flex flex-col items-center gap-2 opacity-60">
-          <span
-            className="text-2xl font-caveat text-white/80"
-            style={{ transform: "rotate(-6deg)" }}
-          >
-            Scroll to read
-          </span>
-          {/* Hand-drawn arrow SVG */}
-          <svg
-            width="40"
-            height="60"
-            viewBox="0 0 40 60"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="text-white/80"
-          >
-            <path d="M20 5 Q25 30 15 50" />
-            <path d="M5 40 Q15 55 15 50 Q25 45 35 35" />
-          </svg>
+        {/* ── Right margin: sticky note + pen arrow into the name (xl+) ── */}
+        <div aria-hidden="true" className="relative hidden xl:flex flex-col items-end justify-self-end">
+          <div className="hero-fade paper paper-sticky lift w-48 px-5 pt-6 pb-5 [--r:3deg] [--d:1.1s]">
+            <Tape at="top" w={60} rotate={6} />
+            <p className="font-caveat text-[1.7rem] leading-[1.05] text-ink">
+              idea
+              <br />→ prototype
+              <br />→ <span className="hl">product</span>
+            </p>
+          </div>
+          <ArrowCurve className="hero-draw absolute -left-24 top-[62%] h-16 w-28 -scale-x-100 rotate-[8deg] text-ivory/75 [--d:1.4s]" />
         </div>
       </div>
 
-      {/* ── Scrollytelling Chapters ── */}
-      <div
-        ref={storyWrapRef}
-        className="flex flex-col overflow-visible md:h-screen md:flex-row md:flex-nowrap md:overflow-hidden bg-[#161520]"
-      >
-        {/* Chapter 1: The Developer */}
-        <div className="story-panel w-full h-auto py-16 md:w-screen md:h-screen md:py-0 flex-shrink-0 flex items-center justify-center p-8 md:p-20 relative">
-          <div className="absolute top-10 left-10 md:top-20 md:left-20 text-[10vw] font-black text-white/[0.03] pointer-events-none">
-            01
-          </div>
-          <div
-            className="max-w-2xl paper-card bg-[#232132] p-8 md:p-12 rounded-sm border-l-4 border-purple-500"
-            style={{
-              boxShadow: "10px 15px 30px rgba(0,0,0,0.5)",
-              clipPath: "polygon(0 0, 100% 1%, 99% 100%, 1% 99%)",
-            }}
-          >
-            <div className="flex items-center gap-4 mb-6">
-              <Code2 className="w-10 h-10 text-purple-400" />
-              <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight">
-                The Developer
-              </h2>
-            </div>
-            <p className="text-lg md:text-xl text-white/70 leading-relaxed font-light font-serif">
-              I build production-grade web applications. My foundation is built
-              on{" "}
-              <span className="font-bold text-white bg-purple-500/20 px-2 py-0.5 rounded">
-                Next.js, Node.js, and React
-              </span>
-              . I treat code like a craft—focusing on clean architecture,
-              scalable systems, and seamless user experiences.
-            </p>
+      {/* ── Mobile negative space: one note, one strip of tape ── */}
+      <div aria-hidden="true" className="relative flex-1 min-h-28 xl:hidden">
+        <div className="hero-fade absolute left-[6%] top-[30%] [--d:1.05s]">
+          <div className="paper paper-sticky px-4 py-2.5 [--r:-3deg]">
+            <Tape at="top" w={44} rotate={3} />
+            <p className="font-caveat text-xl leading-[1.1] text-ink">idea → prototype → product</p>
           </div>
         </div>
+      </div>
 
-        {/* Chapter 2: The AI Engineer */}
-        <div className="story-panel w-full h-auto py-16 md:w-screen md:h-screen md:py-0 flex-shrink-0 flex items-center justify-center p-8 md:p-20 relative">
-          <div className="absolute top-10 left-10 md:top-20 md:left-20 text-[10vw] font-black text-white/[0.03] pointer-events-none">
-            02
-          </div>
-          <div
-            className="max-w-2xl paper-card bg-[#E8E6E1] p-8 md:p-12 rounded-sm border-t-4 border-blue-500"
-            style={{
-              boxShadow: "10px 15px 30px rgba(0,0,0,0.5)",
-              clipPath: "polygon(1% 0, 99% 1%, 100% 100%, 0 99%)",
-            }}
-          >
-            <div className="flex items-center gap-4 mb-6">
-              <Brain className="w-10 h-10 text-blue-600" />
-              <h2 className="text-3xl md:text-5xl font-black text-[#111018] tracking-tight">
-                The AI Engineer
-              </h2>
-            </div>
-            <p className="text-lg md:text-xl text-[#111018]/70 leading-relaxed font-light font-serif">
-              Web dev alone wasn't enough. I supercharge my applications with{" "}
-              <span className="font-bold text-blue-800 bg-blue-500/20 px-2 py-0.5 rounded">
-                Intelligent Systems
-              </span>
-              . From RAG pipelines and custom LLM integrations to multi-agent
-              workflows using LangChain and CrewAI, I bridge the gap between AI
-              research and practical products.
-            </p>
-          </div>
-        </div>
-
-        {/* Chapter 3: The Creator */}
-        <div className="story-panel w-full h-auto py-16 md:w-screen md:h-screen md:py-0 flex-shrink-0 flex items-center justify-center p-8 md:p-20 relative">
-          <div className="absolute top-10 left-10 md:top-20 md:left-20 text-[10vw] font-black text-white/[0.03] pointer-events-none">
-            03
-          </div>
-          <div
-            className="max-w-2xl paper-card bg-[#1E1A2D] p-8 md:p-12 rounded-sm border-b-4 border-emerald-500"
-            style={{
-              boxShadow: "10px 15px 30px rgba(0,0,0,0.5)",
-              clipPath: "polygon(0 1%, 100% 0, 99% 99%, 1% 100%)",
-            }}
-          >
-            <div className="flex items-center gap-4 mb-6">
-              <Rocket className="w-10 h-10 text-emerald-400" />
-              <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight">
-                The Creator
-              </h2>
-            </div>
-            <p className="text-lg md:text-xl text-white/70 leading-relaxed font-light font-serif">
-              I don't just write code; I ship products. I've launched{" "}
-              <span className="font-bold text-emerald-300">
-                5+ AI SaaS platforms
-              </span>{" "}
-              and continuously iterate based on user feedback. Currently honing
-              my skills as an intern at Exponent Solutions.
-            </p>
-            <div className="mt-10 flex gap-6">
-              <a
-                href="https://github.com/anishsingh234"
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-2 text-white/50 hover:text-white transition-colors"
-              >
-                <Github className="w-6 h-6" />{" "}
-                <span className="font-mono text-sm">GitHub</span>
-              </a>
-              <a
-                href="mailto:anishsingh210204@gmail.com"
-                className="flex items-center gap-2 text-emerald-400/70 hover:text-emerald-400 transition-colors"
-              >
-                <Mail className="w-6 h-6" />{" "}
-                <span className="font-mono text-sm">Contact</span>
-              </a>
-            </div>
-          </div>
-        </div>
+      {/* ── Page furniture ── */}
+      <div className="mx-auto mt-6 grid w-full max-w-[1400px] grid-cols-[1fr_auto_1fr] items-end gap-4">
+        <p className="hidden sm:block type-label text-[0.68rem] font-normal text-ivory/55">p. 00 — cover</p>
+        <a
+          href="#about"
+          className="hero-fade col-start-2 flex flex-col items-center text-ivory/80 hover:text-ivory transition-colors [--d:1.2s]"
+        >
+          <span className="font-caveat text-xl -rotate-2">scroll to explore</span>
+          <ArrowDown className="hero-draw h-10 w-5 [--d:1.5s]" />
+        </a>
+        <p className="hidden sm:flex justify-self-end items-center gap-2 type-label text-[0.68rem] text-ivory/70">
+          <Paperclip className="size-3.5 text-marker" aria-hidden="true" />
+          Full Stack Developer · Exponent Solutions
+        </p>
       </div>
     </section>
   );

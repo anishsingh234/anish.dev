@@ -5,5 +5,6 @@ export default function robots() {
       allow: "/",
     },
     sitemap: "https://anish-ai.vercel.app/sitemap.xml",
+    host: "https://anish-ai.vercel.app",
   };
 }

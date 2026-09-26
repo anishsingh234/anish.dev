@@ -1,210 +1,183 @@
-"use client";
-import { useRef } from "react";
-import { Mail, ArrowUpRight } from "lucide-react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
-import SectionHeading from "@/components/_ui/SectionHeading";
+import { ArrowUpRight, Mail } from "lucide-react";
+import { RunningHead } from "@/components/paper/PageHead";
+import { Underline, CircleScribble } from "@/components/paper/Doodles";
+import Tape from "@/components/paper/Tape";
+import { CONTACT } from "@/components/paper/pages";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
-
-const stats = [
-  { value: "12+", label: "Projects", sub: "Full-Stack & AI" },
-  { value: "350+", label: "DSA Solved", sub: "LeetCode" },
-  { value: "6mo+", label: "Experience", sub: "Exponent Solutions" },
-  { value: "5+", label: "AI SaaS", sub: "Built & Shipped" },
-  { value: "'26", label: "Graduating", sub: "B.Tech AI & ML" },
+const IDENTITIES = [
+  { text: "Full Stack Developer", circled: true },
+  { text: "AI Engineer", circled: true },
+  { text: "Builder" },
+  { text: "Explorer" },
 ];
 
-export default function AboutSection() {
-  const sectionRef = useRef(null);
+// Line items from the real record — nothing here is decorative filler.
+const RECEIPT = [
+  { item: "Projects built", qty: "12+" },
+  { item: "AI SaaS shipped", qty: "5+" },
+  { item: "DSA problems solved", qty: "350+" },
+  { item: "Production experience", qty: "6mo+", note: "Exponent Solutions · 3,000+ users" },
+  { item: "B.Tech CS (AI & ML)", qty: "’26", note: "UTU Dehradun" },
+];
 
-  useGSAP(() => {
-    // 1. Cards Animation Timeline
-    const cardsTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: ".about-letter",
-        start: "top 75%",
-        toggleActions: "play none none reverse",
-      }
-    });
+// Fixed bar widths so the barcode renders identically on server and client.
+const BARS = [3, 1, 2, 1, 1, 3, 1, 2, 2, 1, 3, 1, 1, 2, 1, 3, 2, 1, 1, 2, 3, 1, 2, 1, 1, 3, 1, 2];
 
-    cardsTl.from(".about-letter", {
-      x: -80,
-      y: 50,
-      opacity: 0,
-      rotationZ: -10,
-      duration: 1,
-      ease: "power3.out"
-    })
-    .to(".about-name-highlight path", {
-      strokeDashoffset: 0,
-      duration: 0.8,
-      ease: "power2.inOut"
-    }, "-=0.2")
-    .from(".about-stats-card", {
-      x: 80,
-      y: -20,
-      opacity: 0,
-      rotationZ: 15,
-      duration: 1,
-      ease: "back.out(1.2)"
-    }, "-=0.6");
-
-  }, { scope: sectionRef });
-
+function Receipt() {
+  let x = 0;
   return (
-    <section
-      id="about"
-      ref={sectionRef}
-      className="relative py-20 sm:py-32 bg-transparent font-sans overflow-hidden border-t-2 border-white/5"
-    >
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 relative z-10">
-        {/* ── Section header ── */}
-        <SectionHeading
-          eyebrow="Profile"
-          title="Who I"
-          accent="Actually Am"
-          stacked
-          align="center"
-          className="mb-16 sm:mb-24 w-full"
-        />
+    <div className="drop">
+      <div className="paper paper-receipt zigzag w-[17.5rem] px-5 pt-7 pb-8 font-mono text-[0.78rem] leading-[1.55] text-ink [--r:3deg]">
+        <p className="text-center font-bold tracking-[0.2em]">ANISH SINGH</p>
+        <p className="text-center text-[0.68rem] tracking-[0.18em] text-graphite">RECEIPT OF WORK · NO. AKS-26</p>
+        <p className="my-2 overflow-hidden whitespace-nowrap text-graphite" aria-hidden="true">
+          - - - - - - - - - - - - - - - - - - - -
+        </p>
+        <dl>
+          {RECEIPT.map(({ item, qty, note }) => (
+            <div key={item} className="py-0.5">
+              <div className="flex items-baseline gap-2">
+                <dt className="uppercase">{item}</dt>
+                <span className="flex-1 border-b border-dotted border-ink/35 translate-y-[-3px]" aria-hidden="true" />
+                <dd className="font-bold tabular-nums">{qty}</dd>
+              </div>
+              {note && <p className="pl-3 text-[0.7rem] text-graphite">{note}</p>}
+            </div>
+          ))}
+        </dl>
+        <p className="my-2 overflow-hidden whitespace-nowrap text-graphite" aria-hidden="true">
+          = = = = = = = = = = = = = = = = = = = =
+        </p>
+        <div className="flex justify-between font-bold">
+          <span>NOW</span>
+          <span className="hl">FULL STACK DEVELOPER</span>
+        </div>
+        <div className="flex justify-between">
+          <span>AT</span>
+          <span>EXPONENT SOLUTIONS</span>
+        </div>
 
-        {/* ── Overlapping Cards Grid ── */}
-        <div className="relative flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-0 mt-10">
-          {/* ── Left: The Parchment Letter ── */}
-          <div
-            className="about-letter relative w-full lg:w-[60%] bg-[#E8E6E1] text-[#111018] p-8 sm:p-12 lg:p-16 shadow-2xl z-10"
-            style={{
-              clipPath: "polygon(1% 1%, 99% 0, 100% 99%, 0 100%)",
-              boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
-            }}
-          >
-            {/* Top Tape */}
-            <div className="absolute -top-4 left-10 w-24 h-8 bg-white/40 backdrop-blur-md rotate-[-5deg] z-20 shadow-sm" />
+        <svg viewBox="0 0 120 30" className="mt-4 h-9 w-full" aria-hidden="true">
+          {BARS.map((w, i) => {
+            const rect = <rect key={i} x={x} y="0" width={w * 1.4} height="30" fill={i % 2 ? "transparent" : "#111"} />;
+            x += w * 1.4 + 0.6;
+            return rect;
+          })}
+        </svg>
+        <p className="mt-2 text-center font-caveat text-lg text-graphite">thanks for scrolling this far</p>
+      </div>
+    </div>
+  );
+}
 
-            <div className="flex flex-col gap-8">
-              <div className="font-mono text-xs opacity-50 uppercase tracking-widest border-b border-black/10 pb-4">
-                File No: 404-DEV // Confidential Summary
+export default function AboutSection() {
+  return (
+    <section id="about" aria-labelledby="about-title" className="relative px-4 sm:px-8 pt-20 pb-24 lg:pt-28 lg:pb-32">
+      <div className="mx-auto max-w-[1240px]">
+        <RunningHead page="01" flag="kraft" />
+
+        <div className="relative mt-14 lg:mt-20 lg:pr-24">
+          {/* The open notebook: two pages sharing a spine. */}
+          <div data-reveal className="grid md:grid-cols-2 shadow-[var(--lift-2)] md:rotate-[-0.6deg]">
+            {/* ── Left page: lined, handwritten ── */}
+            <div className="paper paper-lined relative !shadow-none px-6 pl-[4.2rem] sm:pl-20 pt-8 pb-12 [--line:2.25rem] [--line-start:0.4rem] [--margin:3rem] sm:[--margin:3.6rem]">
+              <span
+                aria-hidden="true"
+                className="hidden md:block absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-black/25 to-transparent"
+              />
+              <h2
+                id="about-title"
+                className="relative inline-block font-caveat font-bold text-ink leading-[0.9] -rotate-2 text-[clamp(4rem,9vw,6.5rem)]"
+              >
+                Who am I?
+                <Underline draw className="absolute -bottom-2 left-0 h-4 w-full text-pen [--d:0.5s]" />
+              </h2>
+
+              <ul className="mt-10 font-caveat text-[1.6rem] sm:text-[1.85rem] leading-[2.25rem] text-ink">
+                {IDENTITIES.map(({ text, circled }, i) => (
+                  <li key={text} className="flex items-center gap-3">
+                    <span className="font-mono text-sm text-graphite">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="relative">
+                      {text}
+                      {circled && (
+                        <CircleScribble
+                          draw
+                          className="absolute -inset-x-3 -inset-y-1 h-[calc(100%+0.5rem)] w-[calc(100%+1.5rem)] text-pen/80"
+                          strokeWidth={1.8}
+                        />
+                      )}
+                    </span>
+                  </li>
+                ))}
+                <li className="flex flex-wrap items-center gap-x-3 text-graphite">
+                  <span className="font-mono text-sm">05</span>
+                  <span className="strike">just a CRUD-app dev</span>
+                  <span className="text-pen-deep text-2xl -rotate-3">nope.</span>
+                </li>
+              </ul>
+
+              <p className="mt-10 max-w-[18rem] font-caveat text-2xl leading-[2.25rem] text-cobalt rotate-[-1.5deg]">
+                Patna → Dehradun → Gurugram.
+                <br />
+                B.Tech AI &amp; ML, class of ’26.
+              </p>
+            </div>
+
+            {/* ── Right page: a torn bio sheet pasted in ── */}
+            <div className="paper paper-cream relative !shadow-none px-5 sm:px-10 pt-10 pb-12">
+              <span
+                aria-hidden="true"
+                className="hidden md:block absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-black/20 to-transparent"
+              />
+              <div className="drop relative">
+                <Tape at="top" w={88} rotate={-3} />
+                <div className="paper torn-bottom px-6 sm:px-8 pt-8 pb-10 [--r:0.8deg] font-serif text-[1.07rem] sm:text-[1.13rem] leading-[1.7] text-ink/90">
+                  <p>
+                    I’m a <strong className="font-bold text-ink">full-stack developer</strong> who builds production-grade web
+                    applications with Next.js, React, Node.js and modern databases — then makes them intelligent.
+                  </p>
+                  <p className="mt-4">
+                    What sets me apart is layering <span className="hl hl-draw">AI capabilities on solid engineering</span>: LLMs,
+                    RAG pipelines, agents and multi-agent workflows that actually work in production.
+                  </p>
+                  <p className="mt-4">
+                    I think in systems, ship fast, and care about code quality and the person using the thing. Whether it’s a
+                    scalable backend, a careful UI, or an LLM inside a product, I can{" "}
+                    <span className="hl hl-draw [--hl-d:0.7s]">own the entire stack</span> and deliver.
+                  </p>
+                  <p className="mt-4">
+                    Right now: Full Stack Developer at{" "}
+                    <strong className="font-bold text-ink">Exponent Solutions</strong> in Gurugram, B.Tech AI &amp; ML,
+                    class of ’26.
+                  </p>
+                </div>
               </div>
 
-              {/* Paragraphs in Serif */}
-              <div className="space-y-6 text-base sm:text-lg text-[#111018]/80 leading-relaxed font-serif">
-                <p>
-                  I&apos;m a{" "}
-                  <span className="font-bold text-[#111018]">
-                    Full-Stack Developer
-                  </span>{" "}
-                  who builds production-grade web applications with{" "}
-                  <span className="italic">Next.js, React, Node.js</span> and
-                  modern databases — then makes them intelligent.
-                </p>
-                <p>
-                  What sets me apart is the ability to seamlessly layer{" "}
-                  <span className="relative inline-block font-bold">
-                    AI capabilities
-                    {/* Hand-drawn SVG circle highlight */}
-                    <svg
-                      className="about-name-highlight absolute -inset-2 w-[calc(100%+1rem)] h-[calc(100%+1rem)] pointer-events-none z-10 overflow-visible"
-                      viewBox="0 0 100 40"
-                      preserveAspectRatio="none"
-                    >
-                      <path
-                        d="M10,20 C10,5 90,5 90,20 C90,35 10,35 10,20 C10,10 90,10 90,20"
-                        fill="none"
-                        stroke="#A78BFA"
-                        strokeWidth="4"
-                        strokeLinecap="round"
-                        strokeDasharray="300"
-                        strokeDashoffset="300"
-                      />
-                    </svg>
-                  </span>{" "}
-                  on top of solid engineering — LLMs, RAG pipelines, agents, and
-                  multi-agent workflows that actually work in production.
-                </p>
-                <p>
-                  I&apos;ve shipped multiple AI-powered SaaS products that
-                  combine beautiful frontends with scalable backends. Currently
-                  interning at{" "}
-                  <span className="font-bold">Exponent Solutions</span> and
-                  finishing my B.Tech in AI & ML.
-                </p>
-              </div>
-
-              {/* Divider */}
-              <div className="h-px w-full bg-black/10 my-2" />
-
-              {/* CTAs */}
-              <div className="flex flex-wrap gap-4">
+              <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
                 <a
-                  href="mailto:anishsingh210204@gmail.com"
-                  className="group flex items-center gap-2 px-6 py-3 bg-[#111018] text-white text-sm font-bold rounded-sm transition-transform hover:-translate-y-1 shadow-lg"
+                  href={`mailto:${CONTACT.email}`}
+                  className="paper paper-ink lift inline-flex min-h-12 items-center gap-2.5 px-5 type-label text-[0.76rem] [--r:-1deg]"
                 >
-                  <Mail className="w-4 h-4" />
-                  Contact Me
+                  <Mail className="size-4" aria-hidden="true" />
+                  Email me
                 </a>
                 <a
-                  href="https://linkedin.com/in/anish-ai"
+                  href={CONTACT.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center gap-2 px-6 py-3 border-2 border-[#111018] text-[#111018] font-bold text-sm rounded-sm transition-colors hover:bg-[#111018]/5"
+                  className="pen-link inline-flex items-center gap-1.5 min-h-11 font-serif text-lg text-ink"
                 >
                   LinkedIn
-                  <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  <ArrowUpRight className="size-4" aria-hidden="true" />
                 </a>
               </div>
             </div>
           </div>
 
-          {/* ── Right: The Dark ID Card (Stats) ── */}
-          <div
-            className="about-stats-card relative w-full lg:w-[45%] lg:-ml-12 bg-[#232132] text-white p-8 sm:p-10 shadow-2xl z-20"
-            style={{
-              clipPath: "polygon(0 0, 100% 2%, 98% 100%, 2% 98%)",
-              boxShadow: "-10px 20px 40px rgba(0,0,0,0.6)",
-            }}
-          >
-            {/* Red Stamp */}
-            <div className="absolute -top-4 -right-4 opacity-40 transform rotate-12 pointer-events-none select-none border-4 border-red-500 text-red-500 font-bold uppercase tracking-widest p-2 text-2xl z-30">
-              VERIFIED
-            </div>
-
-            <div className="font-mono text-xs opacity-50 uppercase tracking-widest border-b border-white/10 pb-4 mb-8">
-              Key Metrics
-            </div>
-
-            <div className="flex flex-col gap-6">
-              {stats.map(({ value, label, sub }, i) => (
-                <div
-                  key={label}
-                  className="flex items-center justify-between group cursor-default"
-                >
-                  <div className="flex flex-col gap-1">
-                    <span className="text-sm font-bold text-purple-300">
-                      {label}
-                    </span>
-                    <span className="text-[10px] font-mono text-white/50 tracking-widest uppercase">
-                      {sub}
-                    </span>
-                  </div>
-
-                  <span className="font-black text-3xl sm:text-4xl tracking-tighter text-white group-hover:text-purple-400 transition-colors">
-                    {value}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* Bottom Note */}
-            <div className="mt-10 pt-6 border-t border-white/10 flex items-center gap-3">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-              </span>
-              <span className="text-[10px] font-mono text-white/60 tracking-widest uppercase">
-                Open to Opportunities
-              </span>
+          {/* ── Receipt stapled over the corner ── */}
+          <div className="relative mt-12 flex justify-center lg:-mt-28 lg:justify-end lg:-mr-16">
+            <div data-reveal className="drift relative [--drift:24px] [--d:0.2s]">
+              <Receipt />
             </div>
           </div>
         </div>

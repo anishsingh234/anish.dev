@@ -1,45 +1,59 @@
-"use client";
-
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/home/Hero";
-import Projects from "@/components/home/Projects";
+import AboutSection from "@/components/home/AboutSection";
+import Chapters from "@/components/home/Chapters";
+import Workbench from "@/components/home/Workbench";
 import Skills from "@/components/home/Skills";
 import Experience from "@/components/home/Experience";
-import AboutSection from "@/components/home/AboutSection";
-import Contact from "@/components/home/Contact";
 import BlogSection from "@/components/BlogSection";
-import WhyHireMe from "@/components/home/whyhireme";
+import Contact from "@/components/home/Contact";
 import Footer from "@/components/footer";
-import Preloader from "@/components/Preloader";
+import RevealObserver from "@/components/paper/RevealObserver";
+import { projectsData } from "@/app/data";
+
+// Shipped work as structured data, so search results can list the projects.
+const projectsSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Projects by Anish Singh",
+  itemListElement: projectsData
+    .filter((p) => p.featured)
+    .map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "SoftwareApplication",
+        name: p.name,
+        description: p.description,
+        applicationCategory: "WebApplication",
+        url: p.demoLink || p.GithubLink,
+        author: { "@id": "https://anish-ai.vercel.app/#person" },
+      },
+    })),
+};
+
+// The notebook, page by page: cover → who I am → how I build / use AI / ship →
+// the workbench → tools → the log → clippings → one last page.
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-start bg-[#05050A] text-foreground selection:bg-purple-500/30">
-      <Preloader />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(projectsSchema) }}
+      />
       <Navbar />
-
-      <div className="w-full">
-        {/* --- Hero Section --- */}
+      <main id="main" className="w-full overflow-x-clip">
         <Hero />
-
-        {/* --- Projects Section --- */}
-        <Projects />
-
-        <BlogSection />
-        {/* --- Skills Section --- */}
-        <Skills />
-
-        {/* --- Experience Section --- */}
-        <Experience />
-
-        {/* --- About Section --- */}
         <AboutSection />
-        <WhyHireMe />
-
-        {/* --- Contact Section --- */}
+        <Chapters />
+        <Workbench />
+        <Skills />
+        <Experience />
+        <BlogSection />
         <Contact />
-
-        <Footer/>
-      </div>
-    </main>
+      </main>
+      <Footer />
+      <RevealObserver />
+    </>
   );
 }
