@@ -289,6 +289,7 @@ export default function NotebookScene({ className = "" }) {
 
     const render = () => {
       frame = 0;
+      if (!ready) return; // nothing draws until shaders are compiled
       const ease = 0.12;
       state.tiltX += (state.targetX - state.tiltX) * ease;
       state.tiltY += (state.targetY - state.tiltY) * ease;
@@ -298,7 +299,7 @@ export default function NotebookScene({ className = "" }) {
       notebook.rotation.x = state.tiltX;
       notebook.rotation.z = -state.tiltY * 0.6;
       notebook.rotation.y = 0.12 + state.tiltY;
-      if (ready && Math.abs(state.t - prevT) > 1e-5) bendPage(turnGeo, state.t);
+      if (Math.abs(state.t - prevT) > 1e-5) bendPage(turnGeo, state.t);
 
       renderer.render(scene, camera);
 
@@ -339,9 +340,14 @@ export default function NotebookScene({ className = "" }) {
           new THREE.MeshStandardMaterial({ map: tex.back, roughness: 0.92, side: THREE.BackSide })
         );
         notebook.add(front, back);
-        ready = true;
         bendPage(turnGeo, state.t);
-        requestRender();
+        // compile shaders off the main thread where supported, then show the first frame
+        const compile = renderer.compileAsync ? renderer.compileAsync(scene, camera) : Promise.resolve();
+        compile.catch(() => {}).then(() => {
+          if (disposed) return;
+          ready = true;
+          requestRender();
+        });
       });
 
 

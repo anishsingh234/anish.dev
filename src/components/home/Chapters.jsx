@@ -66,7 +66,7 @@ function RagDiagram() {
   return (
     <svg
       viewBox="0 0 514 372"
-      className="draw w-full h-auto text-cobalt"
+      className="draw ink-layer w-full h-auto text-cobalt"
       role="img"
       aria-label="Retrieval-augmented generation flow: user query, embedding, vector database similarity search, retrieved context, LLM orchestrated with LangChain and CrewAI, grounded response with sources."
     >
@@ -133,6 +133,7 @@ export default function Chapters() {
             id: "storyScrollTrigger",
             trigger: storyWrapRef.current,
             pin: true,
+            anticipatePin: 1,
             scrub: 1,
             // Non-directional: snap to the nearest chapter, so leftover momentum
             // (or a tab click's smooth scroll) never carries on to the next one.
@@ -176,7 +177,7 @@ export default function Chapters() {
       mm.add("(max-width: 767px) and (prefers-reduced-motion: no-preference)", () => {
         panels.forEach((panel) => {
           const tl = gsap.timeline({
-            scrollTrigger: { trigger: panel, start: "top 78%", toggleActions: "play none none reverse" },
+            scrollTrigger: { trigger: panel, start: "top 78%", once: true },
           });
           const dossier = panel.querySelector(".main-dossier");
           const artifact = panel.querySelector(".tech-artifact");

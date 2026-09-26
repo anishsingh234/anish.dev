@@ -86,9 +86,6 @@ export const metadata = {
       "max-snippet": -1,
     },
   },
-  icons: {
-    icon: "/favicon.ico",
-  },
   openGraph: {
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,

@@ -10,8 +10,10 @@ import Tape from "@/components/paper/Tape";
 import Stamp from "@/components/paper/Stamp";
 import { CONTACT } from "@/components/paper/pages";
 
-// Three.js only loads on tablet/desktop, and only as this page approaches.
-const NotebookScene = dynamic(() => import("./NotebookScene"), { ssr: false });
+// Three.js only loads on tablet/desktop: fetched and parsed in idle time after
+// the page settles, mounted as this page approaches — never mid-scroll.
+const loadScene = () => import("./NotebookScene");
+const NotebookScene = dynamic(loadScene, { ssr: false });
 
 function ContactSlip() {
   const [copied, setCopied] = useState(false);
@@ -98,6 +100,9 @@ export default function Contact() {
 
   useEffect(() => {
     if (!window.matchMedia("(min-width: 768px)").matches || !sceneRef.current) return;
+    const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 1500));
+    const cancelIdle = window.cancelIdleCallback || clearTimeout;
+    const idleId = idle(() => loadScene(), { timeout: 5000 });
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -105,10 +110,13 @@ export default function Contact() {
           io.disconnect();
         }
       },
-      { rootMargin: "700px 0px" }
+      { rootMargin: "1200px 0px" }
     );
     io.observe(sceneRef.current);
-    return () => io.disconnect();
+    return () => {
+      cancelIdle(idleId);
+      io.disconnect();
+    };
   }, []);
 
   return (

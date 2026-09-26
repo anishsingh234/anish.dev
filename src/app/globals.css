@@ -63,6 +63,17 @@
     min-height: 100vh;
   }
 
+  /* Phones: the grain scrolls with the page. A fixed full-screen layer gets
+     repainted every time the mobile toolbar collapses or expands. */
+  @media (max-width: 767px) {
+    body {
+      background-image: var(--grain-light);
+    }
+    body::before {
+      display: none;
+    }
+  }
+
   /* The desk itself: faint fibres and a pool of lamp light near the top. */
   body::before {
     content: "";
@@ -206,8 +217,8 @@
 
   /* Masked edges drop box-shadow, so masked sheets sit inside a .drop wrapper. */
   .drop {
-    filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.3))
-      drop-shadow(0 14px 16px rgb(0 0 0 / 0.42));
+    /* one blur, not two: filters are re-rasterised whenever the sheet repaints */
+    filter: drop-shadow(0 10px 12px rgb(0 0 0 / 0.45));
   }
 
   .torn-bottom {
@@ -380,7 +391,7 @@
     .drop.lift:hover,
     .drop.lift:focus-within {
       box-shadow: none;
-      filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.28)) drop-shadow(0 30px 28px rgb(0 0 0 / 0.5));
+      filter: drop-shadow(0 26px 24px rgb(0 0 0 / 0.5));
     }
   }
 
@@ -418,6 +429,12 @@
 
 /* ─── MOTION ──────────────────────────────────────────────────────────────── */
 @layer utilities {
+  /* Big pen drawings get their own layer so inking them never repaints the
+     graph paper underneath. */
+  .ink-layer {
+    will-change: transform;
+  }
+
   /* Scroll reveals: hidden only when JS is present (see layout boot script). */
   .js [data-reveal] {
     opacity: 0;
@@ -552,6 +569,16 @@
   }
   to {
     translate: 0 calc(var(--drift, 48px) * -1);
+  }
+}
+
+/* Small screens: lighter shadows and shorter blurs, same paper. */
+@media (max-width: 767px) {
+  .drop {
+    filter: drop-shadow(0 6px 8px rgb(0 0 0 / 0.42));
+  }
+  .paper {
+    box-shadow: var(--lift-0), 0 8px 14px -8px rgb(0 0 0 / 0.55);
   }
 }
 
